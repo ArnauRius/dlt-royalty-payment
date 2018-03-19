@@ -1,0 +1,14 @@
+{
+  "name": "Sawtooth-rp-processor",
+  "version": "0.1.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "sawtooth-sdk": "^1.0.1"
+  },
+  "devDependencies": {
+    "request": "^2.83.0"
+  }
+}
