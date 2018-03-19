@@ -57,7 +57,16 @@
     </nav>
 
     <!-- Sign In modal to show -->
-    <sign-in-modal id="signInModal"></sign-in-modal>
+    <sign-in-modal id="signInModal">
+      <p slot="open-sign-up-modal"
+         class="open-sign-up-modal"
+         data-dismiss="modal"
+         data-toggle="modal"
+         data-target="#signUpModal">Do not have an account yet? Sign Up</p>
+    </sign-in-modal>
+
+    <!-- Sign Up modal to show -->
+    <sign-up-modal id="signUpModal"></sign-up-modal>
 
   </div>
 
@@ -71,11 +80,13 @@
 
   // Components imports
   import SignInModal from './sign-in-modal.vue'
+  import SignUpModal from './sign-up-modal.vue'
 
   export default {
 
     components: {
-      SignInModal
+      SignInModal,
+      SignUpModal
     },
 
     data() {
@@ -134,4 +145,5 @@
     background-color: white;
     color: lightskyblue;
   }
+
 </style>

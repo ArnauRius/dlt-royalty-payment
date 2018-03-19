@@ -2,7 +2,7 @@
   <div class="modal fade"
        tabindex="-1"
        role="dialog"
-       aria-labelledby="Sign In"
+       aria-labelledby="Sign Up"
        aria-hidden="true">
 
     <div class="modal-dialog modal-dialog-centered"
@@ -12,7 +12,7 @@
 
         <!-- Modal's header -->
         <div class="modal-header">
-          <h3>Sign In</h3>
+          <h3>Sign Up</h3>
           <button type="button"
                   class="close"
                   data-dismiss="modal"
@@ -31,7 +31,20 @@
             {{ errorMessage }}
           </div>
 
-          <form class="sign-in-form">
+          <form class="sign-up-form">
+
+            <!-- Name input -->
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                <span class="fa fa-user-o"></span>
+                            </span>
+              </div>
+              <input type="text"
+                     class="form-control"
+                     placeholder="Name"
+                     ref="name">
+            </div>
 
             <!-- Email input -->
             <div class="input-group mb-3">
@@ -54,20 +67,18 @@
                             </span>
               </div>
               <input
-                type="password"
+                type="text"
                 class="form-control"
                 placeholder="Password"
                 ref="password">
             </div>
 
-            <!-- Sign In button -->
-            <button @click="signIn"
+            <!-- Sign Up button -->
+            <button @click="signUp"
                     type="button"
-                    class="btn btn-sign-in pull-right">
-              Sign In
+                    class="btn btn-sign-up pull-right">
+              Sign Up
             </button>
-
-            <slot name="open-sign-up-modal"></slot>
 
           </form>
         </div>
@@ -83,7 +94,7 @@
 
   export default {
 
-    data() {
+    data () {
       return {
         isError: false,
         errorMessage: 'Some error ocurred. Please, try again later.'
@@ -93,32 +104,31 @@
     methods: {
 
       // Vuex actions
-      ...mapActions({
-        'LOG_IN_USER': 'user/LOG_IN_USER',
-      }),
+      ...mapActions({}),
 
       /**
-       * Checks if the user has filled correctly the sign in form and tries to sign in him
+       * Checks if the user has filled correctly the sign up form and tries to sign up him
        */
-      signIn: function () {
+      signUp: function(){
 
-        this.isError = !(this.checkValidPassword() && this.checkValidEmail())
+        this.isError = !(this.checkValidName() && this.checkValidPassword() && this.checkValidEmail())
 
-        if (!this.isError) {
-          //TODO: Check auth in Firebase
-          if (this.$refs.email.value === "test@test.com" && this.$refs.password.value === "0000") {
-            this.$refs.closeButton.click()
-            const user = {
-              email: this.$refs.email.value,
-              name: "Test",
-              pub_key: "this is the pub key"
-            }
-            this.LOG_IN_USER(user)
-          } else {
-            this.errorMessage = 'Invalid email or password.'
-            this.isError = true
-          }
+        if(!this.isError){
+          console.log("Signing up with firebase")
         }
+      },
+
+      /**
+       * Checks if the user has entered a valid name. Shows an error otherwise.
+       * Returns a boolean to define is the name is valid or not
+       * @return bool
+       */
+      checkValidName: function() {
+        if(this.$refs.name.value === ""){
+          this.errorMessage = 'Please, introduce a valid name to sign up.'
+          return false
+        }
+        return true
       },
 
       /**
@@ -126,9 +136,9 @@
        * Returns a boolean to define is the email is valid or not
        * @return bool
        */
-      checkValidEmail: function () {
-        if (this.$refs.email.value === "") {
-          this.errorMessage = 'Please, introduce a valid email to sign in.'
+      checkValidEmail: function() {
+        if(this.$refs.email.value === ""){
+          this.errorMessage = 'Please, introduce a valid email to sign up.'
           return false
         }
         return true
@@ -139,9 +149,9 @@
        * Returns a boolean to define is the password is valid or not
        * @return bool
        */
-      checkValidPassword: function () {
-        if (this.$refs.password.value === "") {
-          this.errorMessage = 'Please, introduce the password to sign in.'
+      checkValidPassword: function() {
+        if(this.$refs.password.value === ""){
+          this.errorMessage = 'Please, introduce the password to sign up.'
           return false
         }
         return true
@@ -156,27 +166,16 @@
     color: white;
   }
 
-  .sign-in-form {
+  .sign-up-form {
     padding: 24px 0px 24px 0px;
   }
 
-  .btn-sign-in {
+  .btn-sign-up {
     color: white;
     background-color: lightskyblue;
   }
 
-  .btn-sign-in:hover, .btn-sign-in:active {
+  .btn-sign-up:hover, .btn-sign-up:active {
     background-color: #3AA6E6;
-  }
-
-  /* Style will be applied after the <slot> is replaced with its content */
-  .open-sign-up-modal {
-    color: black;
-  }
-
-  /* Style will be applied after the <slot> is replaced with its content */
-  .open-sign-up-modal:hover, .open-sign-up-modal:active {
-    color: darkgray;
-    cursor: pointer;
   }
 </style>
