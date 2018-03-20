@@ -25,7 +25,7 @@
 
         <!-- Menu options -->
         <ul class="navbar-nav mr-auto">
-          <li v-if="isUserLogged"
+          <li v-if="isUserSigned"
               v-for="page in pages">
             <a class="nav-link">{{ page }}</a>
           </li>
@@ -34,7 +34,7 @@
         <!-- User's Name -->
         <router-link class="nav-link"
                      to="account"
-                     v-if="isUserLogged">
+                     v-if="isUserSigned">
           {{ user.name }}
         </router-link>
 
@@ -43,12 +43,12 @@
                 type="button"
                 data-toggle="modal"
                 data-target="#signInModal"
-                v-if="!isUserLogged">
+                v-if="!isUserSigned">
           Sign In
         </button>
         <button class="btn btn-nav-menu"
                 type="button"
-                v-on:click="LOG_OUT_USER()"
+                v-on:click="signOut()"
                 v-else>
           Sign Out
         </button>
@@ -100,7 +100,7 @@
       // Vuex getters
       ...mapGetters({
         'user': 'user/user',
-        'isUserLogged': 'user/isUserLogged'
+        'isUserSigned': 'user/isUserSigned'
       })
 
     },
@@ -109,8 +109,13 @@
 
       // Vuex actions
       ...mapActions({
-        'LOG_OUT_USER': 'user/LOG_OUT_USER'
-      })
+        'SIGN_OUT_USER': 'user/SIGN_OUT_USER'
+      }),
+
+      signOut: function () {
+        this.$router.go('/')
+        this.SIGN_OUT_USER()
+      },
 
     }
   }

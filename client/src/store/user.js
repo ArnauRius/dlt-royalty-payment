@@ -18,11 +18,11 @@ export default {
     user: (state, getters) => state.user,
 
     /**
-     * Returns a boolean expressing if there is currently a logged user (True) or not (False)
+     * Returns a boolean expressing if there is currently a signed in user (True) or not (False)
      * @param state
      * @return bool
      */
-    isUserLogged: state => state.user !== null
+    isUserSigned: state => state.user !== null
   },
 
   mutations: {
@@ -31,7 +31,7 @@ export default {
      * @param state
      * @param user
      */
-    LOG_IN_USER: (state, user) => {
+    SIGN_IN_USER: (state, user) => {
       state.user = user
     },
 
@@ -39,7 +39,7 @@ export default {
      * Mutation to reset the current user to null
      * @param state
      */
-    LOG_OUT_USER: state => {
+    SIGN_OUT_USER: state => {
       state.user = null
     }
   },
@@ -50,18 +50,18 @@ export default {
      * @param context
      * @param user
      */
-    LOG_IN_USER: (context, user) => {
+    SIGN_IN_USER: (context, user) => {
       context.dispatch('signers/CREATE_SIGNER', user.email, { root: true })  //TODO: REMOVE AND MOVE TO CREATE NEW USER
       user.signer = context.rootGetters['signers/signer'](user.email)
-      context.commit('LOG_IN_USER', user)
+      context.commit('SIGN_IN_USER', user)
     },
 
     /**
      * Action to reset the current user to null
      * @param state
      */
-    LOG_OUT_USER: context => {
-      context.commit('LOG_OUT_USER')
+    SIGN_OUT_USER: context => {
+      context.commit('SIGN_OUT_USER')
     }
   }
 }

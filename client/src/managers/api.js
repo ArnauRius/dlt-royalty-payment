@@ -28,7 +28,7 @@ const signIn = (email, password) => {
           reject("Incorrect email or password.")
         } else {
           resolve(userDoc.data())
-          store.dispatch('user/LOG_IN_USER', userDoc.data())
+          store.dispatch('user/SIGN_IN_USER', userDoc.data())
         }
       })
       .catch(function (error) {
