@@ -1,7 +1,7 @@
 <template>
-  <div id="app" class="app">
+  <div id="app">
     <nav-menu></nav-menu>
-    <router-view class="content"></router-view>
+    <router-view class="container"></router-view>
   </div>
 </template>
 
@@ -20,21 +20,6 @@
 </script>
 
 <style>
-  .app {
-    font-family: "Avenir Next";
-  }
+  @import "css/settings.css"
 
-  .content {
-    padding-top: 70px;
-  }
-
-  a {
-    color: white;
-    text-decoration: none;
-  }
-
-  a:hover {
-    color: whitesmoke;
-    text-decoration: none;
-  }
 </style>
