@@ -89,8 +89,11 @@
 
 <script>
 
-  // Import api
+  // Api Import
   import api from '../managers/api'
+
+  // Utils Import
+  import utils from '../utils'
 
   export default {
 
@@ -148,11 +151,11 @@
 
       /**
        * Checks if the user has entered a valid email. Shows an error otherwise.
-       * Returns a boolean to define is the email is valid or not
+       * Returns a boolean to define if the email is valid or not
        * @return bool
        */
       checkValidEmail: function() {
-        if(this.$refs.email.value === ""){
+        if (!utils.checkValidEmail(this.$refs.email.value)) {
           this.errorMessage = 'Please, introduce a valid email to sign up.'
           return false
         }
