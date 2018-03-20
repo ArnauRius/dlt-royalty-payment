@@ -1,7 +1,7 @@
 <template>
 
   <div>
-    <nav class="navbar navbar-expand-lg navbar-light">
+    <nav class="navbar navbar-expand-lg navbar-light bg-secondary">
 
       <!-- Menu tile -->
       <h4 class="m-0">
@@ -40,7 +40,7 @@
 
           <!-- Menu right button -->
           <button v-if="!isUserSigned"
-                  class="btn btn-nav-menu"
+                  class="btn btn-outline-light ml-2"
                   type="button"
                   data-toggle="modal"
                   data-target="#signInModal">
@@ -49,14 +49,14 @@
         </div>
         <!-- Menu right button -->
         <button v-if="!isUserSigned"
-                class="btn btn-nav-menu"
+                class="btn btn-outline-light ml-2"
                 type="button"
                 data-toggle="modal"
                 data-target="#signUpModal">
           Sign Up
         </button>
         <button v-if="isUserSigned"
-                class="btn btn-nav-menu"
+                class="btn btn-outline-light ml-2"
                 type="button"
                 @click="signOut()">
           Sign Out
@@ -132,11 +132,11 @@
 
 <style scoped>
   .navbar-light {
-    background-color: slategrey;
     box-shadow: 0px 2px 8px 0px lightgray;
     position: fixed;
     width: 100%;
-    color: white;
+    color: white !important;
+    z-index: 1030;
   }
 
   .navbar-light .navbar-toggler {
@@ -145,27 +145,12 @@
     color: white;
   }
 
-  .btn-nav-menu {
-    margin-right: 26px;
-    padding-left: 26px;
-    padding-right: 26px;
-    border-width: 2px;
-    color: white;
-    background-color: transparent;
-    border-color: white;
-  }
-
-  .btn-nav-menu:hover, .btn-nav-menu:active {
-    background-color: white;
-    color: lightskyblue;
-  }
   .navbar-collapse{
     justify-content: center;
   }
   .navbar-light .navbar-nav .nav-link {
     cursor: pointer;
-    color: white !important;
-  }
+  } 
 
   .navbar-light .navbar-nav .nav-link:hover {
     text-decoration: underline;
