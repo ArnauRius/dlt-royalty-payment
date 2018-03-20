@@ -6,6 +6,7 @@ export default {
 
   state: {
     user: null,
+    isUserSignedAsArtist: true
   },
 
   getters: {
@@ -22,7 +23,14 @@ export default {
      * @param state
      * @return bool
      */
-    isUserSigned: state => state.user !== null
+    isUserSigned: state => state.user !== null,
+
+    /**
+     * Returns a boolean expressing if there is currently a signed in user as an artist (True) or not (False)
+     * @param state
+     * @return bool
+     */
+    isUserSignedAsArtist: state => state.isUserSignedAsArtist
   },
 
   mutations: {

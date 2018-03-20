@@ -1,5 +1,5 @@
 <template>
-  <div class="pt-5">
+  <div>
     <div class="card">
       <div class="card-body mt-1">
         <h1>THIS IS THE ACCOUNT PAGE</h1>

@@ -1,7 +1,7 @@
 <template>
   <div class="flex">
     <nav-menu></nav-menu>
-    <router-view class="container mt-nav"></router-view>
+    <router-view class="container mt-nav pt-5"></router-view>
   </div>
 </template>
 
