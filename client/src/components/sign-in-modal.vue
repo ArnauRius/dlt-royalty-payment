@@ -79,7 +79,7 @@
 <script>
 
   // Api import
-  import api from '../managers/api'
+  import api from '../api'
 
   // Utils import
   import utils from '../utils'

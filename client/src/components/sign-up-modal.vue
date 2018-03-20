@@ -90,7 +90,7 @@
 <script>
 
   // Api Import
-  import api from '../managers/api'
+  import api from '../api'
 
   // Utils Import
   import utils from '../utils'
@@ -117,7 +117,7 @@
           const user = {
             name: this.$refs.name.value,
             email: this.$refs.email.value,
-            password: this.$refs.password.value //TODO: Hash it (BUT BEING ABLE TO ACCESS PLAIN PASSWORD WHEN SIGNIN IN AFTER SIGN UP)
+            password: this.$refs.password.value
           }
 
           api.signUp(user)
@@ -127,7 +127,7 @@
                   this.$refs.closeButton.click()
                 })
                 .catch((error) => {
-                  this.showError(error)
+                  this.showError(error+" (While singing in)")
                 })
             })
             .catch((error) => {

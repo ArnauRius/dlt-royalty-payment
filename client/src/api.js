@@ -1,8 +1,11 @@
 // Firebase imports
-import {firestore} from './firebase-manager'
+import {firestore} from './managers/firebase-manager'
 
 // Store import
-import store from '../store/store'
+import store from './store/store'
+
+// Utils import
+import utils from './utils'
 
 const getDocRef = (collection, docId) => firestore.collection(collection).doc(docId)
 
@@ -23,8 +26,7 @@ const signIn = (email, password) => {
   return new Promise(function (resolve, reject) {
     return getDoc('users', email)
       .then(function (userDoc) {
-        //TODO: Check password hashed
-        if (!userDoc || !userDoc.exists || password !== userDoc.data().password) {
+        if (!userDoc || !userDoc.exists || utils.hash(password) !== userDoc.data().password) {
           reject("Incorrect email or password.")
         } else {
           resolve(userDoc.data())
@@ -54,7 +56,9 @@ const signUp = (user) => {
         if (userDoc.exists) {
           return Promise.reject('Email already registered')
         } else {
-          transaction.set(userRef, user)
+          const hashUser = Object.assign({}, user)
+          hashUser.password = utils.hash(user.password)
+          transaction.set(userRef, hashUser)
           return Promise.resolve(user)
         }
       })
