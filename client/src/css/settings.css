@@ -1,6 +1,6 @@
 html {
   font-family: "Avenir Next";
-  color: white;
+    color: white;
 }
 a {
   color: white;
@@ -11,4 +11,7 @@ a:hover {
   color: white !important;
   outline: none;
   text-decoration: none;
+}
+.flex{
+  display: flex;
 }
