@@ -3,7 +3,8 @@
        tabindex="-1"
        role="dialog"
        aria-labelledby="Sign In"
-       aria-hidden="true">
+       aria-hidden="true"
+       @keyup.enter="signIn">
 
     <div class="modal-dialog modal-dialog-centered"
          role="document">

@@ -24,28 +24,29 @@
            id="navbarSupportedContent">
 
         <!-- Menu options -->
-        <ul class="navbar-nav mr-auto">
+        <ul class="navbar-nav ml-auto">
           <li v-if="isUserSigned"
               v-for="page in pages">
             <a class="nav-link">{{ page }}</a>
           </li>
         </ul>
+        <div class="ml-auto">
+          <!-- User's Name -->
+          <router-link class="nav-link"
+                       to="account"
+                       v-if="isUserSigned">
+            {{ user.name }}
+          </router-link>
 
-        <!-- User's Name -->
-        <router-link class="nav-link"
-                     to="account"
-                     v-if="isUserSigned">
-          {{ user.name }}
-        </router-link>
-
-        <!-- Menu right button -->
-        <button v-if="!isUserSigned"
-                class="btn btn-nav-menu"
-                type="button"
-                data-toggle="modal"
-                data-target="#signInModal">
-          Sign In
-        </button>
+          <!-- Menu right button -->
+          <button v-if="!isUserSigned"
+                  class="btn btn-nav-menu"
+                  type="button"
+                  data-toggle="modal"
+                  data-target="#signInModal">
+            Sign In
+          </button>
+        </div>
         <!-- Menu right button -->
         <button v-if="!isUserSigned"
                 class="btn btn-nav-menu"
@@ -157,6 +158,17 @@
   .btn-nav-menu:hover, .btn-nav-menu:active {
     background-color: white;
     color: lightskyblue;
+  }
+  .navbar-collapse{
+    justify-content: center;
+  }
+  .navbar-light .navbar-nav .nav-link {
+    cursor: pointer;
+    color: black !important;
+  }
+
+  .navbar-light .navbar-nav .nav-link:hover {
+    text-decoration: underline;
   }
 
 </style>
