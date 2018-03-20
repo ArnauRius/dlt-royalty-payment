@@ -80,10 +80,10 @@
 <script>
 
   // Api import
-  import api from '../api'
+  import api from '../../api'
 
   // Utils import
-  import utils from '../utils'
+  import utils from '../../utils'
 
   export default {
 

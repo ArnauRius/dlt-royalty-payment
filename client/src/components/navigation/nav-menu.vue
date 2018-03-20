@@ -88,8 +88,8 @@
   import {mapActions} from 'vuex'
 
   // Components imports
-  import SignInModal from './sign-in-modal.vue'
-  import SignUpModal from './sign-up-modal.vue'
+  import SignInModal from '../modals/sign-in-modal.vue'
+  import SignUpModal from '../modals/sign-up-modal.vue'
 
   export default {
 

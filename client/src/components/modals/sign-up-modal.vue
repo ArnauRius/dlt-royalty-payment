@@ -91,10 +91,10 @@
 <script>
 
   // Api Import
-  import api from '../api'
+  import api from '../../api'
 
   // Utils Import
-  import utils from '../utils'
+  import utils from '../../utils'
 
   export default {
 
@@ -118,7 +118,8 @@
           const user = {
             name: this.$refs.name.value,
             email: this.$refs.email.value,
-            password: this.$refs.password.value
+            password: this.$refs.password.value,
+            isArtist: false
           }
 
           api.signUp(user)
