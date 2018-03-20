@@ -78,24 +78,19 @@
 
 <script>
 
-  // Vuex imports
-  import {mapActions} from 'vuex'
+  // Import api
+  import api from '../managers/api'
 
   export default {
 
     data() {
       return {
         isError: false,
-        errorMessage: 'Some error ocurred. Please, try again later.'
+        errorMessage: 'Some error occurred. Please, try again later.'
       }
     },
 
     methods: {
-
-      // Vuex actions
-      ...mapActions({
-        'LOG_IN_USER': 'user/LOG_IN_USER',
-      }),
 
       /**
        * Checks if the user has filled correctly the sign in form and tries to sign in him
@@ -105,19 +100,14 @@
         this.isError = !(this.checkValidPassword() && this.checkValidEmail())
 
         if (!this.isError) {
-          //TODO: Check auth in Firebase
-          if (this.$refs.email.value === "test@test.com" && this.$refs.password.value === "0000") {
-            this.$refs.closeButton.click()
-            const user = {
-              email: this.$refs.email.value,
-              name: "Test",
-              pub_key: "this is the pub key"
-            }
-            this.LOG_IN_USER(user)
-          } else {
-            this.errorMessage = 'Invalid email or password.'
-            this.isError = true
-          }
+
+          api.signIn(this.$refs.email.value, this.$refs.password.value)
+            .then((user) => {
+              this.$refs.closeButton.click()
+            })
+            .catch((error) => {
+              this.showError(error)
+            })
         }
       },
 
@@ -145,6 +135,15 @@
           return false
         }
         return true
+      },
+
+      /**
+       * Shows an error in a red alert
+       * @param error
+       */
+      showError: function(error) {
+        this.errorMessage = error
+        this.isError = true
       }
     }
   }

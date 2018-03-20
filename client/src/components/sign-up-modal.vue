@@ -89,22 +89,19 @@
 
 <script>
 
-  // Vuex imports
-  import {mapActions} from 'vuex'
+  // Import api
+  import api from '../managers/api'
 
   export default {
 
     data () {
       return {
         isError: false,
-        errorMessage: 'Some error ocurred. Please, try again later.'
+        errorMessage: 'Some error occurred. Please, try again later.'
       }
     },
 
     methods: {
-
-      // Vuex actions
-      ...mapActions({}),
 
       /**
        * Checks if the user has filled correctly the sign up form and tries to sign up him
@@ -114,7 +111,25 @@
         this.isError = !(this.checkValidName() && this.checkValidPassword() && this.checkValidEmail())
 
         if(!this.isError){
-          console.log("Signing up with firebase")
+          const user = {
+            name: this.$refs.name.value,
+            email: this.$refs.email.value,
+            password: this.$refs.password.value //TODO: Hash it (BUT BEING ABLE TO ACCESS PLAIN PASSWORD WHEN SIGNIN IN AFTER SIGN UP)
+          }
+
+          api.signUp(user)
+            .then((user) => {
+              api.signIn(user.email, user.password)
+                .then((user) => {
+                  this.$refs.closeButton.click()
+                })
+                .catch((error) => {
+                  this.showError(error)
+                })
+            })
+            .catch((error) => {
+              this.showError(error)
+            })
         }
       },
 
@@ -155,6 +170,15 @@
           return false
         }
         return true
+      },
+
+      /**
+       * Shows an error in a red alert
+       * @param error
+       */
+      showError: function(error) {
+        this.errorMessage = error
+        this.isError = true
       }
     }
   }
