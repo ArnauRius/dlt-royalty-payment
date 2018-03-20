@@ -67,7 +67,7 @@
                             </span>
               </div>
               <input
-                type="text"
+                type="password"
                 class="form-control"
                 placeholder="Password"
                 ref="password">

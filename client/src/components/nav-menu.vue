@@ -39,17 +39,25 @@
         </router-link>
 
         <!-- Menu right button -->
-        <button class="btn btn-nav-menu"
+        <button v-if="!isUserSigned"
+                class="btn btn-nav-menu"
                 type="button"
                 data-toggle="modal"
-                data-target="#signInModal"
-                v-if="!isUserSigned">
+                data-target="#signInModal">
           Sign In
         </button>
-        <button class="btn btn-nav-menu"
+        <!-- Menu right button -->
+        <button v-if="!isUserSigned"
+                class="btn btn-nav-menu"
                 type="button"
-                v-on:click="signOut()"
-                v-else>
+                data-toggle="modal"
+                data-target="#signUpModal">
+          Sign Up
+        </button>
+        <button v-if="isUserSigned"
+                class="btn btn-nav-menu"
+                type="button"
+                @clickclick="signOut()">
           Sign Out
         </button>
 
