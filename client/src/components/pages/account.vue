@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div class="pt-5">
     <div class="card">
-      <div class="card-body">
+      <div class="card-body mt-1">
         <h1>THIS IS THE ACCOUNT PAGE</h1>
         <h5>Name:</h5>
         <p>{{ user.name }}</p>
@@ -11,6 +11,15 @@
         <p>{{ user.signer.getPublicKey().asHex() }}</p>
       </div>
     </div>
+    <!-- Menu right button -->
+    <button
+            class="btn btn-primary mt-5"
+            type="button"
+            data-toggle="modal"
+            data-target="#becomeArtistModal">
+      Become an Artist
+      </button>
+    <become-artist-modal id="becomeArtistModal"></become-artist-modal>
   </div>
 </template>
 
@@ -19,7 +28,12 @@
   // Vuex imports
   import {mapGetters} from 'vuex'
 
+  import BecomeArtistModal from '../modals/become-artist-modal.vue'
+
   export default {
+    components: {
+      BecomeArtistModal,
+    },
 
     computed: {
 

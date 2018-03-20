@@ -58,7 +58,7 @@
         <button v-if="isUserSigned"
                 class="btn btn-nav-menu"
                 type="button"
-                @clickclick="signOut()">
+                @click="signOut()">
           Sign Out
         </button>
 
@@ -132,7 +132,7 @@
 
 <style scoped>
   .navbar-light {
-    background-color: lightskyblue;
+    background-color: slategrey;
     box-shadow: 0px 2px 8px 0px lightgray;
     position: fixed;
     width: 100%;
@@ -164,7 +164,7 @@
   }
   .navbar-light .navbar-nav .nav-link {
     cursor: pointer;
-    color: black !important;
+    color: white !important;
   }
 
   .navbar-light .navbar-nav .nav-link:hover {

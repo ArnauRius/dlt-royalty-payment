@@ -32,14 +32,14 @@
             {{ errorMessage }}
           </div>
 
-          <form class="sign-in-form">
+          <form class="modal-form">
 
             <!-- Email input -->
             <div class="input-group mb-3">
               <div class="input-group-prepend">
-                            <span class="input-group-text">
-                                <span class="fa fa-at"></span>
-                            </span>
+                <span class="input-group-text">
+                    <span class="fa fa-at"></span>
+                </span>
               </div>
               <input type="email"
                      class="form-control"
@@ -50,9 +50,9 @@
             <!-- Password input -->
             <div class="input-group mb-3">
               <div class="input-group-prepend">
-                            <span class="input-group-text">
-                                <span class="fa fa-key"></span>
-                            </span>
+                <span class="input-group-text">
+                    <span class="fa fa-key"></span>
+                </span>
               </div>
               <input
                 type="password"
@@ -64,7 +64,7 @@
             <!-- Sign In button -->
             <button @click="signIn"
                     type="button"
-                    class="btn btn-sign-in pull-right">
+                    class="btn btn-primary pull-right">
               Sign In
             </button>
 
@@ -154,24 +154,6 @@
 </script>
 
 <style scoped>
-  .modal-header {
-    background-color: lightskyblue;
-    color: white;
-  }
-
-  .sign-in-form {
-    padding: 24px 0px 24px 0px;
-  }
-
-  .btn-sign-in {
-    color: white;
-    background-color: lightskyblue;
-  }
-
-  .btn-sign-in:hover, .btn-sign-in:active {
-    background-color: #3AA6E6;
-  }
-
   /* Style will be applied after the <slot> is replaced with its content */
   .open-sign-up-modal {
     color: black;

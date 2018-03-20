@@ -32,7 +32,7 @@
             {{ errorMessage }}
           </div>
 
-          <form class="sign-up-form">
+          <form class="modal-form">
 
             <!-- Name input -->
             <div class="input-group mb-3">
@@ -77,7 +77,7 @@
             <!-- Sign Up button -->
             <button @click="signUp"
                     type="button"
-                    class="btn btn-sign-up pull-right">
+                    class="btn btn-primary pull-right">
               Sign Up
             </button>
 
@@ -190,21 +190,5 @@
 </script>
 
 <style scoped>
-  .modal-header {
-    background-color: lightskyblue;
-    color: white;
-  }
 
-  .sign-up-form {
-    padding: 24px 0px 24px 0px;
-  }
-
-  .btn-sign-up {
-    color: white;
-    background-color: lightskyblue;
-  }
-
-  .btn-sign-up:hover, .btn-sign-up:active {
-    background-color: #3AA6E6;
-  }
 </style>
