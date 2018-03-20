@@ -22,7 +22,8 @@ export default {
      */
     signer: (state) => {
       return email => {
-        return email in state.signers ? state.signers[email] : undefined}
+        return email in state.signers ? state.signers[email] : undefined
+      }
     }
 
   },

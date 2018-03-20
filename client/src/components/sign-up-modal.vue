@@ -97,7 +97,7 @@
 
   export default {
 
-    data () {
+    data() {
       return {
         isError: false,
         errorMessage: 'Some error occurred. Please, try again later.'
@@ -109,11 +109,11 @@
       /**
        * Checks if the user has filled correctly the sign up form and tries to sign up him
        */
-      signUp: function(){
+      signUp: function () {
 
         this.isError = !(this.checkValidName() && this.checkValidPassword() && this.checkValidEmail())
 
-        if(!this.isError){
+        if (!this.isError) {
           const user = {
             name: this.$refs.name.value,
             email: this.$refs.email.value,
@@ -141,8 +141,8 @@
        * Returns a boolean to define is the name is valid or not
        * @return bool
        */
-      checkValidName: function() {
-        if(this.$refs.name.value === ""){
+      checkValidName: function () {
+        if (this.$refs.name.value === "") {
           this.errorMessage = 'Please, introduce a valid name to sign up.'
           return false
         }
@@ -154,7 +154,7 @@
        * Returns a boolean to define if the email is valid or not
        * @return bool
        */
-      checkValidEmail: function() {
+      checkValidEmail: function () {
         if (!utils.checkValidEmail(this.$refs.email.value)) {
           this.errorMessage = 'Please, introduce a valid email to sign up.'
           return false
@@ -167,8 +167,8 @@
        * Returns a boolean to define is the password is valid or not
        * @return bool
        */
-      checkValidPassword: function() {
-        if(this.$refs.password.value === ""){
+      checkValidPassword: function () {
+        if (this.$refs.password.value === "") {
           this.errorMessage = 'Please, introduce the password to sign up.'
           return false
         }
@@ -179,7 +179,7 @@
        * Shows an error in a red alert
        * @param error
        */
-      showError: function(error) {
+      showError: function (error) {
         this.errorMessage = error
         this.isError = true
       }

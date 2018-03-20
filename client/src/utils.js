@@ -10,6 +10,6 @@ const checkValidEmail = (email) => {
   return re.test(String(email).toLowerCase())
 }
 
-export default{
+export default {
   checkValidEmail
 }

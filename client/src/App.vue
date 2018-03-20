@@ -24,16 +24,16 @@
     font-family: "Avenir Next";
   }
 
-  .content{
+  .content {
     padding-top: 70px;
   }
 
-  a{
+  a {
     color: white;
     text-decoration: none;
   }
 
-  a:hover{
+  a:hover {
     color: whitesmoke;
     text-decoration: none;
   }

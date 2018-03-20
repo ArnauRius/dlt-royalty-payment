@@ -51,7 +51,7 @@ export default {
      * @param user
      */
     SIGN_IN_USER: (context, user) => {
-      context.dispatch('signers/CREATE_SIGNER', user.email, { root: true })  //TODO: REMOVE AND MOVE TO CREATE NEW USER
+      context.dispatch('signers/CREATE_SIGNER', user.email, {root: true})  //TODO: REMOVE AND MOVE TO CREATE NEW USER
       user.signer = context.rootGetters['signers/signer'](user.email)
       context.commit('SIGN_IN_USER', user)
     },
