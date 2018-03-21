@@ -25,12 +25,6 @@ export default {
      */
     isUserSigned: state => state.user !== null,
 
-    /**
-     * Returns a boolean expressing if there is currently a signed in user as an artist (True) or not (False)
-     * @param state
-     * @return bool
-     */
-    isUserSignedAsArtist: state => state.isUserSignedAsArtist
   },
 
   mutations: {
