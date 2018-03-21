@@ -18,6 +18,13 @@ export default {
      * @returns {{signer: Signer, songs: []}}
      */
     artist: (state, getters) => state.artist,
+
+    /**
+     * Returns a boolean expressing if there is currently a signed in artist (True) or not (False)
+     * @param state
+     * @return bool
+     */
+    isArtistSigned: state => state.artist !== null,
   },
 
   mutations: {

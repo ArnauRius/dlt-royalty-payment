@@ -48,7 +48,6 @@ export default {
      */
     CREATE_SIGNER: (context, email) => {
       context.commit('CREATE_SIGNER', email)
-      console.log(context.getters.signer(email))
       return context.getters.signer(email)
     }
   }

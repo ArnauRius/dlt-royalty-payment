@@ -97,6 +97,7 @@
       signIn: function (){
         this.SIGN_IN_ARTIST(this.$refs.prvkey.value)
           .then(() => {
+            this.$router.push({name:'dashboard'})
             this.$refs.closeButton.click()
           })
           .catch((error) => {
