@@ -66,6 +66,7 @@ export default {
      * Action to assign the current user.
      * Makes a call to the API to sign in the user.
      * If it succeeds, update the current user in the store.
+     * Returns error otherwise.
      * @param context
      * @param credentials - {email, password}
      * @returns {Promise} - Callbacks to manage sign in's success or failure
@@ -77,6 +78,28 @@ export default {
             user.signer = context.dispatch('signers/CREATE_SIGNER', user.email, {root: true})
             context.commit('SIGN_IN_USER', user)
             resolve()
+          })
+          .catch((error) => {
+            reject(error)
+          })
+      })
+    },
+
+    /**
+     * Action to sign up a new user and setting its 'artistRef' field to default value (null).
+     * Makes a call to the API to sign up the user.
+     * If it succeeds, returns the new registered user.
+     * Returns error otherwise
+     * @param context
+     * @param user - {name, email, password}
+     * @returns {Promise} - Callbacks to manage sign up's success or failure
+     */
+    SIGN_UP_USER: (context, user) => {
+      return new Promise((resolve, reject) => {
+        user.artistRef = null // Sets the default 'artistRef' value for new users
+        api.signUp(user)
+          .then((user) => {
+            resolve(user)
           })
           .catch((error) => {
             reject(error)

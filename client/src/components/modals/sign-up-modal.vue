@@ -112,33 +112,34 @@
 
       // Vuex actions
       ...mapActions({
-        'SIGN_IN_USER': 'user/SIGN_IN_USER'
+        'SIGN_IN_USER': 'user/SIGN_IN_USER',
+        'SIGN_UP_USER': 'user/SIGN_UP_USER'
       }),
 
       /**
-       * Checks if the user has filled correctly the sign up form and tries to sign up him
+       * Checks if the user has filled correctly the sign up form and tries to sign up him.
+       * If succeeds, tries to sign in the new user.
        */
       signUp: function () {
 
         this.isError = !(this.checkValidName() && this.checkValidPassword() && this.checkValidEmail())
 
         if (!this.isError) {
-          const user = {
+          const newUser = {
             name: this.$refs.name.value,
             email: this.$refs.email.value,
             password: this.$refs.password.value,
-            artistRef: null
           }
 
-          api.signUp(user)
+          this.SIGN_UP_USER(newUser)
             .then((user) => {
-            this.SIGN_IN_USER({email: user.email, password: user.password})
-              .then(() => {
-                this.$refs.closeButton.click()
-              })
-              .catch((error) => {
-                this.showError(error+" (While singing in)")
-              })
+              this.SIGN_IN_USER({email: user.email, password: user.password})
+                .then(() => {
+                  this.$refs.closeButton.click()
+                })
+                .catch((error) => {
+                  this.showError(error+" (While singing in)")
+                })
             })
             .catch((error) => {
               this.showError(error)
