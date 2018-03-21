@@ -49,6 +49,14 @@ export default {
      */
     SIGN_OUT_USER: state => {
       state.user = null
+    },
+
+    /**
+     * Mutation to convert the current user to a validated artist
+     * @param state
+     */
+    CONVERT_TO_ARTIST: state => {
+      state.user.isArtist = true
     }
   },
 
@@ -66,10 +74,18 @@ export default {
 
     /**
      * Action to reset the current user to null
-     * @param state
+     * @param context
      */
     SIGN_OUT_USER: context => {
       context.commit('SIGN_OUT_USER')
+    },
+
+    /**
+     * Action to convert the current user to a validated artist
+     * @param context
+     */
+    CONVERT_TO_ARTIST: context => {
+      context.commit('CONVERT_TO_ARTIST')
     }
   }
 }

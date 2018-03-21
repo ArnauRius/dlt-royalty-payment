@@ -1,6 +1,8 @@
 // Firebase imports
 import {firestore} from './managers/firebase-manager'
 
+import {generateSignerFromKey, generatePrivateKeyFromHex} from './managers/signers-manager'
+
 // Store import
 import store from './store/store'
 
@@ -53,7 +55,7 @@ const signUp = (user) => {
     const userRef = getDocRef('users', user.email)
     return transaction.get(userRef)
       .then(function (userDoc) {
-        if (userDoc.exists) {
+        if (userDoc && userDoc.exists) {
           return Promise.reject('Email already registered')
         } else {
           const hashUser = Object.assign({}, user)
@@ -62,12 +64,61 @@ const signUp = (user) => {
           return Promise.resolve(user)
         }
       })
+      .catch(function (error) {
+        return Promise.reject(error)
+      })
   })
 
 }
 
+/**
+ * This will convert the current user to a validated artist.
+ * First it checks if the desired user has been converted already to an artist.
+ * If not, creates a new Artist instance to Firestore, referenced by the same id as the user's one (the email),
+ * then updates the artist status ('isArtist' field) to both Firestore db and local storage (Vuex store)
+ * @param key - Artist's private key
+ * @returns {Promise<any>}
+ */
 const createArtist = (key) => {
-  console.log(key)
+  return firestore.runTransaction(function (transaction) {
+    const user = store.getters['user/user']
+    const artistRef = getDocRef('artists', user.email)
+    return transaction.get(artistRef)
+      .then(function (artistDoc) {
+        console.log('checking artist existance')
+        if(artistDoc && artistDoc.exists){
+          console.log('artist does exist')
+          return Promise.reject('Artist already activated')
+        }else{
+          console.log('artist does not exist, create it')
+          const userRef = getDocRef('users', user.email)
+          return transaction.get(userRef)
+            .then(function (userDoc) {
+              if(!userDoc || !userDoc.exists){
+                return Promise.reject('User not found')
+              }else if(userDoc.data().isArtist){
+                return Promise.reject('Artist already activated')
+              }else{
+                const signer = generateSignerFromKey(generatePrivateKeyFromHex(key))
+                const artist = {
+                  email: user.email,
+                  key: signer.getPublicKey().asHex()
+                }
+                transaction.set(artistRef, artist)
+                transaction.update(userRef, {isArtist: true})
+                store.dispatch('user/CONVERT_TO_ARTIST')
+                return Promise.resolve()
+              }
+            })
+            .catch(function (error) {
+              return Promise.reject(error)
+            })
+        }
+      })
+      .catch(function (error){
+        return Promise.reject(error)
+      })
+  })
 }
 
 

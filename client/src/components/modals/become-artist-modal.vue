@@ -98,7 +98,12 @@
         const key = this.$refs.prvkey.value
         if(utils.checkValidKey(key)){
           api.createArtist(key)
-          this.$refs.closeButton.click()
+            .then(() => {
+              this.$refs.closeButton.click()
+            })
+            .catch((error) => {
+              this.showError(error)
+            })
         }else{
           this.showError("Please, introduce a valid key")
         }
