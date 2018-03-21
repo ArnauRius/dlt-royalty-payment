@@ -122,11 +122,25 @@ export default {
     },
 
     /**
-     * Action to update the user's 'artistRef' field
+     * Action to create a new artist instance and assign it to the current user
+     * Makes a call to the API to create a new artist instance.
+     * If it succeeds, assigns the artist's reference to the user.
+     * Returns error otherwise
      * @param context
+     * @param prvKey - Artist's private key
+     * @returns {Promise}
      */
-    UPDATE_ARTIST_REF: (context, artistRef) => {
-      context.commit('UPDATE_ARTIST_REF', artistRef)
-    }
+    CONVERT_TO_ARTIST: (context, prvKey) => {
+      return new Promise((resolve, reject) => {
+        api.createArtist(prvKey)
+          .then((artistRef) => {
+            context.commit('UPDATE_ARTIST_REF', artistRef)
+            resolve()
+          })
+          .catch((error) => {
+            reject(error)
+          })
+      })
+    },
   }
 }

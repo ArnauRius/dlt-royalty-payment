@@ -87,9 +87,12 @@ const createArtist = (key) => {
     if (utils.checkValidKey(key)) {
       if (!store.getters['user/isArtist']) {
         const email = store.getters['user/user'].email
+        const signer = generateSignerFromKey(generatePrivateKeyFromHex(key))
+
+        // Artist's info to be stored on Firestore db
         const artist = {
-          email: email,
-          key: key
+          key: signer.getPublicKey().asHex(), // Artist private key's public key pair
+          songs: [] // A fresh new artist does not have any song yet
         }
         const batch = firestore.batch()
 
