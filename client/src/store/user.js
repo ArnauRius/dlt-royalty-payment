@@ -6,7 +6,6 @@ export default {
 
   state: {
     user: null,
-    isUserSignedAsArtist: true
   },
 
   getters: {
@@ -24,6 +23,12 @@ export default {
      * @return bool
      */
     isUserSigned: state => state.user !== null,
+
+    /**
+     * Returns a boolean expressing if the current artist is also an artist (True) or not (False)
+     * @param state
+     */
+    isArtist: state => !(state.user === null || state.user.artistRef === null),
 
   },
 
@@ -46,11 +51,11 @@ export default {
     },
 
     /**
-     * Mutation to convert the current user to a validated artist
+     * Mutation to update the user's 'artistRef' field
      * @param state
      */
-    CONVERT_TO_ARTIST: state => {
-      state.user.isArtist = true
+    UPDATE_ARTIST_REF: (state, artistRef) => {
+      state.user.artistRef = artistRef
     }
   },
 
@@ -75,11 +80,11 @@ export default {
     },
 
     /**
-     * Action to convert the current user to a validated artist
+     * Action to update the user's 'artistRef' field
      * @param context
      */
-    CONVERT_TO_ARTIST: context => {
-      context.commit('CONVERT_TO_ARTIST')
+    UPDATE_ARTIST_REF: (context, artistRef) => {
+      context.commit('UPDATE_ARTIST_REF', artistRef)
     }
   }
 }

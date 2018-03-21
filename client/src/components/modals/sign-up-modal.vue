@@ -119,7 +119,7 @@
             name: this.$refs.name.value,
             email: this.$refs.email.value,
             password: this.$refs.password.value,
-            isArtist: false
+            artistRef: null
           }
 
           api.signUp(user)

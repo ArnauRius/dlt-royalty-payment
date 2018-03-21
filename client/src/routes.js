@@ -24,6 +24,7 @@ export default [
  * Checks if user is authenticated as an artist. If not, redirect always to the '/home' route
  */
 function checkAuthArtist(to, from, next) {
+  // TODO: 
   store.getters['user/isUserSignedAsArtist'] ? fetchDataDashboard(to, from, next) : redirectHome(to, from, next)
 }
 
