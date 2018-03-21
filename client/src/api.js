@@ -59,10 +59,9 @@ const signUp = (user) => {
         if (userDoc && userDoc.exists) {
           return Promise.reject('Email already registered')
         } else {
-          const hashUser = Object.assign({}, user)
-          hashUser.password = utils.hash(user.password)
-          transaction.set(userRef, hashUser)
-          return Promise.resolve(user)
+          user.password = utils.hash(user.password) // Hashes the password before saving to Firestore db
+          transaction.set(userRef, user)
+          return Promise.resolve()
         }
       })
       .catch(function (error) {

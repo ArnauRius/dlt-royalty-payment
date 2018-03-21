@@ -104,8 +104,8 @@ export default {
       return new Promise((resolve, reject) => {
         user.artistRef = null // Sets the default 'artistRef' value for new users
         api.signUp(user)
-          .then((user) => {
-            resolve(user)
+          .then(() => {
+            resolve()
           })
           .catch((error) => {
             reject(error)

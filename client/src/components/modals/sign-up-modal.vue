@@ -132,8 +132,8 @@
           }
 
           this.SIGN_UP_USER(newUser)
-            .then((user) => {
-              this.SIGN_IN_USER({email: user.email, password: user.password})
+            .then(() => {
+              this.SIGN_IN_USER({email:  this.$refs.email.value, password: this.$refs.password.value})
                 .then(() => {
                   this.$refs.closeButton.click()
                 })
