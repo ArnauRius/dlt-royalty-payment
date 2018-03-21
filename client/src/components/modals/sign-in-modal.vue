@@ -79,8 +79,8 @@
 
 <script>
 
-  // Api import
-  import api from '../../api'
+  // Vuex imports
+  import {mapActions} from 'vuex'
 
   // Utils import
   import utils from '../../utils'
@@ -96,6 +96,11 @@
 
     methods: {
 
+      // Vuex actions
+      ...mapActions({
+        'SIGN_IN_USER': 'user/SIGN_IN_USER'
+      }),
+
       /**
        * Checks if the user has filled correctly the sign in form and tries to sign in him
        */
@@ -104,9 +109,13 @@
         this.isError = !(this.checkValidPassword() && this.checkValidEmail())
 
         if (!this.isError) {
-
-          api.signIn(this.$refs.email.value, this.$refs.password.value)
-            .then((user) => {
+          const credentials = {
+            email: this.$refs.email.value,
+            password: this.$refs.password.value
+          }
+          this.SIGN_IN_USER(credentials)
+            .then(() => {
+              console.log('finished')
               this.$refs.closeButton.click()
             })
             .catch((error) => {

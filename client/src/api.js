@@ -19,22 +19,21 @@ const getDoc = (collection, docId) => getDocRef(collection, docId).get()
 
 /**
  * Signs in the provided user. This is done by checking if the introduced email and password
- * matches with any of the ones stored in the Firestore db. If it is, updates the application current
- * user. Throws the corresponding error otherwise
- *
- * @param email
- * @param password
- * @returns {Promise} - Callbacks to manage sign's success or failure
+ * matches with any of the ones stored in the Firestore db.
+ * @param credentials - {email, password}
+ * @returns {Promise} - Callbacks to manage sign in's success or failure
  */
-const signIn = (email, password) => {
-  return new Promise(function (resolve, reject) {
-    return getDoc('users', email)
-      .then(function (userDoc) {
-        if (!userDoc || !userDoc.exists || utils.hash(password) !== userDoc.data().password) {
+const signIn = (credentials) => {
+  return new Promise( (resolve, reject) => {
+    return getDoc('users', credentials.email)
+      .then( (userDoc) => {
+
+        if (!userDoc || !userDoc.exists || utils.hash(credentials.password) !== userDoc.data().password) {
           reject("Incorrect email or password.")
         } else {
-          resolve(userDoc.data())
-          store.dispatch('user/SIGN_IN_USER', userDoc.data())
+          const user = userDoc.data()
+          delete user.password
+          resolve(user)
         }
       })
       .catch(function (error) {

@@ -44,9 +44,11 @@ export default {
      * Action to create a new Signer instance for the user with email
      * @param context
      * @param email
+     * @returns {Signer} - The created signer instance
      */
     CREATE_SIGNER: (context, email) => {
       context.commit('CREATE_SIGNER', email)
+      return context.getters.signer(email)
     }
   }
 }

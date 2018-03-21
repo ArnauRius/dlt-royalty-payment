@@ -90,6 +90,9 @@
 
 <script>
 
+  // Vuex imports
+  import {mapActions} from 'vuex'
+
   // Api Import
   import api from '../../api'
 
@@ -106,6 +109,11 @@
     },
 
     methods: {
+
+      // Vuex actions
+      ...mapActions({
+        'SIGN_IN_USER': 'user/SIGN_IN_USER'
+      }),
 
       /**
        * Checks if the user has filled correctly the sign up form and tries to sign up him
@@ -124,13 +132,13 @@
 
           api.signUp(user)
             .then((user) => {
-              api.signIn(user.email, user.password)
-                .then((user) => {
-                  this.$refs.closeButton.click()
-                })
-                .catch((error) => {
-                  this.showError(error+" (While singing in)")
-                })
+            this.SIGN_IN_USER({email: user.email, password: user.password})
+              .then(() => {
+                this.$refs.closeButton.click()
+              })
+              .catch((error) => {
+                this.showError(error+" (While singing in)")
+              })
             })
             .catch((error) => {
               this.showError(error)

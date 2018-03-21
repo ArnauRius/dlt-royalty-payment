@@ -14,18 +14,25 @@ export default [
   {
     path: '/', redirect: { name: 'home' }, component: Main, children: [
     {path: 'home', component: Home, name: 'home'},
-    {path: 'account', component: Account, name: 'account'},
+    {path: 'account', component: Account, name: 'account', beforeEnter: checkUserAuth},
     {path: 'dashboard', component: Dashboard, name: 'dashboard', beforeEnter: checkAuthArtist},
   ]
   }
 ]
 
 /**
+ * Checks if user is authenticated. If not, redirect always to the '/home' route
+ */
+function checkUserAuth(to, from, next) {
+  store.getters['user/isUserSigned'] ? next() : redirectHome(to, from, next)
+}
+
+/**
  * Checks if user is authenticated as an artist. If not, redirect always to the '/home' route
  */
 function checkAuthArtist(to, from, next) {
-  // TODO: 
-  store.getters['user/isUserSignedAsArtist'] ? fetchDataDashboard(to, from, next) : redirectHome(to, from, next)
+  // TODO:
+  //store.getters['user/isUserSignedAsArtist'] ? fetchDataDashboard(to, from, next) : redirectHome(to, from, next)
 }
 
 /**

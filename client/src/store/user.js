@@ -1,5 +1,7 @@
 /* Stores the current user information */
 
+import api from '../api'
+
 export default {
 
   namespaced: true,
@@ -61,14 +63,25 @@ export default {
 
   actions: {
     /**
-     * Action to assign the current user
+     * Action to assign the current user.
+     * Makes a call to the API to sign in the user.
+     * If it succeeds, update the current user in the store.
      * @param context
-     * @param user
+     * @param credentials - {email, password}
+     * @returns {Promise} - Callbacks to manage sign in's success or failure
      */
-    SIGN_IN_USER: (context, user) => {
-      context.dispatch('signers/CREATE_SIGNER', user.email, {root: true})
-      user.signer = context.rootGetters['signers/signer'](user.email)
-      context.commit('SIGN_IN_USER', user)
+    SIGN_IN_USER: (context, credentials) => {
+      return new Promise((resolve, reject) => {
+        api.signIn(credentials)
+          .then((user) => {
+            user.signer = context.dispatch('signers/CREATE_SIGNER', user.email, {root: true})
+            context.commit('SIGN_IN_USER', user)
+            resolve()
+          })
+          .catch((error) => {
+            reject(error)
+          })
+      })
     },
 
     /**
