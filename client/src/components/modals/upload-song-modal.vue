@@ -57,9 +57,12 @@
               <tr v-for="account in accounts">
                 <th>{{ account.email }}</th>
                 <th>{{ account.percentage }}</th>
-                <th class="btn btn-outline-warning mt-1"
+                <th >
+                  <button class="btn btn-outline-warning mt-1"
                     @click="editAccount(account.email, account.percentage)"
-                >Edit</th>
+                    >Edit
+                  </button>
+                </th>
               </tr>
             </table>
             <hr>
@@ -68,7 +71,7 @@
             <div class="input-group mb-3">
               <div class="input-group-prepend">
                   <span class="input-group-text">
-                      Paypal Email
+                      <span class="fa fa-paypal"></span>
                   </span>
               </div>
               <input type="text"
@@ -79,7 +82,7 @@
             <div class="input-group mb-3">
               <div class="input-group-prepend">
                   <span class="input-group-text">
-                      Percentage
+                     <span class="fa fa-percent"></span>
                   </span>
               </div>
               <input type="text"
