@@ -33,6 +33,7 @@ function checkUserAuth(to, from, next) {
 function checkAuthArtist(to, from, next) {
   // TODO:
   //store.getters['user/isUserSignedAsArtist'] ? fetchDataDashboard(to, from, next) : redirectHome(to, from, next)
+  next()
 }
 
 /**
