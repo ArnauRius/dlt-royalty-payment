@@ -78,7 +78,8 @@
 
       // Vuex actions
       ...mapActions({
-        'CONVERT_TO_ARTIST': 'user/CONVERT_TO_ARTIST'
+        'CONVERT_TO_ARTIST': 'user/CONVERT_TO_ARTIST',
+        'SIGN_IN_ARTIST': 'artist/SIGN_IN_ARTIST'
       }),
 
       /**
@@ -96,7 +97,14 @@
       convertToArtist: function (){
         this.CONVERT_TO_ARTIST(this.$refs.prvkey.value)
           .then(() => {
-            this.$refs.closeButton.click()
+            this.SIGN_IN_ARTIST(this.$refs.prvkey.value)
+              .then(() => {
+                this.$router.push({name:'dashboard'})
+                this.$refs.closeButton.click()
+              })
+              .catch(() => {
+                this.showError(error+" (While singing in)")
+              })
           })
           .catch((error) => {
             this.showError(error)
