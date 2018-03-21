@@ -38,6 +38,7 @@ export default {
   },
 
   actions: {
+
     /**
      * Action to assign the current artist
      * @param context

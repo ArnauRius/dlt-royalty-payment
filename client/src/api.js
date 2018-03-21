@@ -59,10 +59,9 @@ const signUp = (user) => {
         if (userDoc && userDoc.exists) {
           return Promise.reject('Email already registered')
         } else {
-          const hashUser = Object.assign({}, user)
-          hashUser.password = utils.hash(user.password)
-          transaction.set(userRef, hashUser)
-          return Promise.resolve(user)
+          user.password = utils.hash(user.password) // Hashes the password before saving to Firestore db
+          transaction.set(userRef, user)
+          return Promise.resolve()
         }
       })
       .catch(function (error) {
@@ -87,9 +86,12 @@ const createArtist = (key) => {
     if (utils.checkValidKey(key)) {
       if (!store.getters['user/isArtist']) {
         const email = store.getters['user/user'].email
+        const signer = generateSignerFromKey(generatePrivateKeyFromHex(key))
+
+        // Artist's info to be stored on Firestore db
         const artist = {
-          email: email,
-          key: key
+          key: signer.getPublicKey().asHex(), // Artist private key's public key pair
+          songs: [] // A fresh new artist does not have any song yet
         }
         const batch = firestore.batch()
 

@@ -4,7 +4,7 @@
          role="dialog"
          aria-labelledby="Become Artist"
          aria-hidden="true"
-         @keyup.enter="becomeAnArtist">
+         @keyup.enter="convertToArtist">
 
       <div class="modal-dialog modal-dialog-centered"
            role="document">
@@ -48,7 +48,7 @@
               </div>
 
               <!--Become an artist button -->
-              <button @click="becomeAnArtist"
+              <button @click="convertToArtist"
                       type="button"
                       class="btn btn-success pull-right">
                 Become an artist
@@ -65,10 +65,6 @@
   // Vuex imports
   import {mapActions} from 'vuex'
 
-  // Api import
-  import api from '../../api'
-
-
   export default {
 
     data() {
@@ -82,7 +78,7 @@
 
       // Vuex actions
       ...mapActions({
-        'UPDATE_ARTIST_REF': 'user/UPDATE_ARTIST_REF'
+        'CONVERT_TO_ARTIST': 'user/CONVERT_TO_ARTIST'
       }),
 
       /**
@@ -95,12 +91,11 @@
       },
 
       /**
-       * Creates a new artist assigned to the current user
+       * Creates a new artist instance assigned to the current user
        */
-      becomeAnArtist: function (){
-        api.createArtist(this.$refs.prvkey.value)
-          .then((artistRef) => {
-            this.UPDATE_ARTIST_REF(artistRef)
+      convertToArtist: function (){
+        this.CONVERT_TO_ARTIST(this.$refs.prvkey.value)
+          .then(() => {
             this.$refs.closeButton.click()
           })
           .catch((error) => {

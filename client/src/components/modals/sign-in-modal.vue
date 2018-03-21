@@ -115,7 +115,6 @@
           }
           this.SIGN_IN_USER(credentials)
             .then(() => {
-              console.log('finished')
               this.$refs.closeButton.click()
             })
             .catch((error) => {

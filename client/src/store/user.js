@@ -65,7 +65,8 @@ export default {
     /**
      * Action to assign the current user.
      * Makes a call to the API to sign in the user.
-     * If it succeeds, update the current user in the store.
+     * If it succeeds, creates a signer's instance for the new user and updates the current user in the store.
+     * Returns error otherwise.
      * @param context
      * @param credentials - {email, password}
      * @returns {Promise} - Callbacks to manage sign in's success or failure
@@ -74,8 +75,36 @@ export default {
       return new Promise((resolve, reject) => {
         api.signIn(credentials)
           .then((user) => {
-            user.signer = context.dispatch('signers/CREATE_SIGNER', user.email, {root: true})
-            context.commit('SIGN_IN_USER', user)
+            return context.dispatch('signers/CREATE_SIGNER', user.email, {root: true})
+              .then((signer) => {
+                user.signer = signer
+                context.commit('SIGN_IN_USER', user)
+                resolve()
+              })
+              .catch((error) => {
+                reject('Could not create a signer for the user')
+              })
+          })
+          .catch((error) => {
+            reject(error)
+          })
+      })
+    },
+
+    /**
+     * Action to sign up a new user and setting its 'artistRef' field to default value (null).
+     * Makes a call to the API to sign up the user.
+     * If it succeeds, returns the new registered user.
+     * Returns error otherwise
+     * @param context
+     * @param user - {name, email, password}
+     * @returns {Promise} - Callbacks to manage sign up's success or failure
+     */
+    SIGN_UP_USER: (context, user) => {
+      return new Promise((resolve, reject) => {
+        user.artistRef = null // Sets the default 'artistRef' value for new users
+        api.signUp(user)
+          .then(() => {
             resolve()
           })
           .catch((error) => {
@@ -93,11 +122,25 @@ export default {
     },
 
     /**
-     * Action to update the user's 'artistRef' field
+     * Action to create a new artist instance and assign it to the current user
+     * Makes a call to the API to create a new artist instance.
+     * If it succeeds, assigns the artist's reference to the user.
+     * Returns error otherwise
      * @param context
+     * @param prvKey - Artist's private key
+     * @returns {Promise}
      */
-    UPDATE_ARTIST_REF: (context, artistRef) => {
-      context.commit('UPDATE_ARTIST_REF', artistRef)
-    }
+    CONVERT_TO_ARTIST: (context, prvKey) => {
+      return new Promise((resolve, reject) => {
+        api.createArtist(prvKey)
+          .then((artistRef) => {
+            context.commit('UPDATE_ARTIST_REF', artistRef)
+            resolve()
+          })
+          .catch((error) => {
+            reject(error)
+          })
+      })
+    },
   }
 }
