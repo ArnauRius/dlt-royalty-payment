@@ -65,7 +65,7 @@ export default {
     /**
      * Action to assign the current user.
      * Makes a call to the API to sign in the user.
-     * If it succeeds, update the current user in the store.
+     * If it succeeds, creates a signer's instance for the new user and updates the current user in the store.
      * Returns error otherwise.
      * @param context
      * @param credentials - {email, password}
@@ -75,9 +75,15 @@ export default {
       return new Promise((resolve, reject) => {
         api.signIn(credentials)
           .then((user) => {
-            user.signer = context.dispatch('signers/CREATE_SIGNER', user.email, {root: true})
-            context.commit('SIGN_IN_USER', user)
-            resolve()
+            return context.dispatch('signers/CREATE_SIGNER', user.email, {root: true})
+              .then((signer) => {
+                user.signer = signer
+                context.commit('SIGN_IN_USER', user)
+                resolve()
+              })
+              .catch((error) => {
+                reject('Could not create a signer for the user')
+              })
           })
           .catch((error) => {
             reject(error)
