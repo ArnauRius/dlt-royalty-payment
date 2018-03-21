@@ -65,10 +65,6 @@
   // Vuex imports
   import {mapActions} from 'vuex'
 
-  // Api import
-  import api from '../../api'
-
-
   export default {
 
     data() {
