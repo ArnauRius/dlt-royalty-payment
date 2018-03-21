@@ -4,7 +4,7 @@
          role="dialog"
          aria-labelledby="Become Artist"
          aria-hidden="true"
-         @keyup.enter="submit">
+         @keyup.enter="becomeAnArtist">
 
       <div class="modal-dialog modal-dialog-centered"
            role="document">
@@ -34,24 +34,24 @@
 
             <form class="modal-form">
 
-              <!-- Pub Key input -->
+              <!-- Prv Key input -->
               <div class="input-group mb-3">
                 <div class="input-group-prepend">
                   <span class="input-group-text">
                       <span class="fa fa-key"></span>
                   </span>
                 </div>
-                <input type="text"
+                <input type="password"
                        class="form-control"
-                       placeholder="Public Key"
-                       ref="pubkey">
+                       placeholder="Private Key"
+                       ref="prvkey">
               </div>
 
-              <!-- Sign In button -->
-              <button @click="submit"
+              <!--Become an artist button -->
+              <button @click="becomeAnArtist"
                       type="button"
                       class="btn btn-success pull-right">
-                Start
+                Become an artist
               </button>
             </form>
           </div>
@@ -89,22 +89,24 @@
         this.errorMessage = error
         this.isError = true
       },
-      submit: function (){
-        console.log('modal submited')
+
+      /**
+       * Checks if the introduced key is a valid one and if so, creates a new artist
+       * assigned to the current user
+       */
+      becomeAnArtist: function (){
+        const key = this.$refs.prvkey.value
+        if(utils.checkValidKey(key)){
+          api.createArtist(key)
+          this.$refs.closeButton.click()
+        }else{
+          this.showError("Please, introduce a valid key")
+        }
       }
     }
   }
 </script>
 
 <style scoped>
-  /* Style will be applied after the <slot> is replaced with its content */
-  .open-sign-up-modal {
-    color: black;
-  }
 
-  /* Style will be applied after the <slot> is replaced with its content */
-  .open-sign-up-modal:hover, .open-sign-up-modal:active {
-    color: darkgray;
-    cursor: pointer;
-  }
 </style>

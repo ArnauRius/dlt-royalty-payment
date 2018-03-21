@@ -8,7 +8,11 @@ const cryptoFactory = new CryptoFactory(context)
  * Generates a new random private key
  * @return {privateKey} - a private key instance
  */
-const generatePrivateKey = () => context.newRandomPrivateKey()
+const generatePrivateKey = () => {
+  const key = context.newRandomPrivateKey()
+  console.log(key.asHex().length)
+  return key
+}
 
 /**
  * Generates a new signer instance.

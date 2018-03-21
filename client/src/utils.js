@@ -5,6 +5,7 @@ import { createHash } from 'crypto'
 /**
  * Checks if the input string is a valid formatted email.
  * Returns a boolean to define if the email is valid or not
+ * @param email
  * @return bool
  */
 const checkValidEmail = (email) => {
@@ -18,8 +19,17 @@ const checkValidEmail = (email) => {
  */
 const hash = (str) => createHash('sha512').update(str).digest('hex')
 
+/**
+ * Checks if the input key is a valid 64 length hex string.
+ * Returns a boolean to define is the key is valid or not.
+ * @param key
+ * @return bool
+ */
+const checkValidKey = (key) => key.match('^[A-Fa-f0-9]{64}$')
+
 
 export default {
   checkValidEmail,
-  hash
+  hash,
+  checkValidKey
 }

@@ -66,8 +66,13 @@ const signUp = (user) => {
 
 }
 
+const createArtist = (key) => {
+  console.log(key)
+}
+
 
 export default {
   signIn,
-  signUp
+  signUp,
+  createArtist
 }
