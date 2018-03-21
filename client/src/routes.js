@@ -1,6 +1,5 @@
 // Store import
 import store from './store/store'
-import api from './api'
 
 // Components imports
 import Home from './components/pages/home.vue'

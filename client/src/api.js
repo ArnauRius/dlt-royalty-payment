@@ -119,8 +119,44 @@ const createArtist = (key) => {
   })
 }
 
+/**
+ * Signs in the provided artist.
+ * This is done by extracting the pub key from the provided priv key. Then, checking if the
+ * artist instance on the Firestore db corresponding to the current user's email matches with
+ * the key on the Firestore db.
+ * If succeeds, then an artist instance is returned to store it locally. Note that in the stored artist,
+ * instead of saving his pub key, we remove it and we save the whole signer instance instead.
+ * An error is returned otherwise.
+ * @param credentials - {email, prv key}
+ * @returns {Promise} - Callbacks to manage artist sign in's success or failure
+ */
+const signArtist = (credentials) => {
+  return new Promise( (resolve, reject) => {
+    if(utils.checkValidKey(credentials.key)) {
+      return getDoc('artists', credentials.email)
+        .then((artistDoc) => {
+          const signer = generateSignerFromKey(generatePrivateKeyFromHex(credentials.key))
+          if (!artistDoc || !artistDoc.exists || signer.getPublicKey().asHex() !== artistDoc.data().key) {
+            reject("Incorrect key.")
+          } else {
+            const artist = artistDoc.data()
+            delete artist.key // We do not need to store the artist's pub key locally, as we will use its signer
+            artist.signer = signer
+            resolve(artist)
+          }
+        })
+        .catch(function (error) {
+          reject(error)
+        })
+    }else{
+      reject('Please, introduce a valid key (32 bytes in hex format)')
+    }
+  })
+}
+
 export default {
   signIn,
   signUp,
-  createArtist
+  createArtist,
+  signArtist
 }

@@ -1,5 +1,7 @@
 /* Stores the current artist information */
 
+import api from '../api'
+
 export default {
 
   namespaced: true,
@@ -13,7 +15,7 @@ export default {
      * Returns the current artist object
      * @param state
      * @param getters
-     * @returns {{email: string, signer: Signer}}
+     * @returns {{signer: Signer, songs: []}}
      */
     artist: (state, getters) => state.artist,
   },
@@ -40,12 +42,28 @@ export default {
   actions: {
 
     /**
-     * Action to assign the current artist
+     * Action to assign the current artist.
+     * It calls the API call to sign the artist.
+     * If succeeds, updates the current artist.
+     * Returns an error otherwise.
      * @param context
-     * @param artist
+     * @param key - Artist's private key
      */
-    SIGN_IN_ARTIST: (context, artist) => {
-      context.commit('SIGN_IN_ARTIST', artist)
+    SIGN_IN_ARTIST: (context, key) => {
+      return new Promise((resolve, reject) => {
+        const credentials = {
+          email: context.rootGetters['user/user'].email,
+          key: key
+        }
+        api.signArtist(credentials)
+          .then((artist) => {
+            context.commit('SIGN_IN_ARTIST', artist)
+            resolve()
+          })
+          .catch((error) => {
+            reject(error)
+          })
+      })
     },
 
     /**

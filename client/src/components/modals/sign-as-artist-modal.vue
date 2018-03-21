@@ -4,7 +4,7 @@
          role="dialog"
          aria-labelledby="Become Artist"
          aria-hidden="true"
-         @keyup.enter="goToDashboard">
+         @keyup.enter="signIn">
 
       <div class="modal-dialog modal-dialog-centered"
            role="document">
@@ -48,7 +48,7 @@
               </div>
 
               <!--Become an artist button -->
-              <button @click="goToDashboard"
+              <button @click="signIn"
                       type="button"
                       class="btn btn-success pull-right">
                 Go to dashboard
@@ -62,13 +62,8 @@
 
 <script>
 
-  // Api import
-  import api from '../../api'
-
-  // Utils import
-  import utils from '../../utils'
-
-
+  // Vuex imports
+  import {mapActions} from 'vuex'
 
   export default {
 
@@ -80,6 +75,11 @@
     },
 
     methods: {
+
+      // Vuex actions
+      ...mapActions({
+        'SIGN_IN_ARTIST': 'artist/SIGN_IN_ARTIST'
+      }),
 
       /**
        * Shows an error in a red alert
@@ -94,13 +94,14 @@
        * Checks if the introduced key is a valid one and if so, redirects the artist
        * to its dashboard
        */
-      goToDashboard: function (){
-        const key = this.$refs.prvkey.value
-        if(utils.checkValidKey(key)){
-          console.log('redirecting to dashboard')
-        }else{
-          this.showError("Please, introduce a valid key")
-        }
+      signIn: function (){
+        this.SIGN_IN_ARTIST(this.$refs.prvkey.value)
+          .then(() => {
+            this.$refs.closeButton.click()
+          })
+          .catch((error) => {
+            this.showError(error)
+          })
       }
     }
   }

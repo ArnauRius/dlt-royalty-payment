@@ -93,9 +93,6 @@
   // Vuex imports
   import {mapActions} from 'vuex'
 
-  // Api Import
-  import api from '../../api'
-
   // Utils Import
   import utils from '../../utils'
 
