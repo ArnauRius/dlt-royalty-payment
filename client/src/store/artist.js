@@ -74,7 +74,7 @@ export default {
     },
 
     /**
-     * Action to reset the current user to null
+     * Action to reset the current artist to null
      * @param context
      */
     SIGN_OUT_ARTIST: context => {

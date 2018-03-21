@@ -16,6 +16,7 @@
 
   // Vuex imports
   import {mapGetters} from 'vuex'
+  import {mapActions} from 'vuex'
 
   export default {
     components: {
@@ -29,6 +30,17 @@
       })
 
     },
+
+    methods: {
+      // Vuex getters
+      ...mapActions({
+        'SIGN_OUT_ARTIST': 'artist/SIGN_OUT_ARTIST',
+      })
+    },
+
+    destroyed(){
+      this.SIGN_OUT_ARTIST()
+    }
 
   }
 </script>
