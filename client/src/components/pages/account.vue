@@ -12,14 +12,14 @@
           <h5>Public key:</h5>
           <p>{{ user.signer.getPublicKey().asHex() }}</p>
           <h5>Artist:</h5>
-          <p>{{ user.isArtist }}</p>
+          <p>{{ isArtist }}</p>
         <!-- Menu right button -->
         <button
-          v-if="user.isArtist"
+          v-if="isArtist"
           class="btn btn-primary mt-5"
           type="button"
           data-toggle="modal"
-          data-target="#becomeArtistModal">
+          data-target="#signAsArtistModal">
           Go to Dashboard
         </button>
         <button
@@ -32,6 +32,7 @@
         </button>
       </div>
       <become-artist-modal id="becomeArtistModal"></become-artist-modal>
+      <sign-as-artist-modal id="signAsArtistModal"></sign-as-artist-modal>
     </div>
   </div>
 </template>
@@ -41,11 +42,14 @@
   // Vuex imports
   import {mapGetters} from 'vuex'
 
+  // Compontents imports
   import BecomeArtistModal from '../modals/become-artist-modal.vue'
+  import SignAsArtistModal from '../modals/sign-as-artist-modal.vue'
 
   export default {
     components: {
       BecomeArtistModal,
+      SignAsArtistModal
     },
 
     computed: {
@@ -53,6 +57,7 @@
       // Vuex getters
       ...mapGetters({
         'user': 'user/user',
+        'isArtist': 'user/isArtist'
       })
 
     },

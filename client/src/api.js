@@ -13,6 +13,8 @@ const getDocRef = (collection, docId) => firestore.collection(collection).doc(do
 
 const addDoc = (collection, docId, docData) => getDocRef(collection, docId).set(docData)
 
+const updateDoc = (collection, docId, docData) => getDocRef(collection, docId).update(docData)
+
 const getDoc = (collection, docId) => getDocRef(collection, docId).get()
 
 /**
@@ -72,55 +74,49 @@ const signUp = (user) => {
 }
 
 /**
- * This will convert the current user to a validated artist.
- * First it checks if the desired user has been converted already to an artist.
- * If not, creates a new Artist instance to Firestore, referenced by the same id as the user's one (the email),
- * then updates the artist status ('isArtist' field) to both Firestore db and local storage (Vuex store)
+ * This will convert the current user to a validated artist following the next steps:
+ * 1.- Checks the validity of the provided private key
+ * 2.- Checks that the user is not already an artist
+ * 3.- Uses a batch to create an artist instance to Firestore db (using the same id as the user's one)
+ *     and then updates the user's 'artistRef' field in Firestore db to make it reference the created
+ *     artist instance
  * @param key - Artist's private key
  * @returns {Promise<any>}
  */
 const createArtist = (key) => {
-  return firestore.runTransaction(function (transaction) {
-    const user = store.getters['user/user']
-    const artistRef = getDocRef('artists', user.email)
-    return transaction.get(artistRef)
-      .then(function (artistDoc) {
-        console.log('checking artist existance')
-        if(artistDoc && artistDoc.exists){
-          console.log('artist does exist')
-          return Promise.reject('Artist already activated')
-        }else{
-          console.log('artist does not exist, create it')
-          const userRef = getDocRef('users', user.email)
-          return transaction.get(userRef)
-            .then(function (userDoc) {
-              if(!userDoc || !userDoc.exists){
-                return Promise.reject('User not found')
-              }else if(userDoc.data().isArtist){
-                return Promise.reject('Artist already activated')
-              }else{
-                const signer = generateSignerFromKey(generatePrivateKeyFromHex(key))
-                const artist = {
-                  email: user.email,
-                  key: signer.getPublicKey().asHex()
-                }
-                transaction.set(artistRef, artist)
-                transaction.update(userRef, {isArtist: true})
-                store.dispatch('user/CONVERT_TO_ARTIST')
-                return Promise.resolve()
-              }
-            })
-            .catch(function (error) {
-              return Promise.reject(error)
-            })
+  return new Promise(function (resolve, reject) {
+    if (utils.checkValidKey(key)) {
+      if (!store.getters['user/isArtist']) {
+        const email = store.getters['user/user'].email
+        const artist = {
+          email: email,
+          key: key
         }
-      })
-      .catch(function (error){
-        return Promise.reject(error)
-      })
+        const batch = firestore.batch()
+
+        // Creates a new artist instance in Firestore db
+        const artistRef = getDocRef('artists', email)
+        batch.set(artistRef, artist)
+
+        // Sets the reference of the previously created user as the 'artistRef' field
+        const userRef = getDocRef('users', email)
+        batch.update(userRef, {artistRef: artistRef})
+
+        batch.commit()
+          .then(() => {
+            resolve(artistRef)
+          })
+          .catch((error) => {
+            reject(error)
+          })
+      } else {
+        reject('Artist already registered')
+      }
+    } else {
+      reject('Please, introduce a valid key (32 bytes in hex format)')
+    }
   })
 }
-
 
 export default {
   signIn,

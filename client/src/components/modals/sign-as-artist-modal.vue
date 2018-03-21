@@ -4,7 +4,7 @@
          role="dialog"
          aria-labelledby="Become Artist"
          aria-hidden="true"
-         @keyup.enter="becomeAnArtist">
+         @keyup.enter="goToDashboard">
 
       <div class="modal-dialog modal-dialog-centered"
            role="document">
@@ -13,7 +13,7 @@
 
           <!-- Modal's header -->
           <div class="modal-header">
-            <h3>Become an Artist</h3>
+            <h3>Sign In as an Artist</h3>
             <button type="button"
                     class="close"
                     data-dismiss="modal"
@@ -48,10 +48,10 @@
               </div>
 
               <!--Become an artist button -->
-              <button @click="becomeAnArtist"
+              <button @click="goToDashboard"
                       type="button"
                       class="btn btn-success pull-right">
-                Become an artist
+                Go to dashboard
               </button>
             </form>
           </div>
@@ -62,11 +62,12 @@
 
 <script>
 
-  // Vuex imports
-  import {mapActions} from 'vuex'
-
   // Api import
   import api from '../../api'
+
+  // Utils import
+  import utils from '../../utils'
+
 
 
   export default {
@@ -80,11 +81,6 @@
 
     methods: {
 
-      // Vuex actions
-      ...mapActions({
-        'UPDATE_ARTIST_REF': 'user/UPDATE_ARTIST_REF'
-      }),
-
       /**
        * Shows an error in a red alert
        * @param error
@@ -95,17 +91,16 @@
       },
 
       /**
-       * Creates a new artist assigned to the current user
+       * Checks if the introduced key is a valid one and if so, redirects the artist
+       * to its dashboard
        */
-      becomeAnArtist: function (){
-        api.createArtist(this.$refs.prvkey.value)
-          .then((artistRef) => {
-            this.UPDATE_ARTIST_REF(artistRef)
-            this.$refs.closeButton.click()
-          })
-          .catch((error) => {
-            this.showError(error)
-          })
+      goToDashboard: function (){
+        const key = this.$refs.prvkey.value
+        if(utils.checkValidKey(key)){
+          console.log('redirecting to dashboard')
+        }else{
+          this.showError("Please, introduce a valid key")
+        }
       }
     }
   }
