@@ -191,10 +191,8 @@
        * @return bool
        */
       checkSumAmount() {
-        const sum = this.accounts.reduce( (accum, account, i) => {
-          return accum + account.percentage;
-        }, 0);
-        if (sum === 100) {
+        const sum = this.accounts.reduce( (acc, currentItem, currentIndex) => acc + currentItem.percentage, 0);
+        if(sum === 100) {
           return true
         }
         this.errorMessage = 'The sum of amounts is not 100.'
@@ -225,15 +223,11 @@
         return true
       },
       checkEmailUnique() {
-        const email = this.$refs.paypal.value
-        let ret = true
-        this.accounts.map( (account, i) => {
-          if (account.email === email) {
-            this.errorMessage = 'There is another account with this email.'
-            ret = false
-          }
-        });
-        return ret;
+        if(this.accounts.some( ((account, index, array) => account.email === this.$refs.paypal.value ), this)){
+          this.errorMessage = 'Please, introduce a valid email.'
+          return false
+        }
+        return true
       },
       /**
        * Checks if the user has entered a valid amount. Shows an error otherwise.
