@@ -1,11 +1,14 @@
-'use strict'
+// Sawtooth imports
+import { TransactionProcessor } from 'sawtooth-sdk/processor/'
 
-const { TransactionProcessor } = require('sawtooth-sdk/processor/')
-const { RPHandler } = require('./rp_handler')
+// Royalty Payment Transaction Handler import
+import RPHandler from './src/rp_handler'
 
-const VALIDATOR_URL = 'tcp://localhost:4004'
+// Constants imports
+import { VALIDATOR_URL } from './src/constants'
 
-// Initialize Transaction Processor
-const tp = new TransactionProcessor(VALIDATOR_URL)
-tp.addHandler(new RPHandler())
-tp.start()
+
+// Initialize Transaction Processor and add the Royalty Payment Transaction Handler
+const transactionProcessor = new TransactionProcessor(VALIDATOR_URL)
+transactionProcessor.addHandler(new RPHandler())
+transactionProcessor.start()

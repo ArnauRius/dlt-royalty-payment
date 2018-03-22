@@ -1,0 +1,1 @@
+/* This file models and processes the blockchain changes */
