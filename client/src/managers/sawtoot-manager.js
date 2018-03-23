@@ -36,8 +36,8 @@ const postUpdate = (batchList) => {
  * This update is just used to test Client-Processor connectivity
  */
 const testUpdate = () => {
-  let inputs = ['FAMILY NAMESPACE']
-  let outputs = ['FAMILY NAMESPACE']
+  let inputs = [FAMILY_NAMESPACE]
+  let outputs = [FAMILY_NAMESPACE]
   let txSigner = 'signer'
   let batchSigner = txSigner
   let payload = 'HELLO WORLD!' //TODO: SERIALIZE THE PAYLOAD USING MODELS
@@ -55,8 +55,8 @@ const testUpdate = () => {
 
 const createTransactionHeader = (inputs, outputs, txSigner, batchSigner, payload) => {
   return protobuf.TransactionHeader.encode({
-      familyName: 'FAMILY NAME',
-      familyVersion: 'FAMILY VERSION',
+      familyName: FAMILY_NAME,
+      familyVersion: FAMILY_VERSION,
       inputs: inputs,
       outputs: outputs,
       signerPublicKey: txSigner.getPublicKey.asHex(),
