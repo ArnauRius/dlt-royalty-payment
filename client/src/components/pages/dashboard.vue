@@ -35,6 +35,8 @@
   // components
   import UploadSongModal from '../modals/upload-song-modal.vue'
 
+  //TODO: Remove, just for testinc client-proc connectivity
+
   export default {
     components: {
       UploadSongModal

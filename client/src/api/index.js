@@ -1,13 +1,13 @@
 // Firebase imports
-import {firestore} from './managers/firebase-manager'
+import {firestore} from '../managers/firebase-manager'
 
-import {generateSignerFromKey, generatePrivateKeyFromHex} from './managers/signers-manager'
+import {generateSignerFromKey, generatePrivateKeyFromHex} from '../managers/signers-manager'
 
 // Store import
-import store from './store/store'
+import store from '../store/store'
 
 // Utils import
-import utils from './utils'
+import utils from '../utils'
 
 const getDocRef = (collection, docId) => firestore.collection(collection).doc(docId)
 
