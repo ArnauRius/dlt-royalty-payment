@@ -9,6 +9,12 @@
                 data-target="#uploadSongModal">
           Upload Song
         </button>
+
+        <button class="btn btn-primary"
+                type="button"
+                @click="connectToProcessor">
+          Connect to Transaction Processor
+        </button>
       </div>
     </div>
     <!--<div class="row" v-for="song in songs">
@@ -33,6 +39,12 @@
     components: {
       UploadSongModal
     },
+
+    methods: {
+      connectToProcessor: function () {
+        console.log('Connecting to processor')
+      }
+    }
 
   }
 </script>
