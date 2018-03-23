@@ -1,5 +1,5 @@
-import {createContext, CryptoFactory} from 'sawtooth-sdk/signing';
-import {Secp256k1PrivateKey} from 'sawtooth-sdk/signing/secp256k1';
+import {createContext, CryptoFactory} from 'sawtooth-sdk/signing'
+import {Secp256k1PrivateKey} from 'sawtooth-sdk/signing/secp256k1'
 
 const ECSDA_Standard = 'secp256k1' //Standard used for valid key generation
 const context = createContext(ECSDA_Standard)

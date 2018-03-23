@@ -3,17 +3,21 @@
 // Sawtooth imports
 import { protobuf } from 'sawtooth-sdk'
 
-// Request import
+// RP Transaction Family imports
+import { FAMILY_NAME, FAMILY_NAMESPACE, FAMILY_VERSION } from "../../rp-tx-family"
+
+// Other utilities import
 import request from 'request'
+import utils from '../utils'
 
 
 const SAWTOOTH_API_URL = 'http://localhost:8008'
 
-const postUpdate = () => {
+const postUpdate = (batchList) => {
   return new Promise((resolve, reject) => {
     request.post({
       url: SAWTOOTH_API_URL + '/batches',
-      body: 'batchList',
+      body: batchList,
       headers: {'Content-Type': 'application/octet-stream'},
     }, (err, response) => {
       if (err) {
@@ -27,43 +31,65 @@ const postUpdate = () => {
 
 //TODO: GET REQUEST
 
-const createTransactionHeader = () => {
+
+/**
+ * This update is just used to test Client-Processor connectivity
+ */
+const testUpdate = () => {
+  let inputs = ['FAMILY NAMESPACE']
+  let outputs = ['FAMILY NAMESPACE']
+  let txSigner = 'signer'
+  let batchSigner = txSigner
+  let payload = 'HELLO WORLD!' //TODO: SERIALIZE THE PAYLOAD USING MODELS
+
+  let transactionHeader = createTransactionHeader(inputs, outputs, txSigner, batchSigner, payload)
+  let transaction = createTransaction(transactionHeader, txSigner, payload)
+
+  let batchHeader = createBatchHeader(batchSigner, [transaction])
+  let batch = createBatch(batchHeader, batchSigner, [transaction])
+
+  let batchList = createBatchList([batch])
+
+  return postUpdate(batchList)
+}
+
+const createTransactionHeader = (inputs, outputs, txSigner, batchSigner, payload) => {
   return protobuf.TransactionHeader.encode({
       familyName: 'FAMILY NAME',
       familyVersion: 'FAMILY VERSION',
-      inputs: ['inputs'],
-      outputs: ['outputs'],
-      signerPublicKey: 'signer.getPublicKey.asHex()',
-      batcherPublicKey: 'signer.getPublicKey.asHex()',
-      payloadSha512:'utils.hash(payloadInBytes)'
+      inputs: inputs,
+      outputs: outputs,
+      signerPublicKey: txSigner.getPublicKey.asHex(),
+      batcherPublicKey: batchSigner.getPublicKey.asHex(),
+      payloadSha512:utils.hash(payload)
     }).finish()
 }
 
-const createTransaction = () => {
+const createTransaction = (transactionHeader, signer, payload) => {
   return protobuf.Transaction.create({
-    header: 'transactionHeader',
-    headerSignature: 'signer.sign(transactionHeader)',
-    payload: 'payloadInBytes'
+    header: transactionHeader,
+    headerSignature: signer.sign(transactionHeader),
+    payload: payload
   })
 }
 
-const createBatchHeader = () => {
+const createBatchHeader = (signer, transactions) => {
   return protobuf.BatchHeader.encode({
-    signerPublicKey: 'signer.getPublicKey.asHex()',
-    transactionIds: 'transactions.map((transaction) => transaction.headerSignature)'
+    signerPublicKey: signer.getPublicKey.asHex(),
+    transactionIds: transactions.map((transaction) => transaction.headerSignature)
   }).finish()
 }
 
-const createBatch = () => {
+const createBatch = (batchHeader, signer, transactions) => {
   return protobuf.Batch.create({
-    header: 'batchHeader',
-    headerSignature: 'signer.sign(batchHeader)',
-    transactions: 'transactions'
+    header: batchHeader,
+    headerSignature: signer.sign(batchHeader),
+    transactions: transactions
   })
 }
 
-const createBatchList = () => {
+const createBatchList = (batchList) => {
   return protobuf.BatchList.encode({
-    batches: '[batches]'
+    batches: batchList
   }).finish()
 }

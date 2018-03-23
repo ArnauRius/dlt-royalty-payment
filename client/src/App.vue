@@ -11,5 +11,5 @@
 </script>
 
 <style>
-  @import "css/settings.css"
+  @import "css/settings.css";
 </style>
