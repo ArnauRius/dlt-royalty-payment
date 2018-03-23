@@ -1,6 +1,3 @@
-// Firebase imports
-import {firestore} from '../managers/firebase-manager'
-
 import {generateSignerFromKey, generatePrivateKeyFromHex} from '../managers/signers-manager'
 
 // Store import
@@ -9,13 +6,7 @@ import store from '../store/store'
 // Utils import
 import utils from '../utils'
 
-const getDocRef = (collection, docId) => firestore.collection(collection).doc(docId)
-
-const addDoc = (collection, docId, docData) => getDocRef(collection, docId).set(docData)
-
-const updateDoc = (collection, docId, docData) => getDocRef(collection, docId).update(docData)
-
-const getDoc = (collection, docId) => getDocRef(collection, docId).get()
+import firestore from './firestore-api'
 
 /**
  * Signs in the provided user. This is done by checking if the introduced email and password
@@ -25,7 +16,7 @@ const getDoc = (collection, docId) => getDocRef(collection, docId).get()
  */
 const signIn = (credentials) => {
   return new Promise( (resolve, reject) => {
-    return getDoc('users', credentials.email)
+    return firestore.getDoc('users', credentials.email)
       .then( (userDoc) => {
 
         if (!userDoc || !userDoc.exists || utils.hash(credentials.password) !== userDoc.data().password) {
@@ -52,8 +43,8 @@ const signIn = (credentials) => {
  */
 const signUp = (user) => {
 
-  return firestore.runTransaction(function (transaction) {
-    const userRef = getDocRef('users', user.email)
+  return firestore.db.runTransaction(function (transaction) {
+    const userRef = firestore.getDocRef('users', user.email)
     return transaction.get(userRef)
       .then(function (userDoc) {
         if (userDoc && userDoc.exists) {
@@ -93,14 +84,14 @@ const createArtist = (key) => {
           key: signer.getPublicKey().asHex(), // Artist private key's public key pair
           songs: [] // A fresh new artist does not have any song yet
         }
-        const batch = firestore.batch()
+        const batch = firestore.db.batch()
 
         // Creates a new artist instance in Firestore db
-        const artistRef = getDocRef('artists', email)
+        const artistRef = firestore.getDocRef('artists', email)
         batch.set(artistRef, artist)
 
         // Sets the reference of the previously created user as the 'artistRef' field
-        const userRef = getDocRef('users', email)
+        const userRef = firestore.getDocRef('users', email)
         batch.update(userRef, {artistRef: artistRef})
 
         batch.commit()
@@ -133,7 +124,7 @@ const createArtist = (key) => {
 const signArtist = (credentials) => {
   return new Promise( (resolve, reject) => {
     if(utils.checkValidKey(credentials.key)) {
-      return getDoc('artists', credentials.email)
+      return firestore.getDoc('artists', credentials.email)
         .then((artistDoc) => {
           const signer = generateSignerFromKey(generatePrivateKeyFromHex(credentials.key))
           if (!artistDoc || !artistDoc.exists || signer.getPublicKey().asHex() !== artistDoc.data().key) {
