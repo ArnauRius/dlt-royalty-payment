@@ -29,8 +29,18 @@ function checkUserAuth(to, from, next) {
 /**
  * Checks if user is authenticated as an artist. If not, redirect always to the '/home' route
  */
-function checkArtistAuth(to, from, next) {
-  store.getters['artist/isArtistSigned'] ? next() : redirectHome(to, from, next)
+
+function checkAuthArtist(to, from, next) {
+  // TODO:
+  //store.getters['user/isUserSignedAsArtist'] ? fetchDataDashboard(to, from, next) : redirectHome(to, from, next)
+  next()
+}
+
+/**
+ * Fetch the necessary data for dashboard.
+ */
+function fetchDataDashboard(to, from, next){
+  //store.dispatch('artist/GET_ARTIST_DATA')
 }
 
 /**
