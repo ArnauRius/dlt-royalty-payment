@@ -2,7 +2,7 @@
 import { TransactionProcessor } from 'sawtooth-sdk/processor/'
 
 // Royalty Payment Transaction Handler import
-import RPHandler from './src/rp_handler'
+import RPHandler from './src/handler'
 
 // Constants imports
 import { VALIDATOR_URL } from './src/constants'
