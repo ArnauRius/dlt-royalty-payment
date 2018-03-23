@@ -4,7 +4,7 @@
 import { protobuf } from 'sawtooth-sdk'
 
 // RP Transaction Family imports
-import { FAMILY_NAME, FAMILY_NAMESPACE, FAMILY_VERSION } from "../../rp-tx-family"
+import { FAMILY_NAME, FAMILY_NAMESPACE, FAMILY_VERSION } from "../../rp-txn-family"
 
 // Other utilities import
 import request from 'request'

@@ -1,6 +1,6 @@
 /* Model for the Royalty instances */
 
-import Model from 'processor/src/models/model'
+import Model from 'rp-txn-family/models/model'
 
 class Royalty extends Model{
 
@@ -11,8 +11,8 @@ class Royalty extends Model{
      */
     constructor(account, percentage) {
         super()
-        this.account = account;
-        this.percentage = percentage;
+        this.account = account
+        this.percentage = percentage
     }
 
     //Override from Model
@@ -22,7 +22,7 @@ class Royalty extends Model{
 
     //Override from Model
     static deserialize(serialized){
-        let account, percentage;
+        let account, percentage
         [account, percentage] = serialized.split(';')
         return new Royalty(account, parseFloat(percentage))
     }

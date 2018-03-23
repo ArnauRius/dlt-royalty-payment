@@ -5,8 +5,8 @@ import { TransactionHandler } from 'sawtooth-sdk/processor/handler'
 import { InvalidTransaction } from 'sawtooth-sdk/processor/exceptions'
 import { TransactionHeader } from 'sawtooth-sdk/protobuf'
 
-// Constants imports
-import { FAMILY_NAME, FAMILY_NAMESPACE, FAMILY_VERSION } from "./constants";
+// RP Transaction Family imports
+import { FAMILY_NAME, FAMILY_NAMESPACE, FAMILY_VERSION } from "../../rp-txn-family"
 
 // Royalty Payment Transaction Handler
 class RPHandler extends TransactionHandler {
@@ -15,7 +15,7 @@ class RPHandler extends TransactionHandler {
         super(FAMILY_NAME, [FAMILY_VERSION], [FAMILY_NAMESPACE])
     }
 
-    apply (txn, state) {
+    apply (transaction, context) {
         console.log("Initialized and calling")
     }
 }

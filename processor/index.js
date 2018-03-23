@@ -4,9 +4,7 @@ import { TransactionProcessor } from 'sawtooth-sdk/processor/'
 // Royalty Payment Transaction Handler import
 import RPHandler from './src/handler'
 
-// Constants imports
-import { VALIDATOR_URL } from './src/constants'
-
+const VALIDATOR_URL = 'tcp://localhost:4004'
 
 // Initialize Transaction Processor and add the Royalty Payment Transaction Handler
 const transactionProcessor = new TransactionProcessor(VALIDATOR_URL)

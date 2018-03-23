@@ -1,8 +1,8 @@
 /* In this file, all the addressing computing is handled */
 
 // Utils and constants imports
-import utils from '../utils'
-import {FAMILY_NAMESPACE} from "../constants"
+import utils from '../../processor/src/utils'
+import {FAMILY_NAMESPACE} from "../index"
 import Subspace from './subspace'
 
 const ADDRESS_LENGTH = 70 //Specific length that Hex addresses must have

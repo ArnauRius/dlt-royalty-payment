@@ -1,7 +1,7 @@
 /* Model for the Song instances */
 
-import Model from 'processor/src/models/model'
-import Royalty from 'processor/src/models/royalty'
+import Model from 'rp-txn-family/models/model'
+import Royalty from 'rp-txn-family/models/royalty'
 
 class Song extends Model{
 
@@ -13,9 +13,9 @@ class Song extends Model{
      */
     constructor(amount, pub_key, royalties) {
         super()
-        this.amount = amount;
-        this.pub_key = pub_key;
-        this.royalties = royalties;
+        this.amount = amount
+        this.pub_key = pub_key
+        this.royalties = royalties
     }
 
     //Override from Model
@@ -25,7 +25,7 @@ class Song extends Model{
 
     //Override from Model
     static deserialize(serialized){
-        let amount, pub_key, royalties;
+        let amount, pub_key, royalties
         [amount, pub_key, ...royalties] = serialized.split(',')
         return new Song(parseFloat(amount), pub_key, royalties.map((royalty) => Royalty.deserialize(royalty)))
     }

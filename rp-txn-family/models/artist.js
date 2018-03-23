@@ -1,6 +1,6 @@
 /* Model for the Artist instances */
 
-import Model from 'processor/src/models/model'
+import Model from 'rp-txn-family/models/model'
 
 class Artist extends Model{
 
@@ -10,12 +10,12 @@ class Artist extends Model{
      */
     constructor(songs) {
         super()
-        this.songs = songs;
+        this.songs = songs
     }
 
     //Override from Model
     serialize(){
-        return this.songs.toString();
+        return this.songs.toString()
     }
 
     //Override from Model

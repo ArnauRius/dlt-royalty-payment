@@ -7,7 +7,7 @@ export default class Model {
      * pattern
      */
     serialize(){
-        throw new Error('Abstract: serialize() method must be implemented in childs');
+        throw new Error('Abstract: serialize() method must be implemented in childs')
     }
 
     /**
@@ -18,7 +18,7 @@ export default class Model {
      * @returns {Model} - The new Model instance
      */
     static deserialize(serialized){
-        throw new Error('Abstract: deserialize() method must be implemented in childs');
+        throw new Error('Abstract: deserialize() method must be implemented in childs')
     }
 
 
