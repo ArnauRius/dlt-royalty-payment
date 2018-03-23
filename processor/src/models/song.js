@@ -1,5 +1,5 @@
-import Model from 'Model'
-import Royalty from 'Royalty'
+import Model from 'processor/src/models/model'
+import Royalty from 'processor/src/models/royalty'
 class Song extends Model{
     constructor(amount, pub_key, royalties) {
         super()

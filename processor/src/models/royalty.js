@@ -1,4 +1,4 @@
-import Model from 'Model'
+import Model from 'processor/src/models/model'
 
 class Royalty extends Model{
     constructor(account, percentage) {

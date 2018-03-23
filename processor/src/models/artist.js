@@ -1,4 +1,4 @@
-import Model from 'Model'
+import Model from 'processor/src/models/model'
 
 class Artist extends Model{
     constructor(songs) {
