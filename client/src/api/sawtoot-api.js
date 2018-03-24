@@ -1,13 +1,17 @@
+/* In this module is defined the API used to communicate with the Sawtooth blockchain */
 
+// Transaction manager import
 import txn from '../managers/txn-manager'
+
 
 /**
  * This update is just used to test Client-Processor connectivity
  */
-const testUpdate = () => {
+//TODO: Remove it, used just for client-proc connection testing
+const testUpdate = (artist) => {
   let inputs = [FAMILY_NAMESPACE]
   let outputs = [FAMILY_NAMESPACE]
-  let txSigner = 'signer'
+  let txSigner = artist.signer.getPublicKey().asHex()
   let batchSigner = txSigner
   let payload = 'HELLO WORLD!' //TODO: SERIALIZE THE PAYLOAD USING MODELS
 

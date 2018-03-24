@@ -1,12 +1,20 @@
-import {generateSignerFromKey, generatePrivateKeyFromHex} from '../managers/signers-manager'
+/* In this module, the API used for the client application is defined.
+* It is actually composed of two different API's, to be able to connect to both Firebase Firestore database
+* and the Sawtooth blockchain.
+* This abstracts this by managing the different communications to this two different API's and providing
+* a single API to the client.
+*/
+
+// APIs imports
+import firestore from './firestore-api'
+import sawtooth from './sawtoot-api'
 
 // Store import
 import store from '../store/store'
 
-// Utils import
+// Tools and utilities imports
 import utils from '../utils'
-
-import firestore from './firestore-api'
+import {generateSignerFromKey, generatePrivateKeyFromHex} from '../managers/signers-manager'
 
 /**
  * Signs in the provided user. This is done by checking if the introduced email and password
@@ -145,9 +153,15 @@ const signArtist = (credentials) => {
   })
 }
 
+//TODO: Remove it, just used for client-proc connection testing
+const testUpdate = (artist) => {
+  return sawtooth.testUpdate(artist)
+}
+
 export default {
   signIn,
   signUp,
   createArtist,
-  signArtist
+  signArtist,
+  testUpdate //TODO: Remove it, just used for client-proc connection testing
 }

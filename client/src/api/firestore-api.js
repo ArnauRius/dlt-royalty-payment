@@ -1,4 +1,6 @@
-// Firebase imports
+/* In this module are defined the necessary functions to be able to connect with the Firebase Firestore database */
+
+// Firebase import
 import {firestore} from '../managers/firebase-manager'
 
 const db = firestore
