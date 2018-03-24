@@ -1,6 +1,6 @@
 /* In this file, the configuration for the Royalty Payment Transaction Family is defined */
 
-import crypto from 'crypto'
+const crypto = require('crypto')
 
 const FAMILY_NAME = 'royalty-payment'
 
@@ -8,7 +8,7 @@ const FAMILY_NAMESPACE = crypto.createHash('sha512').update(FAMILY_NAME).digest(
 
 const FAMILY_VERSION = '1.0'
 
-export {
+module.exports = {
     FAMILY_NAME,
     FAMILY_NAMESPACE,
     FAMILY_VERSION,

@@ -1,12 +1,12 @@
 /* In this file, the transaction handler is defined */
 
 // Sawtooth imports
-import { TransactionHandler } from 'sawtooth-sdk/processor/handler'
-import { InvalidTransaction } from 'sawtooth-sdk/processor/exceptions'
-import { TransactionHeader } from 'sawtooth-sdk/protobuf'
+const { TransactionHandler } = require('sawtooth-sdk/processor/handler')
+const { InvalidTransaction } = require('sawtooth-sdk/processor/exceptions')
+const { TransactionHeader } = require('sawtooth-sdk/protobuf')
 
 // RP Transaction Family imports
-import { FAMILY_NAME, FAMILY_NAMESPACE, FAMILY_VERSION } from "../../rp-txn-family"
+const { FAMILY_NAME, FAMILY_NAMESPACE, FAMILY_VERSION } = require("../../rp-txn-family")
 
 // Royalty Payment Transaction Handler
 class RPHandler extends TransactionHandler {
@@ -20,6 +20,6 @@ class RPHandler extends TransactionHandler {
     }
 }
 
-export default {
+module.exports = {
     RPHandler
 }

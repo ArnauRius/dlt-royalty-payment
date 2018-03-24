@@ -1,8 +1,8 @@
 // Sawtooth imports
-import { TransactionProcessor } from 'sawtooth-sdk/processor/'
+const { TransactionProcessor } = require('sawtooth-sdk/processor/')
 
 // Royalty Payment Transaction Handler import
-import RPHandler from './src/handler'
+const {RPHandler} = require('./src/handler')
 
 const VALIDATOR_URL = 'tcp://localhost:4004'
 
