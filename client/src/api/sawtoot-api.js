@@ -3,6 +3,8 @@
 // Transaction manager import
 import txn from '../managers/txn-manager'
 
+// Royalty Payment Transaction Family Import
+import { FAMILY_NAMESPACE } from "../../../rp-txn-family"
 
 /**
  * This update is just used to test Client-Processor connectivity
@@ -11,9 +13,9 @@ import txn from '../managers/txn-manager'
 const testUpdate = (artist) => {
   let inputs = [FAMILY_NAMESPACE]
   let outputs = [FAMILY_NAMESPACE]
-  let txSigner = artist.signer.getPublicKey().asHex()
+  let txSigner = artist.signer
   let batchSigner = txSigner
-  let payload = 'HELLO WORLD!' //TODO: SERIALIZE THE PAYLOAD USING MODELS
+  let payload = 'fc2d50d00a8371fad6ca6af531f002edd0fb415b391a01a3f352b647c9a7d9be' //TODO: SERIALIZE THE PAYLOAD USING MODELS
 
   let transactionHeader = txn.createTransactionHeader(inputs, outputs, txSigner, batchSigner, payload)
   let transaction = txn.createTransaction(transactionHeader, txSigner, payload)
@@ -23,7 +25,13 @@ const testUpdate = (artist) => {
 
   let batchList = txn.createBatchList([batch])
 
-  return txn.post(batchList)
+  txn.post(batchList)
+    .then((response ) => {
+      console.log(response)
+    })
+    .catch((error) => {
+      console.log(error)
+    })
 }
 
 export default {

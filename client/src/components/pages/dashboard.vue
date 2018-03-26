@@ -32,19 +32,32 @@
 
   // Vuex imports
   import {mapGetters} from 'vuex'
-  // components
+  import {mapActions} from 'vuex'
+
+  // Components imports
   import UploadSongModal from '../modals/upload-song-modal.vue'
 
   //TODO: Remove, just for testinc client-proc connectivity
+  import api from '../../api'
 
   export default {
     components: {
       UploadSongModal
     },
 
+    computed: {
+
+      // Vuex getters
+      ...mapGetters({
+        'artist': 'artist/artist',
+      })
+    },
+
     methods: {
+
       connectToProcessor: function () {
-        console.log('Connecting to processor')
+        console.log('Connected to processor')
+        api.testUpdate(this.artist)
       }
     }
 

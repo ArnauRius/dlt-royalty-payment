@@ -8,10 +8,11 @@
 import protobuf from "sawtooth-sdk/protobuf";
 
 // RP Transaction Family imports
-import { FAMILY_NAME, FAMILY_NAMESPACE, FAMILY_VERSION } from "../../../rp-txn-family"
+import { FAMILY_NAME, FAMILY_VERSION } from "../../../rp-txn-family"
 
 // Other utilities imports
 import axios from 'axios'
+import $ from 'jquery'
 import utils from '../utils'
 
 
@@ -25,11 +26,15 @@ const SAWTOOTH_API_URL = 'http://localhost:8008'
  * @param batchList - List of batches containing the desired transactions
  * @returns {Promise<any>} - Callbacks to manage post's success or failure
  */
-const post = (batchList) => {
-  return axios.post(
-    SAWTOOTH_API_URL + '/batches',
-    batchList,
-    {'Content-Type': 'application/octet-stream'}
+const post = (batchList, callback) => {
+  let a = axios.create({
+    baseURL: SAWTOOTH_API_URL,
+    headers: {'Content-Type': 'application/octet-stream'}
+  })
+
+  return a.post(
+    '/batches',
+    batchList
   )
 }
 
@@ -43,13 +48,14 @@ const post = (batchList) => {
  * @returns {TransactionHeader} - Transaction Header instance
  */
 const createTransactionHeader = (inputs, outputs, txSigner, batchSigner, payload) => {
+  console.log('BUILDING TRANSACTION HEADER')
   return protobuf.TransactionHeader.encode({
     familyName: FAMILY_NAME,
     familyVersion: FAMILY_VERSION,
     inputs: inputs,
     outputs: outputs,
-    signerPublicKey: txSigner.getPublicKey.asHex(),
-    batcherPublicKey: batchSigner.getPublicKey.asHex(),
+    signerPublicKey: txSigner.getPublicKey().asHex(),
+    batcherPublicKey: batchSigner.getPublicKey().asHex(),
     payloadSha512:utils.hash(payload)
   }).finish()
 }
@@ -62,6 +68,7 @@ const createTransactionHeader = (inputs, outputs, txSigner, batchSigner, payload
  * @returns {Transaction} - Transaction instance
  */
 const createTransaction = (transactionHeader, signer, payload) => {
+  console.log('BUILDING TRANSACTION')
   return protobuf.Transaction.create({
     header: transactionHeader,
     headerSignature: signer.sign(transactionHeader),
@@ -76,8 +83,9 @@ const createTransaction = (transactionHeader, signer, payload) => {
  * @returns {BatchHeader} - Batch Header instance
  */
 const createBatchHeader = (signer, transactions) => {
+  console.log('BUILDING BATCH HEADER')
   return protobuf.BatchHeader.encode({
-    signerPublicKey: signer.getPublicKey.asHex(),
+    signerPublicKey: signer.getPublicKey().asHex(),
     transactionIds: transactions.map((transaction) => transaction.headerSignature)
   }).finish()
 }
@@ -90,6 +98,7 @@ const createBatchHeader = (signer, transactions) => {
  * @returns {Batch} - Batch instance
  */
 const createBatch = (batchHeader, signer, transactions) => {
+  console.log('BUILDING BATCH')
   return protobuf.Batch.create({
     header: batchHeader,
     headerSignature: signer.sign(batchHeader),
@@ -103,6 +112,7 @@ const createBatch = (batchHeader, signer, transactions) => {
  * @returns {BatchList} - Batch List instance
  */
 const createBatchList = (batchList) => {
+  console.log('BUILDING BATCH LIST')
   return protobuf.BatchList.encode({
     batches: batchList
   }).finish()

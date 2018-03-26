@@ -2,7 +2,7 @@
 
 const crypto = require('crypto')
 
-const FAMILY_NAME = 'royalty-payment'
+const FAMILY_NAME = 'rp'
 
 const FAMILY_NAMESPACE = crypto.createHash('sha512').update(FAMILY_NAME).digest('hex').toLowerCase().substring(0, 6)
 
