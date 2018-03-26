@@ -9,6 +9,7 @@ module.exports = {
     filename: 'build.js'
   },
   module: {
+
     rules: [
       {
         test: /\.css$/,
@@ -48,7 +49,16 @@ module.exports = {
   devServer: {
     historyApiFallback: true,
     noInfo: true,
-    overlay: true
+    overlay: true,
+    proxy: {
+      "/sawtooth-api": {
+        target:"http://localhost:8008",
+        secure: false,
+        pathRewrite: {
+          '^/sawtooth-api': ''
+        }
+      }
+    }
   },
   performance: {
     hints: false

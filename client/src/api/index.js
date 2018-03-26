@@ -155,7 +155,7 @@ const signArtist = (credentials) => {
 
 //TODO: Remove it, just used for client-proc connection testing
 const testUpdate = (artist) => {
-  sawtooth.testUpdate(artist)
+  return sawtooth.testUpdate(artist)
 }
 
 export default {

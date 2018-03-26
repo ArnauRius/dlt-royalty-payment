@@ -15,23 +15,14 @@ const testUpdate = (artist) => {
   let outputs = [FAMILY_NAMESPACE]
   let txSigner = artist.signer
   let batchSigner = txSigner
-  let payload = 'fc2d50d00a8371fad6ca6af531f002edd0fb415b391a01a3f352b647c9a7d9be' //TODO: SERIALIZE THE PAYLOAD USING MODELS
+  let payload = {
+    message: 'Hello world 2' //TODO: SERIALIZE THE PAYLOAD USING MODELS
+  }
 
-  let transactionHeader = txn.createTransactionHeader(inputs, outputs, txSigner, batchSigner, payload)
-  let transaction = txn.createTransaction(transactionHeader, txSigner, payload)
-
-  let batchHeader = txn.createBatchHeader(batchSigner, [transaction])
-  let batch = txn.createBatch(batchHeader, batchSigner, [transaction])
-
-  let batchList = txn.createBatchList([batch])
-
-  txn.post(batchList)
-    .then((response ) => {
-      console.log(response)
-    })
-    .catch((error) => {
-      console.log(error)
-    })
+  let transaction = txn.buildTransaction(inputs, outputs, txSigner, batchSigner, payload)
+  let batch = txn.buildBatch(batchSigner, [transaction])
+  let batchList = txn.buildBatchList([batch])
+  return txn.post(batchList)
 }
 
 export default {

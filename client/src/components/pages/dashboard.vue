@@ -56,8 +56,13 @@
     methods: {
 
       connectToProcessor: function () {
-        console.log('Connected to processor')
         api.testUpdate(this.artist)
+          .then((response) => {
+            console.log(response)
+          })
+          .catch((error) => {
+            console.log(error)
+          })
       }
     }
 

@@ -11,12 +11,11 @@ import protobuf from "sawtooth-sdk/protobuf";
 import { FAMILY_NAME, FAMILY_VERSION } from "../../../rp-txn-family"
 
 // Other utilities imports
-import axios from 'axios'
 import $ from 'jquery'
 import utils from '../utils'
 
 
-const SAWTOOTH_API_URL = 'http://localhost:8008'
+const SAWTOOTH_API_URL = '/sawtooth-api'
 
 //TODO: GET REQUEST
 
@@ -26,20 +25,25 @@ const SAWTOOTH_API_URL = 'http://localhost:8008'
  * @param batchList - List of batches containing the desired transactions
  * @returns {Promise<any>} - Callbacks to manage post's success or failure
  */
-const post = (batchList, callback) => {
-  let a = axios.create({
-    baseURL: SAWTOOTH_API_URL,
-    headers: {'Content-Type': 'application/octet-stream'}
+const post = (batchList) => {
+  return new Promise((resolve, reject) => {
+    $.post({
+      url: `${SAWTOOTH_API_URL}/batches?wait`,
+      data: batchList,
+      headers: {'Content-Type': 'application/octet-stream'},
+      processData: false,
+      success: (data) => {
+        resolve(data)
+      },
+      error: (error) => {
+        reject(error)
+      }
+    })
   })
-
-  return a.post(
-    '/batches',
-    batchList
-  )
 }
 
 /**
- * Builds the transaction header
+ * Creates a Sawtooth's transaction header instance
  * @param inputs - List of addresses that are needed to have read access during the transaction
  * @param outputs - List of addresses that are needed to have write access during the transaction
  * @param txSigner - Public key corresponding to whom requests the transaction
@@ -48,7 +52,6 @@ const post = (batchList, callback) => {
  * @returns {TransactionHeader} - Transaction Header instance
  */
 const createTransactionHeader = (inputs, outputs, txSigner, batchSigner, payload) => {
-  console.log('BUILDING TRANSACTION HEADER')
   return protobuf.TransactionHeader.encode({
     familyName: FAMILY_NAME,
     familyVersion: FAMILY_VERSION,
@@ -61,14 +64,13 @@ const createTransactionHeader = (inputs, outputs, txSigner, batchSigner, payload
 }
 
 /**
- * Builds the transaction
+ * Creates a Sawtooth's transaction instance
  * @param transactionHeader - The previously built transaction header
  * @param signer - Public key corresponding to whom requests the transaction
  * @param payload - Payload containing changes information
  * @returns {Transaction} - Transaction instance
  */
 const createTransaction = (transactionHeader, signer, payload) => {
-  console.log('BUILDING TRANSACTION')
   return protobuf.Transaction.create({
     header: transactionHeader,
     headerSignature: signer.sign(transactionHeader),
@@ -77,13 +79,28 @@ const createTransaction = (transactionHeader, signer, payload) => {
 }
 
 /**
- * Builds the batch header
+ * Builds a full Sawtooth transaction, by creating its header and then the transaction itself using the
+ * created header
+ * @param inputs - List of addresses that are needed to have read access during the transaction
+ * @param outputs - List of addresses that are needed to have write access during the transaction
+ * @param txSigner - Public key corresponding to whom requests the transaction
+ * @param batchSigner - Public key corresponding to whom will put the transaction in a batch and send the batch
+ * @param payload - Payload containing changes information
+ * @returns {Transaction} - Transaction instance
+ */
+const buildTransaction = (inputs, outputs, txSigner, batchSigner, payload) => {
+  let payloadInBytes = Buffer.from(JSON.stringify(payload))
+  let transactionHeader = createTransactionHeader(inputs, outputs, txSigner, batchSigner, payloadInBytes)
+  return createTransaction(transactionHeader, txSigner, payloadInBytes)
+}
+
+/**
+ * Creates a Sawtooth's batch header instance
  * @param signer - Public key corresponding to whom will built the batch
  * @param transactions - List of transactions to be grouped in the batch
  * @returns {BatchHeader} - Batch Header instance
  */
 const createBatchHeader = (signer, transactions) => {
-  console.log('BUILDING BATCH HEADER')
   return protobuf.BatchHeader.encode({
     signerPublicKey: signer.getPublicKey().asHex(),
     transactionIds: transactions.map((transaction) => transaction.headerSignature)
@@ -91,14 +108,13 @@ const createBatchHeader = (signer, transactions) => {
 }
 
 /**
- * Builds the batch
+ * Creates a Sawtooth's batch instance
  * @param batchHeader - The previously built batch header
  * @param signer - Public key corresponding to whom will built the batch
  * @param transactions - List of transactions to be grouped in the batch
  * @returns {Batch} - Batch instance
  */
 const createBatch = (batchHeader, signer, transactions) => {
-  console.log('BUILDING BATCH')
   return protobuf.Batch.create({
     header: batchHeader,
     headerSignature: signer.sign(batchHeader),
@@ -107,12 +123,23 @@ const createBatch = (batchHeader, signer, transactions) => {
 }
 
 /**
- * Builds a list of batches
+ * Builds a full Sawtooth batch, by creating its header and then the batch itself using the
+ * created header
+ * @param signer - Public key corresponding to whom will built the batch
+ * @param transactions - List of transactions to be grouped in the batch
+ * @returns {Batch} - Batch instance
+ */
+const buildBatch = (signer, transactions) => {
+  let batchHeader = createBatchHeader(signer, transactions)
+  return createBatch(batchHeader, signer, transactions)
+}
+
+/**
+ * Builds a Sawtooth's list of batches
  * @param batchList - List of batches to be grouped in the batch list
  * @returns {BatchList} - Batch List instance
  */
-const createBatchList = (batchList) => {
-  console.log('BUILDING BATCH LIST')
+const buildBatchList = (batchList) => {
   return protobuf.BatchList.encode({
     batches: batchList
   }).finish()
@@ -120,9 +147,7 @@ const createBatchList = (batchList) => {
 
 export default {
   post,
-  createTransactionHeader,
-  createTransaction,
-  createBatchHeader,
-  createBatch,
-  createBatchList
+  buildTransaction,
+  buildBatch,
+  buildBatchList
 }

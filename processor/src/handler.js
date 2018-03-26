@@ -16,7 +16,9 @@ class RPHandler extends TransactionHandler {
     }
 
     apply (transaction, context) {
-        console.log("Initialized and calling")
+        console.log('Transaction received:')
+        console.log(JSON.parse(transaction.payload))
+        return context.getState([], 2)
     }
 }
 
