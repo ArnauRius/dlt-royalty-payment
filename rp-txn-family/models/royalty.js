@@ -1,6 +1,6 @@
 /* Model for the Royalty instances */
 
-import Model from 'rp-txn-family/models/model'
+const {Model} = require('./model')
 
 class Royalty extends Model{
 
@@ -26,4 +26,8 @@ class Royalty extends Model{
         [account, percentage] = serialized.split(';')
         return new Royalty(account, parseFloat(percentage))
     }
+}
+
+module.exports = {
+    Royalty
 }

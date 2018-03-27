@@ -1,7 +1,7 @@
 /* Model for the Song instances */
 
-import Model from 'rp-txn-family/models/model'
-import Royalty from 'rp-txn-family/models/royalty'
+const {Model} = require('./model')
+const {Royalty} = require('./royalty')
 
 class Song extends Model{
 
@@ -29,4 +29,8 @@ class Song extends Model{
         [amount, pub_key, ...royalties] = serialized.split(',')
         return new Song(parseFloat(amount), pub_key, royalties.map((royalty) => Royalty.deserialize(royalty)))
     }
+}
+
+module.exports = {
+    Song
 }

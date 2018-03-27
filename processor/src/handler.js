@@ -7,6 +7,7 @@ const { TransactionHeader } = require('sawtooth-sdk/protobuf')
 
 // RP Transaction Family imports
 const { FAMILY_NAME, FAMILY_NAMESPACE, FAMILY_VERSION } = require("../../rp-txn-family")
+const { Payload } = require("../../rp-txn-family/models")
 
 // Royalty Payment Transaction Handler
 class RPHandler extends TransactionHandler {
@@ -17,7 +18,7 @@ class RPHandler extends TransactionHandler {
 
     apply (transaction, context) {
         console.log('Transaction received:')
-        console.log(JSON.parse(transaction.payload))
+        console.log(Payload.deserialize(transaction.payload))
         return context.getState([], 2)
     }
 }

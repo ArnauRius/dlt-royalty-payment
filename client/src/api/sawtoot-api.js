@@ -5,6 +5,8 @@ import txn from '../managers/txn-manager'
 
 // Royalty Payment Transaction Family Import
 import { FAMILY_NAMESPACE } from "../../../rp-txn-family"
+import { Payload } from "../../../rp-txn-family/models"
+
 
 /**
  * This update is just used to test Client-Processor connectivity
@@ -15,9 +17,7 @@ const testUpdate = (artist) => {
   let outputs = [FAMILY_NAMESPACE]
   let txSigner = artist.signer
   let batchSigner = txSigner
-  let payload = {
-    message: 'Hello world 2' //TODO: SERIALIZE THE PAYLOAD USING MODELS
-  }
+  let payload = new Payload('action', {message: 'Hello world'}) //TODO: SERIALIZE THE DATA USING MODELS
 
   let transaction = txn.buildTransaction(inputs, outputs, txSigner, batchSigner, payload)
   let batch = txn.buildBatch(batchSigner, [transaction])

@@ -89,7 +89,7 @@ const createTransaction = (transactionHeader, signer, payload) => {
  * @returns {Transaction} - Transaction instance
  */
 const buildTransaction = (inputs, outputs, txSigner, batchSigner, payload) => {
-  let payloadInBytes = Buffer.from(JSON.stringify(payload))
+  let payloadInBytes = payload.serialize()
   let transactionHeader = createTransactionHeader(inputs, outputs, txSigner, batchSigner, payloadInBytes)
   return createTransaction(transactionHeader, txSigner, payloadInBytes)
 }

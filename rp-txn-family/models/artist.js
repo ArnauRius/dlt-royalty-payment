@@ -1,6 +1,6 @@
 /* Model for the Artist instances */
 
-import Model from 'rp-txn-family/models/model'
+const {Model} = require('./model')
 
 class Artist extends Model{
 
@@ -22,4 +22,8 @@ class Artist extends Model{
     static deserialize(serialized){
         return new Artist(serialized.split(',').map((pk) => parseInt(pk)))
     }
+}
+
+module.exports = {
+    Artist
 }
