@@ -20,7 +20,7 @@ class Artist extends Model{
 
     //Override from Model
     static deserialize(serialized){
-        return new Artist(serialized !== '_' ? serialized.split(',').map((pk) => parseInt(pk)) : [])
+        return new Artist(serialized !== '_' ? serialized.split(',').map((pk) => pk) : [])
     }
 }
 

@@ -60,6 +60,17 @@ class RPHandler extends TransactionHandler {
                         console.log(error)
                     })
                 break;
+
+            case 'assignSong':
+                console.log('Trying to assign song \''+ payload.data +'\' to artist \'' + signer + '\'')
+                return state.assignSong(signer, payload.data)
+                    .then(() => {
+                        console.log('Song \''+ payload.data +'\' assigned to artist \'' + signer + '\'')
+                    })
+                    .catch((error) => {
+                        console.log(error)
+                    })
+                break;
             default:
                 throw new InvalidTransaction('Action not handled by this Transaction Handler')
         }

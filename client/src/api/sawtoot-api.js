@@ -25,17 +25,24 @@ const createArtist = (artistSigner) => {
   return txn.post(batchList)
 }
 
-const createSong = (artistSigner, id, name, royalties) => {
-  let songAddress = Addresser.getSongAddress(id)
-  let inputs = [songAddress]
-  let outputs = inputs
+const createSong = (artistSigner, songId, songName, royalties) => {
   let txSigner = artistSigner
   let batchSigner = txSigner
-  let song = new Song(name, 0, '', [new Royalty('a', 9.2)]) // The public key will be setted by the Transaction Proc.
-  let payload = new Payload('createSong', {id: id, song: song.serialize()})
 
-  let transaction = txn.buildTransaction(inputs, outputs, txSigner, batchSigner, payload)
-  let batch = txn.buildBatch(batchSigner, [transaction])
+  let songAddress = Addresser.getSongAddress(songId)
+  let songInputs = [songAddress]
+  let songOutputs = songInputs
+  let song = new Song(songName, 0, '', [new Royalty('a', 9.2)]) // The public key will be setted by the Transaction Proc.
+  let songPayload = new Payload('createSong', {id: songId, song: song.serialize()})
+  let createSongTransaction = txn.buildTransaction(songInputs, songOutputs, txSigner, batchSigner, songPayload)
+
+  let artistAddress = Addresser.getArtistAddress(artistSigner.getPublicKey().asHex())
+  let artistInputs = [artistAddress]
+  let artistOutputs = artistInputs
+  let artistPayload = new Payload('assignSong', songId)
+  let assignSongTransaction = txn.buildTransaction(artistInputs, artistOutputs, txSigner, batchSigner, artistPayload)
+
+  let batch = txn.buildBatch(batchSigner, [createSongTransaction, assignSongTransaction])
   let batchList = txn.buildBatchList([batch])
   return txn.post(batchList)
 }

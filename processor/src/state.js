@@ -22,7 +22,7 @@ class State {
     }
 
     /**
-     * Creates a new Artist instance given his public key and saves it on the blockchain.
+     * Creates a new Artist instance given his public key and saves it to the blockchain.
      * Throws an error if there is an already created artist with the provided public key.
      * @param publicKey - Artist's public key
      */
@@ -33,7 +33,7 @@ class State {
                 if(value){ // If there there is already an artist with this public key
                     throw new InvalidTransaction('Artist \''+ publicKey +'\' already exists.')
                 }else{
-                    return this.setValueToAddress(address, Buffer.from(new Artist([]).serialize()))
+                    return this.setValueToAddress(address, new Artist([]).serialize())
                 }
             })
             .catch((error) => {
@@ -41,6 +41,12 @@ class State {
             })
     }
 
+    /**
+     * Creates a new song instance and saves it to the blockchain.
+     * Throws an error if there is an already created song with the provided id.
+     * @param {songId, songData} - Object mapping then song Id and its serialized information
+     * @param artistPubKey - Public key corresponding to the song owner
+     */
     createSong(data, artistPubKey) {
         let address = Addresser.getSongAddress(data.id)
         return this.getValueFromAddress(address)
@@ -50,8 +56,33 @@ class State {
                 }else{
                     let song = Song.deserialize(data.song)
                     song.pub_key = artistPubKey // Assigns the transaction signer as the song owner
-                    return this.setValueToAddress(address, Buffer.from(song.serialize()))
+                    return this.setValueToAddress(address, song.serialize())
                 }
+            })
+            .catch((error) => {
+                throw new InvalidTransaction(error)
+            })
+    }
+
+    /**
+     * Assigns a song instance to a current saved artist instance
+     * @param artistPublicKey - The public key corresponding to the artist
+     * @param songId - The song id that is wanted to assign ownership to the artist
+     */
+    assignSong(artistPublicKey, songId){
+        let address = Addresser.getArtistAddress(artistPublicKey)
+        return this.getValueFromAddress(address)
+            .then(value => {
+               if(!value){
+                   throw new InvalidTransaction('Can not assign any song to non-existent artist \''+ artistPublicKey +'\'.')
+               }else{
+                   let artist = Artist.deserialize(value)
+                   artist.songs.push(songId)
+                   return this.setValueToAddress(address, artist.serialize())
+               }
+            })
+            .catch((error) => {
+                throw new InvalidTransaction(error)
             })
     }
 
@@ -90,8 +121,9 @@ class State {
      * @returns {Promise} - Promise to handle value saving success or failure
      */
     setValueToAddress(address, value) {
-        this.addressCache.set(address, value)
-        return this.context.setState({[address]: value}, this.timeout)
+        let valueInBytes = Buffer.from(value)
+        this.addressCache.set(address, valueInBytes)
+        return this.context.setState({[address]: valueInBytes}, this.timeout)
     }
 }
 
