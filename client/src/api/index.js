@@ -104,7 +104,14 @@ const createArtist = (key) => {
 
         batch.commit()
           .then(() => {
-            resolve(artistRef)
+            console.log('Artist created in Firebase')
+            sawtooth.createArtist(signer)
+              .then((data) => {
+                resolve(artistRef)
+              })
+              .catch((error) => {
+                reject(error)
+              })
           })
           .catch((error) => {
             reject(error)

@@ -13,13 +13,13 @@ import { Payload } from "../../../rp-txn-family/models"
  * This update is just used to test Client-Processor connectivity
  */
 //TODO: Remove it, used just for client-proc connection testing
-const testUpdate = (artist) => {
-  let artistAddress = Addresser.getArtistAddress(artist.signer.getPublicKey().asHex())
+const createArtist = (artistSigner) => {
+  let artistAddress = Addresser.getArtistAddress(artistSigner.getPublicKey().asHex())
   let inputs = [artistAddress]
   let outputs = [artistAddress]
-  let txSigner = artist.signer
+  let txSigner = artistSigner
   let batchSigner = txSigner
-  let payload = new Payload('createArtist', Math.random()) //TODO: SERIALIZE THE DATA USING MODELS
+  let payload = new Payload('createArtist', '') //TODO: SERIALIZE THE DATA USING MODELS
 
   let transaction = txn.buildTransaction(inputs, outputs, txSigner, batchSigner, payload)
   let batch = txn.buildBatch(batchSigner, [transaction])
@@ -28,5 +28,5 @@ const testUpdate = (artist) => {
 }
 
 export default {
-  testUpdate
+  createArtist
 }

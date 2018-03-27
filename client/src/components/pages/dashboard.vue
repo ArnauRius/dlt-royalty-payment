@@ -37,8 +37,6 @@
   // Components imports
   import UploadSongModal from '../modals/upload-song-modal.vue'
 
-  //TODO: Remove, just for testinc client-proc connectivity
-  import api from '../../api'
 
   export default {
     components: {
@@ -56,13 +54,6 @@
     methods: {
 
       connectToProcessor: function () {
-        api.testUpdate(this.artist)
-          .then((response) => {
-            console.log(response)
-          })
-          .catch((error) => {
-            console.log(error)
-          })
       }
     }
 
