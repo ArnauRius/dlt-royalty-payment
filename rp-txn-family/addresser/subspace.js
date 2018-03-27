@@ -1,5 +1,5 @@
 /**
- * This class models a subspace used to generate sub-namespacing in the addressing
+ * This class models a subspace used to generate sub-namespacing in the addresser
  * The subspace is a range of values for a same sub-namspace. It is delimited by a 'start' value
  * and a 'stop' value.
  * The sub-namespace will be compressed by all the numbers between 'start' and 'stop' in Hex format
@@ -48,6 +48,6 @@ class Subspace {
     }
 }
 
-export default {
+module.exports = {
     Subspace
 }

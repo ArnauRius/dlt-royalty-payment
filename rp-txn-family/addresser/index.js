@@ -1,9 +1,9 @@
 /* In this file, all the addressing computing is handled */
 
 // Utils and constants imports
-import utils from '../../processor/src/utils'
-import {FAMILY_NAMESPACE} from "../index"
-import Subspace from './subspace'
+const utils = require('../utils')
+const {FAMILY_NAMESPACE} = require("../index")
+const {Subspace} = require('./subspace')
 
 const ADDRESS_LENGTH = 70 //Specific length that Hex addresses must have
 
@@ -31,4 +31,9 @@ const getSongAddress = (songId) => {
     const songHash = utils.hash(songId)
     const nameSpace = FAMILY_NAMESPACE + SONG_SUBSPACE.computeNamespace(songHash)
     return songHash + songHash.substring(0, ADDRESS_LENGTH - nameSpace.length)
+}
+
+module.exports = {
+    getArtistAddress,
+    getSongAddress
 }

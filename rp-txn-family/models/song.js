@@ -1,7 +1,7 @@
 /* Model for the Song instances */
 
-const {Model} = require('./model')
-const {Royalty} = require('./royalty')
+const Model = require('./model')
+const Royalty = require('./royalty')
 
 class Song extends Model{
 
@@ -31,6 +31,4 @@ class Song extends Model{
     }
 }
 
-module.exports = {
-    Song
-}
+module.exports = Song

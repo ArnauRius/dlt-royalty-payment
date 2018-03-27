@@ -1,6 +1,6 @@
 /* Model for the Royalty instances */
 
-const {Model} = require('./model')
+const Model = require('./model')
 
 class Royalty extends Model{
 
@@ -28,6 +28,4 @@ class Royalty extends Model{
     }
 }
 
-module.exports = {
-    Royalty
-}
+module.exports = Royalty

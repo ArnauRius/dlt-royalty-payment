@@ -1,6 +1,6 @@
 /* Model for the Royalty Payment Transaction Family's payload */
 
-const {Model} = require('./model')
+const Model = require('./model')
 
 class Payload extends Model{
 
@@ -27,6 +27,4 @@ class Payload extends Model{
     }
 }
 
-module.exports = {
-    Payload
-}
+module.exports = Payload

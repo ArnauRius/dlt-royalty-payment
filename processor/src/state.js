@@ -1,11 +1,83 @@
 /* This file models and processes the blockchain state changes */
 
-class State{
+// Sawtooth imports
+const {InvalidTransaction} = require('sawtooth-sdk/processor/exceptions')
 
-    constructor(context, timeout = 2) {
+// RP Transaction Family imports
+const Addresser = require('../../rp-txn-family/addresser')
+const {Artist} = require('../../rp-txn-family/models')
+
+class State {
+
+    /**
+     * Constructor for the State instance.
+     * This instance models the Blockchain state at a given moment provided by a context
+     * @param context - Context used by the handler to be able to access the real blockchain state
+     * @param timeout - Max timeout to wait for the blockchain updates to occur
+     */
+    constructor(context, timeout = 500) {
         this.context = context
         this.timeout = timeout
-        this.addressCache = []
+        this.addressCache = new Map([])
+    }
+
+    /**
+     * Creates a new Artist instance given his public key and saves it on the blockchain.
+     * Throws an error if there is an already created artist with the provided public key.
+     * @param publicKey - Artist's public key
+     */
+    createArtist(publicKey) {
+        let address = Addresser.getArtistAddress(publicKey)
+        return this.getValueFromAddress(address)
+            .then((value) => {
+                if(value){ // If there there is already an artist with this public key
+                    throw new InvalidTransaction('Artist already exists.')
+                }else{
+                    return this.setValueToAddress(address, Buffer.from(new Artist([]).serialize()))
+                }
+            })
+            .catch((error) => {
+                throw new InvalidTransaction(error)
+            })
+    }
+
+    /**
+     * Given an address, returns the value stored at it in the blockchain.
+     * In order to avoid asking the real state (through the context) too much, it first
+     * checks if the given address has been already cached. If not, then asks to the real state.
+     * @param address - Address to look the value for
+     * @returns {Promise} - Promise to handle value access success or failure
+     */
+    getValueFromAddress(address) {
+        if (this.addressCache.has(address)) { // The address has been cached to avoid asking the real state
+            return Promise.resolve(this.addressCache.get(address))
+        } else { // The address has not been cached, ask the real state
+            return this.context.getState([address], this.timeout)
+                .then((addressesValues) => {
+                    var value = null
+                    if (addressesValues[address]) { // If there is a valid value stored in the real state
+                        value = addressesValues[address].toString()
+                    }
+                    this.addressCache.set(address, value) // Caches the value for this address
+                    return value
+                })
+                .catch((error) => {
+                    return error
+                })
+        }
+    }
+
+    /**
+     * Saves a given value to the blockchain, storing it in the given address.
+     * It also caches this address-value pair in order to have it available in posterior
+     * needs without having to ask the real state.
+     * @param address - The address on which the value should be stored
+     * @param value - The value to be stored and saved on the blockchain
+     * @returns {Promise} - Promise to handle value saving success or failure
+     */
+    setValueToAddress(address, value) {
+        this.addressCache.set(address, value)
+        return this.context.setState({[address]: value}, this.timeout)
     }
 }
 

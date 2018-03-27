@@ -5,6 +5,7 @@ import txn from '../managers/txn-manager'
 
 // Royalty Payment Transaction Family Import
 import { FAMILY_NAMESPACE } from "../../../rp-txn-family"
+import Addresser from "../../../rp-txn-family/addresser"
 import { Payload } from "../../../rp-txn-family/models"
 
 
@@ -13,11 +14,12 @@ import { Payload } from "../../../rp-txn-family/models"
  */
 //TODO: Remove it, used just for client-proc connection testing
 const testUpdate = (artist) => {
-  let inputs = [FAMILY_NAMESPACE]
-  let outputs = [FAMILY_NAMESPACE]
+  let artistAddress = Addresser.getArtistAddress(artist.signer.getPublicKey().asHex())
+  let inputs = [artistAddress]
+  let outputs = [artistAddress]
   let txSigner = artist.signer
   let batchSigner = txSigner
-  let payload = new Payload('action', {message: 'Hello world'}) //TODO: SERIALIZE THE DATA USING MODELS
+  let payload = new Payload('createArtist', Math.random()) //TODO: SERIALIZE THE DATA USING MODELS
 
   let transaction = txn.buildTransaction(inputs, outputs, txSigner, batchSigner, payload)
   let batch = txn.buildBatch(batchSigner, [transaction])
