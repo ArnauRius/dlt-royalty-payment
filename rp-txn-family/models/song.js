@@ -11,8 +11,9 @@ class Song extends Model{
      * @param pub_key - Public Key of the artist that uploaded this song
      * @param royalties - List of Royalty models corresponding to this song
      */
-    constructor(amount, pub_key, royalties) {
+    constructor(name, amount, pub_key, royalties) {
         super()
+        this.name = name
         this.amount = amount
         this.pub_key = pub_key
         this.royalties = royalties
@@ -20,14 +21,14 @@ class Song extends Model{
 
     //Override from Model
     serialize(){
-        return this.amount+','+this.pub_key+','+this.royalties.map((royalty) => royalty.serialize())
+        return this.name+','+this.amount+','+this.pub_key+','+this.royalties.map((royalty) => royalty.serialize())
     }
 
     //Override from Model
     static deserialize(serialized){
-        let amount, pub_key, royalties
-        [amount, pub_key, ...royalties] = serialized.split(',')
-        return new Song(parseFloat(amount), pub_key, royalties.map((royalty) => Royalty.deserialize(royalty)))
+        let name, amount, pub_key, royalties
+        [name, amount, pub_key, ...royalties] = serialized.split(',')
+        return new Song(name, parseFloat(amount), pub_key, royalties.map((royalty) => Royalty.deserialize(royalty)))
     }
 }
 

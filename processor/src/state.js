@@ -5,7 +5,7 @@ const {InvalidTransaction} = require('sawtooth-sdk/processor/exceptions')
 
 // RP Transaction Family imports
 const Addresser = require('../../rp-txn-family/addresser')
-const {Artist} = require('../../rp-txn-family/models')
+const {Artist, Song, Royalty} = require('../../rp-txn-family/models')
 
 class State {
 
@@ -29,15 +29,29 @@ class State {
     createArtist(publicKey) {
         let address = Addresser.getArtistAddress(publicKey)
         return this.getValueFromAddress(address)
-            .then((value) => {
+            .then(value => {
                 if(value){ // If there there is already an artist with this public key
-                    throw new InvalidTransaction('Artist already exists.')
+                    throw new InvalidTransaction('Artist \''+ publicKey +'\' already exists.')
                 }else{
                     return this.setValueToAddress(address, Buffer.from(new Artist([]).serialize()))
                 }
             })
             .catch((error) => {
                 throw new InvalidTransaction(error)
+            })
+    }
+
+    createSong(data, artistPubKey) {
+        let address = Addresser.getSongAddress(data.id)
+        return this.getValueFromAddress(address)
+            .then(value => {
+                if(value) { // If there there is already a song with this song id
+                    throw new InvalidTransaction('Song \''+ data.id +'\' already exists.')
+                }else{
+                    let song = Song.deserialize(data.song)
+                    song.pub_key = artistPubKey // Assigns the transaction signer as the song owner
+                    return this.setValueToAddress(address, Buffer.from(song.serialize()))
+                }
             })
     }
 

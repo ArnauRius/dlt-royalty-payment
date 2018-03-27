@@ -30,7 +30,7 @@ const getArtistAddress = (artistId) => {
 const getSongAddress = (songId) => {
     const songHash = utils.hash(songId)
     const nameSpace = FAMILY_NAMESPACE + SONG_SUBSPACE.computeNamespace(songHash)
-    return songHash + songHash.substring(0, ADDRESS_LENGTH - nameSpace.length)
+    return nameSpace + songHash.substring(0, ADDRESS_LENGTH - nameSpace.length)
 }
 
 module.exports = {

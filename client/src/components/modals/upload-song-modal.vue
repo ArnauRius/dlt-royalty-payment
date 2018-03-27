@@ -117,7 +117,7 @@
         <!-- Modal's footer -->
         <div class="modal-footer">
           <!--Become an artist button -->
-          <button @click="addSong()"
+          <button @click="createSong()"
                   type="button"
                   class="btn btn-success pull-right">
             Save
@@ -158,7 +158,10 @@
         'CREATE_SONG': 'artist/CREATE_SONG'
       }),
 
-      addSong() {
+      /**
+       * Creates a new song assigned to the current artist
+       */
+      createSong() {
         this.isError = !(this.checkValidName() && this.checkSumAmount())
         if (!this.isError) {
           this.CREATE_SONG(this.$refs.name.value)

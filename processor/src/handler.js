@@ -51,7 +51,14 @@ class RPHandler extends TransactionHandler {
                     })
                 break;
             case 'createSong':
-                console.log('creating a song')
+                console.log('Trying to create song \''+ payload.data.id +'\'')
+                return state.createSong(payload.data, signer)
+                    .then(() => {
+                        console.log('Song \'' + payload.data.id + '\' created')
+                    })
+                    .catch((error) => {
+                        console.log(error)
+                    })
                 break;
             default:
                 throw new InvalidTransaction('Action not handled by this Transaction Handler')

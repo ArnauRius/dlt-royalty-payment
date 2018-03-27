@@ -42,11 +42,9 @@
 
   // Vuex imports
   import {mapGetters} from 'vuex'
-  import {mapActions} from 'vuex'
 
   // Components imports
   import UploadSongModal from '../modals/upload-song-modal.vue'
-
 
   export default {
     components: {
