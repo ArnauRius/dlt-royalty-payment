@@ -2,9 +2,13 @@
 
 class State{
 
-    constructor(payload, timeout = 2) {
-        this.payload = payload
+    constructor(context, timeout = 2) {
+        this.context = context
         this.timeout = timeout
-        this.stateEntries = []
+        this.addressCache = []
     }
+}
+
+module.exports = {
+    State
 }
