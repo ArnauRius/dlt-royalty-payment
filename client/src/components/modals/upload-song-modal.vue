@@ -146,18 +146,32 @@
         accounts: [
           {email: 'arnau@monkignme.com', percentage: 45},
           {email: 'arnau@monkignme.com', percentage: 55}
-        ], // TODO: Fetch from server
+        ], // TODO: Fetch from blockchain
 
       }
     },
 
     methods: {
+
+      // Vuex actions
+      ...mapActions({
+        'CREATE_SONG': 'artist/CREATE_SONG'
+      }),
+
       addSong() {
         this.isError = !(this.checkValidName() && this.checkSumAmount())
         if (!this.isError) {
-          console.log('saved!!!!')
+          this.CREATE_SONG(this.$refs.name.value)
+            .then(() => {
+              this.$refs.closeButton.click()
+            })
+            .catch((error) => {
+              this.showError(error)
+            })
         }
       },
+
+      //TODO: CHECK FROM HERE
       clearAddAccount() {
         this.$refs.paypal.value = ''
         this.$refs.percentage.value = ''
@@ -241,6 +255,15 @@
         this.errorMessage = 'Please, introduce a valid amount (< 0 && >= 100).'
         return false
       },
+
+      /**
+       * Shows an error in a red alert
+       * @param error
+       */
+      showError: function (error) {
+        this.errorMessage = error
+        this.isError = true
+      }
     }
   }
 </script>

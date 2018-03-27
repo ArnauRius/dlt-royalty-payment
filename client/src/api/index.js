@@ -107,6 +107,7 @@ const createArtist = (key) => {
             console.log('Artist created in Firebase')
             sawtooth.createArtist(signer)
               .then((data) => {
+                console.log('Artist created in Sawtooth')
                 resolve(artistRef)
               })
               .catch((error) => {
@@ -160,9 +161,48 @@ const signArtist = (credentials) => {
   })
 }
 
-//TODO: Remove it, just used for client-proc connection testing
-const testUpdate = (artist) => {
-  return sawtooth.testUpdate(artist)
+/**
+ * Creates a new song instance.
+ * It first creates the song instance to the Firestore db.
+ * Then assigns the saved song's reference to the artist's list of songs also in the Firestore db.
+ * Finally, creates a new song instance to the Sawtooth's blockchain
+ * @param artistEmail - Email identifying the artist that creates the song
+ * @param songName - The name of the new created song
+ * @returns {Promise} - Callbacks to handle song's creation success or failure
+ */
+const createSong = (artistEmail, songName) => {
+
+  return new Promise((resolve, reject) => {
+    // 1. Creates a new song to Firestore db
+    firestore.addDoc('songs', {name: songName})
+      .then((songRef) => {
+        console.log('Song created in Firestore')
+
+        // 2. Updates the song's list for the artist
+        firestore.db.runTransaction(transaction => {
+          const artistRef = firestore.getDocRef('artists', artistEmail)
+          return transaction.get(artistRef)
+            .then((artistDoc) => {
+              let artistSongs = artistDoc.data().songs
+              artistSongs.push(songRef)
+              transaction.update(artistRef, {songs: artistSongs})
+            })
+        })
+        .then(() => {
+          console.log('Song reference assigned to uploader')
+
+          // 3. Creates a new song to Sawtooth's Blockchain
+          //TODO: Create song on sawtooth
+          resolve(songRef)
+        })
+        .catch((error) => {
+          reject(error)
+        })
+      })
+      .catch((error) => {
+        reject(error)
+      })
+  })
 }
 
 export default {
@@ -170,5 +210,5 @@ export default {
   signUp,
   createArtist,
   signArtist,
-  testUpdate //TODO: Remove it, just used for client-proc connection testing
+  createSong,
 }

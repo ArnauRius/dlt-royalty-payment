@@ -9,21 +9,31 @@
                 data-target="#uploadSongModal">
           Upload Song
         </button>
-
-        <button class="btn btn-primary"
-                type="button"
-                @click="connectToProcessor">
-          Connect to Transaction Processor
-        </button>
       </div>
     </div>
-    <!--<div class="row" v-for="song in songs">
-        <div class="card col-sm-6 col-md-3">
-          <h5 class="card-title">{{ song.name }}</h5>
-          <div class="btn btn-primary">Edit</div>
-
-        </div>
-    </div>-->
+    <table class="table table-hover">
+      <thead>
+      <tr>
+        <th>Song</th>
+        <th>Revenue</th>
+        <th></th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr v-for="song in songs">
+        <td>{{song.id}}</td>
+        <td>0</td>
+        <td>
+          <button class="btn btn-outline-warning mt-1"
+                  type="button"
+                  data-toggle="modal"
+                  data-target="#uploadSongModal">
+            Edit
+          </button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
     <upload-song-modal id="uploadSongModal"></upload-song-modal>
   </div>
 </template>
@@ -47,16 +57,9 @@
 
       // Vuex getters
       ...mapGetters({
-        'artist': 'artist/artist',
-      })
-    },
-
-    methods: {
-
-      connectToProcessor: function () {
-      }
+        'songs': 'artist/songs',
+      }),
     }
-
   }
 </script>
 
