@@ -71,6 +71,17 @@ class RPHandler extends TransactionHandler {
                         console.log(error)
                     })
                 break;
+
+            case 'updateAmount':
+                console.log('Trying to increase the amount for song \'' + payload.data.songId + '\' by: ' + payload.data.amount)
+                return state.updateAmount(payload.data.songId, payload.data.amount)
+                    .then(() => {
+                        console.log('Amount for song \'' + payload.data.songId + '\' increased by: ' + payload.data.amount)
+                    })
+                    .catch((error) => {
+                        console.log(error)
+                    })
+                break;
             default:
                 throw new InvalidTransaction('Action not handled by this Transaction Handler')
         }

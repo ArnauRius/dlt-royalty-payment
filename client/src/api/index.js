@@ -223,6 +223,14 @@ const getAllSongsFromFirestore = () => {
   return firestore.db.collection('songs').get()
 }
 
+const listenToSong = (songId) => {
+  sawtooth.listenToSong(songId)
+}
+
+const downloadSong = (songId) => {
+  sawtooth.downloadSong(songId)
+}
+
 export default {
   signIn,
   signUp,
@@ -231,5 +239,7 @@ export default {
   createSong,
   fetchArtistFromBlockchain,
   fetchSongFromBlockchain,
-  getAllSongsFromFirestore
+  getAllSongsFromFirestore,
+  listenToSong,
+  downloadSong
 }

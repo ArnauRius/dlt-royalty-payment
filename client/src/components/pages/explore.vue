@@ -11,16 +11,18 @@
       </thead>
       <tbody>
       <tr v-for="song in songs">
-        <td>{{song}}</td>
+        <td>{{song.name}}</td>
         <td>
           <button class="btn btn-outline-warning mt-1"
-                  type="button">
+                  type="button"
+                  @click="listen(song.id)">
             Listen
           </button>
         </td>
         <td>
           <button class="btn btn-outline-warning mt-1"
-                  type="button">
+                  type="button"
+                  @click="download(song.id)">
             Download
           </button>
         </td>
@@ -43,11 +45,22 @@
       }
     },
 
+    methods: {
+
+      listen(songId){
+        api.listenToSong(songId)
+      },
+
+      download(songId){
+        api.downloadSong(songId)
+      }
+    },
+
     created(){
       api.getAllSongsFromFirestore()
         .then((querySnapshot) => {
           querySnapshot.forEach((doc) => {
-            this.songs.push(doc.data().name)
+            this.songs.push({id: doc.id, name: doc.data().name})
           });
         })
     }

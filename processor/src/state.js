@@ -86,6 +86,24 @@ class State {
             })
     }
 
+    updateAmount(songId, amount){
+        let address = Addresser.getSongAddress(songId)
+        return this.getValueFromAddress(address)
+            .then(value => {
+                if(!value){
+                    throw new InvalidTransaction('Can update the amount to non-existent song \''+ songId +'\'.')
+                }else{
+                    console.log(value)
+                    let song = Song.deserialize(value)
+                    song.amount += amount
+                    return this.setValueToAddress(address, song.serialize())
+                }
+            })
+            .catch((error) => {
+                throw new InvalidTransaction(error)
+            })
+    }
+
     /**
      * Given an address, returns the value stored at it in the blockchain.
      * In order to avoid asking the real state (through the context) too much, it first

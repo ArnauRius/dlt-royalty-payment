@@ -7,6 +7,9 @@ import txn from '../managers/txn-manager'
 import Addresser from "../../../rp-txn-family/addresser"
 import { Payload, Song, Royalty } from "../../../rp-txn-family/models"
 
+//TODO: Temporary for listen and download
+import {generateSigner} from "../managers/signers-manager";
+
 
 /**
  * This update is just used to test Client-Processor connectivity
@@ -57,9 +60,41 @@ const getSong = (songId) => {
   return txn.get(songAddress)
 }
 
+const listenToSong = (songId) => {
+  let songAddress = Addresser.getSongAddress(songId)
+  console.log(songAddress)
+  let inputs = [songAddress]
+  let outputs = inputs
+  let txSigner = generateSigner()
+  let batchSigner = txSigner
+  let payload = new Payload('updateAmount', {songId: songId, amount: 1})
+
+  let transaction = txn.buildTransaction(inputs, outputs, txSigner, batchSigner, payload)
+  let batch = txn.buildBatch(batchSigner, [transaction])
+  let batchList = txn.buildBatchList([batch])
+  return txn.post(batchList)
+}
+
+const downloadSong = (songId) => {
+  let songAddress = Addresser.getSongAddress(songId)
+  console.log(songAddress)
+  let inputs = [songAddress]
+  let outputs = inputs
+  let txSigner = generateSigner()
+  let batchSigner = txSigner
+  let payload = new Payload('updateAmount', {songId: songId, amount: 2})
+
+  let transaction = txn.buildTransaction(inputs, outputs, txSigner, batchSigner, payload)
+  let batch = txn.buildBatch(batchSigner, [transaction])
+  let batchList = txn.buildBatchList([batch])
+  return txn.post(batchList)
+}
+
 export default {
   createArtist,
   createSong,
   getArtist,
-  getSong
+  getSong,
+  listenToSong,
+  downloadSong
 }
