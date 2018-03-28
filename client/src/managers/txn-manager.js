@@ -17,8 +17,6 @@ import utils from '../utils'
 
 const SAWTOOTH_API_URL = '/sawtooth-api'
 
-//TODO: GET REQUEST
-
 /**
  * Posts changes to the Sawtooth Blockchain.
  * This changes are sent as transactions, wrapped in batches and grouped in list of batches.
@@ -36,6 +34,25 @@ const post = (batchList) => {
         resolve(data)
       },
       error: (error) => {
+        reject(error)
+      }
+    })
+  })
+}
+
+/**
+ * Gets the value stored in the blockchain at a given address
+ * @param address - Address to fetch the value from the blockchain
+ * @returns {Promise<any>} - Callbacks to manage get's success or failure
+ */
+const get = (address) => {
+  return new Promise((resolve, reject) => {
+    $.get({
+      url: `${SAWTOOTH_API_URL}/state/${address}`,
+      success: (data) => {
+        resolve(data)
+      },
+      error: (error) =>{
         reject(error)
       }
     })
@@ -147,6 +164,7 @@ const buildBatchList = (batchList) => {
 
 export default {
   post,
+  get,
   buildTransaction,
   buildBatch,
   buildBatchList

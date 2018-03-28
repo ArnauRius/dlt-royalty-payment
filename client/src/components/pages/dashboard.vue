@@ -11,6 +11,11 @@
         </button>
       </div>
     </div>
+    <button class="btn btn-primary"
+            type="button"
+            @click="fetch">
+       Songs
+    </button>
     <table class="table table-hover">
       <thead>
       <tr>
@@ -20,9 +25,9 @@
       </tr>
       </thead>
       <tbody>
-      <tr v-for="song in songs">
-        <td>{{song.id}}</td>
-        <td>0</td>
+      <tr v-for="song in songs" :key="song.id">
+        <td>{{song.data.name}}</td>
+        <td>{{song.data.amount}}</td>
         <td>
           <button class="btn btn-outline-warning mt-1"
                   type="button"
@@ -42,6 +47,7 @@
 
   // Vuex imports
   import {mapGetters} from 'vuex'
+  import {mapActions} from 'vuex'
 
   // Components imports
   import UploadSongModal from '../modals/upload-song-modal.vue'
@@ -55,8 +61,27 @@
 
       // Vuex getters
       ...mapGetters({
-        'songs': 'artist/songs',
+        'songs': 'songs/songs',
       }),
+    },
+
+    methods: {
+
+      // Vuex actions
+      ...mapActions({
+        'FETCH_SONGS_DATA': 'artist/FETCH_SONGS_DATA',
+        'SUBSCRIBE_TO_UPDATES': 'artist/SUBSCRIBE_TO_UPDATES',
+      }),
+
+      fetch(){
+        console.log(this.songs)
+      }
+
+    },
+
+    created(){
+      this.FETCH_SONGS_DATA()
+      this.SUBSCRIBE_TO_UPDATES()
     }
   }
 </script>

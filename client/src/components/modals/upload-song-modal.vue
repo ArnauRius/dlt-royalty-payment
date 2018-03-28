@@ -155,7 +155,8 @@
 
       // Vuex actions
       ...mapActions({
-        'CREATE_SONG': 'artist/CREATE_SONG'
+        'CREATE_SONG': 'artist/CREATE_SONG',
+        'FETCH_SONGS_DATA': 'artist/FETCH_SONGS_DATA'
       }),
 
       /**

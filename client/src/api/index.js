@@ -211,10 +211,20 @@ const createSong = (artist, artistEmail, songName) => {
   })
 }
 
+const fetchArtistFromBlockchain = (artistPubKey) => {
+  return sawtooth.getArtist(artistPubKey)
+}
+
+const fetchSongFromBlockchain = (songId) => {
+  return sawtooth.getSong(songId)
+}
+
 export default {
   signIn,
   signUp,
   createArtist,
   signArtist,
   createSong,
+  fetchArtistFromBlockchain,
+  fetchSongFromBlockchain
 }

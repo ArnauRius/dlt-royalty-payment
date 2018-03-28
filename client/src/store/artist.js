@@ -1,6 +1,7 @@
 /* Stores the current artist information */
 
 import api from '../api/'
+import Addresser from '../../../rp-txn-family/addresser'
 
 export default {
 
@@ -114,6 +115,35 @@ export default {
             reject(error)
           })
       })
+    },
+
+    FETCH_SONGS_DATA: (context) => {
+      context.dispatch('songs/CLEAR_SONGS', {}, {root: true})
+      let songsRefs = context.getters['artist'].songs
+      for (var i = 0; i < songsRefs.length; i++) {
+        let songId = songsRefs[i].id
+        api.fetchSongFromBlockchain(songId)
+          .then((data) => {
+            console.log('Adding song: '+atob(data.data))
+            context.dispatch('songs/ADD_SONG', {id: songId, serializedData: atob(data.data)}, {root: true})
+          })
+          .catch((error) => {
+            console.log(error)
+          })
+      }
+    },
+
+    SUBSCRIBE_TO_UPDATES: (context) => {
+      let ws = new WebSocket('ws:localhost:8008/subscriptions')
+      ws.onopen = () => {
+        ws.send(JSON.stringify({
+          'action': 'subscribe',
+          'address_prefixes': [Addresser.getArtistAddress(context.getters['artist'].signer.getPublicKey().asHex())]
+        }))
+      }
+      ws.onmessage = (response) => {
+        context.dispatch('FETCH_SONGS_DATA')
+      }
     }
   }
 }

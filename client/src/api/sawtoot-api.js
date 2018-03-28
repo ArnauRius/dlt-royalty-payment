@@ -47,7 +47,19 @@ const createSong = (artistSigner, songId, songName, royalties) => {
   return txn.post(batchList)
 }
 
+const getArtist = (artistPubKey) => {
+  let artistAddress = Addresser.getArtistAddress(artistPubKey)
+  return txn.get(artistAddress)
+}
+
+const getSong = (songId) => {
+  let songAddress = Addresser.getSongAddress(songId)
+  return txn.get(songAddress)
+}
+
 export default {
   createArtist,
-  createSong
+  createSong,
+  getArtist,
+  getSong
 }

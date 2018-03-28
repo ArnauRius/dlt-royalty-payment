@@ -6,6 +6,7 @@ import Vuex from 'vuex'
 import user from './user'
 import artist from './artist'
 import signers from './signers'
+import songs from './songs'
 
 Vue.use(Vuex)
 
@@ -14,6 +15,7 @@ export default new Vuex.Store({
   modules: {
     user,
     artist,
-    signers
+    signers,
+    songs
   }
 })
