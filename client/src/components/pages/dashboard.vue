@@ -11,11 +11,6 @@
         </button>
       </div>
     </div>
-    <button class="btn btn-primary"
-            type="button"
-            @click="fetch">
-       Songs
-    </button>
     <table class="table table-hover">
       <thead>
       <tr>
@@ -72,11 +67,6 @@
         'FETCH_SONGS_DATA': 'artist/FETCH_SONGS_DATA',
         'SUBSCRIBE_TO_UPDATES': 'artist/SUBSCRIBE_TO_UPDATES',
       }),
-
-      fetch(){
-        console.log(this.songs)
-      }
-
     },
 
     created(){

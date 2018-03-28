@@ -9,8 +9,6 @@
           <p>{{ user.name }}</p>
           <h5>Email: </h5>
           <p>{{ user.email }}</p>
-          <h5>Public key:</h5>
-          <p>{{ user.signer.getPublicKey().asHex() }}</p>
           <h5>Artist:</h5>
           <p>{{ isArtist }}</p>
         <!-- Menu right button -->

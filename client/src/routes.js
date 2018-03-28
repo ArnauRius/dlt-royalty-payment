@@ -6,6 +6,7 @@ import Home from './components/pages/home.vue'
 import Main from './components/main.vue'
 import Account from './components/pages/account.vue'
 import Dashboard from './components/pages/dashboard.vue'
+import Explore from './components/pages/explore.vue'
 
 
 // Defines the routes
@@ -13,6 +14,7 @@ export default [
   {
     path: '/', redirect: { name: 'home' }, component: Main, children: [
     {path: 'home', component: Home, name: 'home'},
+    {path: 'explore', component: Explore, name: 'explore', beforeEnter: checkUserAuth},
     {path: 'account', component: Account, name: 'account', beforeEnter: checkUserAuth},
     {path: 'dashboard', component: Dashboard, name: 'dashboard', beforeEnter: checkArtistAuth},
   ]

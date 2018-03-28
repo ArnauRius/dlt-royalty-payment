@@ -132,6 +132,7 @@
             .then(() => {
               this.SIGN_IN_USER({email:  this.$refs.email.value, password: this.$refs.password.value})
                 .then(() => {
+                  this.$router.push({name:'explore'})
                   this.$refs.closeButton.click()
                 })
                 .catch((error) => {

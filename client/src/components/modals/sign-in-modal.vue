@@ -115,6 +115,7 @@
           }
           this.SIGN_IN_USER(credentials)
             .then(() => {
+              this.$router.push({name:'explore'})
               this.$refs.closeButton.click()
             })
             .catch((error) => {

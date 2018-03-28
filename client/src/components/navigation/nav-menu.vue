@@ -24,12 +24,7 @@
            id="navbarSupportedContent">
 
         <!-- Menu options -->
-        <ul class="navbar-nav ml-auto">
-          <li v-if="isUserSigned"
-              v-for="page in pages">
-            <a class="nav-link">{{ page }}</a>
-          </li>
-        </ul>
+        <ul class="navbar-nav ml-auto"></ul>
         <div class="ml-auto">
           <!-- User's Name -->
           <router-link class="nav-link"
@@ -100,7 +95,6 @@
 
     data() {
       return {
-        pages: ["Page1", "Page2"]
       }
     },
 
@@ -150,7 +144,7 @@
   }
   .navbar-light .navbar-nav .nav-link {
     cursor: pointer;
-  } 
+  }
 
   .navbar-light .navbar-nav .nav-link:hover {
     text-decoration: underline;
