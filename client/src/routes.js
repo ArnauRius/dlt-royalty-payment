@@ -6,15 +6,15 @@ import Home from './components/pages/home.vue'
 import Main from './components/main.vue'
 import Account from './components/pages/account.vue'
 import Dashboard from './components/pages/dashboard.vue'
-import Explore from './components/pages/explore.vue'
+import Explorer from './components/pages/explorer.vue'
 
 
 // Defines the routes
 export default [
   {
     path: '/', redirect: { name: 'home' }, component: Main, children: [
-    {path: 'home', component: Home, name: 'home'},
-    {path: 'explore', component: Explore, name: 'explore', beforeEnter: checkUserAuth},
+    {path: 'home', component: Home, name: 'home', beforeEnter: checkUserRedirect},
+    {path: 'explorer', component: Explorer, name: 'explorer', beforeEnter: checkUserAuth},
     {path: 'account', component: Account, name: 'account', beforeEnter: checkUserAuth},
     {path: 'dashboard', component: Dashboard, name: 'dashboard', beforeEnter: checkArtistAuth},
   ]
@@ -34,10 +34,27 @@ function checkUserAuth(to, from, next) {
 function checkArtistAuth(to, from, next) {
   store.getters['artist/isArtistSigned'] ? next() : redirectHome(to, from, next)
 }
+/**
+ * Checks if user is authenticated. If not, redirect always to the '/home' route, if yes redirect to explorer
+ */
+function checkUserRedirect(to, from, next) {
+  if(store.getters['user/isUserSigned'] && to.fullPath === '/home') {
+     redirectExplorer(to, from, next)
+  }
+  else{
+    next();
+  }
+}
 
 /**
  * Redirects to the '/home' route
  */
 function redirectHome(to, from, next) {
   next({name: 'home'})
+}
+/**
+ * Redirects to the '/home' route
+ */
+function redirectExplorer(to, from, next) {
+  next({name: 'explorer'})
 }
