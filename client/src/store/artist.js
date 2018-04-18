@@ -143,8 +143,13 @@ export default {
           'address_prefixes': [Addresser.getArtistAddress(context.getters['artist'].signer.getPublicKey().asHex())]
         }))
       }
+
+      // It will be triggered everytime a change happens to the Blockchain. However, the "state_changes" field
+      // will not be an empty list just in the cases the changes affect to the address that we subscribed.
       ws.onmessage = (response) => {
-        context.dispatch('FETCH_SONGS_DATA')
+        if(JSON.parse(response.data)['state_changes'].length !== 0) {
+          context.dispatch('FETCH_SONGS_DATA')
+        }
       }
     }
   }
