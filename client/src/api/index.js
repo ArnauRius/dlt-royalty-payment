@@ -211,6 +211,8 @@ const createSong = (artist, artistEmail, songName) => {
   })
 }
 
+//TODO: Comment all these below
+
 const fetchArtistFromBlockchain = (artistPubKey) => {
   return sawtooth.getArtist(artistPubKey)
 }

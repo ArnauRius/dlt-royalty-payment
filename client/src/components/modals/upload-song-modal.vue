@@ -240,6 +240,12 @@
         }
         return true
       },
+
+      /**
+       * Checks if the Royalty's instance email is unique. It is, to check if there is not any other
+       * Royalty instance with the same email.
+       * @return bool
+       */
       checkEmailUnique() {
         if(this.accounts.some( ((account, index, array) => account.email === this.$refs.paypal.value ), this)){
           this.errorMessage = 'Please, introduce a valid email.'

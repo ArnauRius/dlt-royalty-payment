@@ -30,9 +30,9 @@ class State {
         let address = Addresser.getArtistAddress(publicKey)
         return this.getValueFromAddress(address)
             .then(value => {
-                if(value){ // If there there is already an artist with this public key
-                    throw new InvalidTransaction('Artist \''+ publicKey +'\' already exists.')
-                }else{
+                if (value) { // If there there is already an artist with this public key
+                    throw new InvalidTransaction('Artist \'' + publicKey + '\' already exists.')
+                } else {
                     return this.setValueToAddress(address, new Artist([]).serialize())
                 }
             })
@@ -51,9 +51,9 @@ class State {
         let address = Addresser.getSongAddress(data.id)
         return this.getValueFromAddress(address)
             .then(value => {
-                if(value) { // If there there is already a song with this song id
-                    throw new InvalidTransaction('Song \''+ data.id +'\' already exists.')
-                }else{
+                if (value) { // If there there is already a song with this song id
+                    throw new InvalidTransaction('Song \'' + data.id + '\' already exists.')
+                } else {
                     let song = Song.deserialize(data.song)
                     song.pub_key = artistPubKey // Assigns the transaction signer as the song owner
                     return this.setValueToAddress(address, song.serialize())
@@ -69,31 +69,37 @@ class State {
      * @param artistPublicKey - The public key corresponding to the artist
      * @param songId - The song id that is wanted to assign ownership to the artist
      */
-    assignSong(artistPublicKey, songId){
+    assignSong(artistPublicKey, songId) {
         let address = Addresser.getArtistAddress(artistPublicKey)
         return this.getValueFromAddress(address)
             .then(value => {
-               if(!value){
-                   throw new InvalidTransaction('Can not assign any song to non-existent artist \''+ artistPublicKey +'\'.')
-               }else{
-                   let artist = Artist.deserialize(value)
-                   artist.songs.push(songId)
-                   return this.setValueToAddress(address, artist.serialize())
-               }
+                if (!value) {
+                    throw new InvalidTransaction('Can not assign any song to non-existent artist \'' + artistPublicKey + '\'.')
+                } else {
+                    let artist = Artist.deserialize(value)
+                    artist.songs.push(songId)
+                    return this.setValueToAddress(address, artist.serialize())
+                }
             })
             .catch((error) => {
                 throw new InvalidTransaction(error)
             })
     }
 
-    updateAmount(songId, amount){
+    /**
+     * Increases the amount for a given song
+     * @param songId - The id of the song which the amount has to be increased
+     * @param amount - The total amount to be increased
+     */
+    increaseAmount(songId, amount) {
         let address = Addresser.getSongAddress(songId)
         return this.getValueFromAddress(address)
             .then(value => {
-                if(!value){
-                    throw new InvalidTransaction('Can update the amount to non-existent song \''+ songId +'\'.')
-                }else{
-                    console.log(value)
+                if (!value) {
+                    throw new InvalidTransaction('Can update the amount to non-existent song \'' + songId + '\'.')
+                } else if (value < 0) {
+                    throw new InvalidTransaction('Can increase the amount of \'' + songId + '\' with a negative value ' + value + '.')
+                } else {
                     let song = Song.deserialize(value)
                     song.amount += amount
                     return this.setValueToAddress(address, song.serialize())

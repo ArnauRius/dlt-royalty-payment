@@ -117,6 +117,7 @@ export default {
       })
     },
 
+    //TODO: Check here
     FETCH_SONGS_DATA: (context) => {
       context.dispatch('songs/CLEAR_SONGS', {}, {root: true})
       let songsRefs = context.getters['artist'].songs
@@ -133,6 +134,7 @@ export default {
       }
     },
 
+    //TODO: Check here
     SUBSCRIBE_TO_UPDATES: (context) => {
       let ws = new WebSocket('ws:localhost:8008/subscriptions')
       ws.onopen = () => {

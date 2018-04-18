@@ -34,6 +34,11 @@ export default {
       state.songs.push({id: songData.id, data: songData.song})
     },
 
+    /**
+     * Mutation to clear the list of
+     * stored songs
+     * @param state
+     */
     CLEAR_SONGS: (state) => {
       state.songs = []
     }
@@ -50,6 +55,11 @@ export default {
       context.commit('ADD_SONG', {id: songData.id, song: Song.deserialize(songData.serializedData)})
     },
 
+    /**
+     * Action to clear the list of
+     * stored songs
+     * @param context
+     */
     CLEAR_SONGS: (context) => {
       context.commit('CLEAR_SONGS')
     }

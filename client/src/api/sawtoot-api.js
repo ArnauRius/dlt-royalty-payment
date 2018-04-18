@@ -10,9 +10,9 @@ import { Payload, Song, Royalty } from "../../../rp-txn-family/models"
 //TODO: Temporary for listen and download
 import {generateSigner} from "../managers/signers-manager";
 
-
 /**
- * This update is just used to test Client-Processor connectivity
+ * Sends a transaction to the Sawtooth Blockchain to create a new artist
+ * @param artistSigner - The public key of the artist to be created
  */
 const createArtist = (artistSigner) => {
   let artistAddress = Addresser.getArtistAddress(artistSigner.getPublicKey().asHex())
@@ -28,6 +28,13 @@ const createArtist = (artistSigner) => {
   return txn.post(batchList)
 }
 
+/**
+ * Sends a transaction to the Sawtooth Blockchain to create a new song
+ * @param artistSigner - The public key of the artist that will create a new song
+ * @param songId - The song id corresponding to the song to create
+ * @param songName - The name corresponding to the song to create
+ * @param royalties - A list of the Royalty instances corresponding to the song to create
+ */
 const createSong = (artistSigner, songId, songName, royalties) => {
   let txSigner = artistSigner
   let batchSigner = txSigner
@@ -50,16 +57,29 @@ const createSong = (artistSigner, songId, songName, royalties) => {
   return txn.post(batchList)
 }
 
+/**
+ * Asks the Sawtooth Blockchain to return a certain artist's information
+ * @param artistPubKey - The public key identifying the artist to receive
+ */
 const getArtist = (artistPubKey) => {
   let artistAddress = Addresser.getArtistAddress(artistPubKey)
   return txn.get(artistAddress)
 }
 
+/**
+ * Asks the Sawtooth Blockchain to return a certain song's information
+ * @param songId - The song id identifying the song to receive
+ */
 const getSong = (songId) => {
   let songAddress = Addresser.getSongAddress(songId)
   return txn.get(songAddress)
 }
 
+/**
+ * Sends a transaction to the Sawtooth Blockchain to specify that a song has been listened and update
+ * its amount generated
+ * @param songId - The song id identifying the song that has been listened
+ */
 const listenToSong = (songId) => {
   let songAddress = Addresser.getSongAddress(songId)
   console.log(songAddress)
@@ -67,7 +87,7 @@ const listenToSong = (songId) => {
   let outputs = inputs
   let txSigner = generateSigner()
   let batchSigner = txSigner
-  let payload = new Payload('updateAmount', {songId: songId, amount: 1})
+  let payload = new Payload('increaseAmount', {songId: songId, amount: 1})
 
   let transaction = txn.buildTransaction(inputs, outputs, txSigner, batchSigner, payload)
   let batch = txn.buildBatch(batchSigner, [transaction])
@@ -75,6 +95,11 @@ const listenToSong = (songId) => {
   return txn.post(batchList)
 }
 
+/**
+ * Sends a transaction to the Sawtooth Blockchain to specify that a song has been downloaded and update
+ * its amount generated
+ * @param songId - The song id identifying the song that has been downloaded
+ */
 const downloadSong = (songId) => {
   let songAddress = Addresser.getSongAddress(songId)
   console.log(songAddress)
@@ -82,7 +107,7 @@ const downloadSong = (songId) => {
   let outputs = inputs
   let txSigner = generateSigner()
   let batchSigner = txSigner
-  let payload = new Payload('updateAmount', {songId: songId, amount: 2})
+  let payload = new Payload('increaseAmount', {songId: songId, amount: 2})
 
   let transaction = txn.buildTransaction(inputs, outputs, txSigner, batchSigner, payload)
   let batch = txn.buildBatch(batchSigner, [transaction])
