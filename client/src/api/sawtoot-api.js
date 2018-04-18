@@ -115,11 +115,39 @@ const downloadSong = (songId) => {
   return txn.post(batchList)
 }
 
+/**
+ * Subscribes to a Blockchain addresses in order to receive a notification when a change happens to one of them.
+ * Executes a callback function when a change in one of the provided addresses occurs.
+ * IMPORTANT: It will receive a notification every time a change in the blockchain occurs. However, the 'state_changes'
+ * field will be an empty list for all the non-subscribed addresses, and a list containing the changes when those occur
+ * on subscribed addresses. So we will just execute the provided callback when the 'state_changes' list is not empty.
+ * @param addresses - List of addresses to subscribe
+ * @param callback - Callback to execute when a change occurs on the subscribed addresses
+ */
+const subscribeToAddresses = (addresses, callback) => {
+  let ws = new WebSocket('ws:localhost:8008/subscriptions')
+  ws.onopen = () => {
+    ws.send(JSON.stringify({
+      'action': 'subscribe',
+      'address_prefixes': addresses
+    }))
+  }
+
+  // It will be triggered everytime a change happens to the Blockchain. However, the "state_changes" field
+  // will not be an empty list just in the cases the changes affect to the addresses that we subscribed.
+  ws.onmessage = (response) => {
+    if(JSON.parse(response.data)['state_changes'].length !== 0) {
+      callback()
+    }
+  }
+}
+
 export default {
   createArtist,
   createSong,
   getArtist,
   getSong,
   listenToSong,
-  downloadSong
+  downloadSong,
+  subscribeToAddresses
 }

@@ -233,6 +233,10 @@ const downloadSong = (songId) => {
   sawtooth.downloadSong(songId)
 }
 
+const subscribeToAddresses = (addresses, callback) => {
+  sawtooth.subscribeToAddresses(addresses, callback)
+}
+
 export default {
   signIn,
   signUp,
@@ -243,5 +247,6 @@ export default {
   fetchSongFromBlockchain,
   getAllSongsFromFirestore,
   listenToSong,
-  downloadSong
+  downloadSong,
+  subscribeToAddresses
 }
