@@ -13,6 +13,9 @@
     <!-- Font awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
+    <!-- Crypto JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js"></script>
+
     <title>Key Generator</title>
 
     <!-- CSS -->
@@ -31,7 +34,21 @@
     <!-- JavaScript -->
     <script type="text/javascript">
 
-        function generateKey() {
+        //Filesystem Import
+        const fs = require('fs')
+
+        // Electron Imports
+        const {dialog} = require('electron').remote
+
+        // Sawtooth Imports
+        const {createContext} = require('sawtooth-sdk/signing')
+
+        const ECSDA_Standard = 'secp256k1' //Standard used for valid key generation
+        const context = createContext(ECSDA_Standard)
+
+        function generateAndSaveKey() {
+
+            hideAlerts()
 
             let email = document.getElementById('emailInput').value
 
@@ -40,7 +57,9 @@
             } else if (!checkValidEmail(email)) {
                 showErrorAlert("Error: Invalid email. Please, introduce a valid email")
             } else {
-                showSuccessAlert("Key Generated Successfully! :)")
+                chooseKeyFileLocation((filePath) => {
+                    writeFile(filePath, generateKey(email))
+                })
             }
         }
 
@@ -51,8 +70,7 @@
         }
 
         function showErrorAlert(error) {
-            let successAlert = document.getElementById('successAlert')
-            successAlert.style.display = 'none'
+            document.getElementById('successAlert').style.display = 'none'
 
             let errorAlert = document.getElementById('errorAlert')
             errorAlert.innerText = error
@@ -60,12 +78,41 @@
         }
 
         function showSuccessAlert(message) {
-            let errorAlert = document.getElementById('errorAlert')
-            errorAlert.style.display = 'none'
+            document.getElementById('errorAlert').style.display = 'none'
 
             let successAlert = document.getElementById('successAlert')
             successAlert.innerText = message
             successAlert.style.display = 'block'
+        }
+
+        function hideAlerts(){
+            document.getElementById('errorAlert').style.display = 'none'
+            document.getElementById('successAlert').style.display = 'none'
+        }
+
+        function chooseKeyFileLocation(callback){
+            dialog.showSaveDialog((filePath)=>{
+                if(filePath !== undefined){
+                    callback(filePath)
+                }
+            })
+        }
+
+        function generateKey(email){
+            let privateKey = context.newRandomPrivateKey().asHex()
+            let encryptedKey = CryptoJS.AES.encrypt(privateKey, email)
+            return encryptedKey.toString()
+        }
+
+        function writeFile(filePath, fileContent){
+            fs.writeFile(filePath+".KEY", fileContent, (error) => {
+                if(error) {
+                    showErrorAlert("Error: An error occurred while creating the key file. Please, try again.")
+                    console.log("Error: An error occurred while creating the key file: " + error.message)
+                    return
+                }
+                showSuccessAlert("Key Generated Successfully! :)")
+            })
         }
 
     </script>
@@ -121,7 +168,7 @@
             <!-- Generate key button -->
             <button type="button"
                     class="btn btn-primary btn-lg"
-                    onclick="generateKey()">
+                    onclick="generateAndSaveKey()">
                 Generate Key
             </button>
         </form>
