@@ -72,9 +72,9 @@ class RPHandler extends TransactionHandler {
                     })
                 break;
 
-            case 'updateAmount':
+            case 'increaseAmount':
                 console.log('Trying to increase the amount for song \'' + payload.data.songId + '\' by: ' + payload.data.amount)
-                return state.updateAmount(payload.data.songId, payload.data.amount)
+                return state.increaseAmount(payload.data.songId, payload.data.amount)
                     .then(() => {
                         console.log('Amount for song \'' + payload.data.songId + '\' increased by: ' + payload.data.amount)
                     })
@@ -83,10 +83,8 @@ class RPHandler extends TransactionHandler {
                     })
                 break;
             default:
-                throw new InvalidTransaction('Action not handled by this Transaction Handler')
+                throw new InvalidTransaction('Action not handled by this Transaction Handler: ' + payload.action)
         }
-
-        return context.getState([], 2) //TODO: Remove
     }
 }
 

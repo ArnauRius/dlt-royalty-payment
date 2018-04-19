@@ -70,8 +70,7 @@
     },
 
     created(){
-      this.FETCH_SONGS_DATA()
-      this.SUBSCRIBE_TO_UPDATES()
+      this.SUBSCRIBE_TO_UPDATES(this.FETCH_SONGS_DATA)
     }
   }
 </script>

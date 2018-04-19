@@ -5,6 +5,7 @@ import {firestore} from '../managers/firebase-manager'
 
 const db = firestore
 
+//TODO: Comment all this below
 const getDocRef = (collection, docId) => firestore.collection(collection).doc(docId)
 
 const addDoc = (collection, docData) => firestore.collection(collection).add(docData)

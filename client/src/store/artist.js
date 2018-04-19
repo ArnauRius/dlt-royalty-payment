@@ -118,33 +118,35 @@ export default {
       })
     },
 
+    /**
+     * Fetches the necessary artist's songs data from the Blockchain.
+     * It checks which songs have still not been fetched, and fetches and stores only these ones.
+     * @param context
+     */
     FETCH_SONGS_DATA: (context) => {
-      context.dispatch('songs/CLEAR_SONGS', {}, {root: true})
-      let songsRefs = context.getters['artist'].songs
-      for (var i = 0; i < songsRefs.length; i++) {
-        let songId = songsRefs[i].id
-        api.fetchSongFromBlockchain(songId)
-          .then((data) => {
-            console.log('Adding song: '+atob(data.data))
-            context.dispatch('songs/ADD_SONG', {id: songId, serializedData: atob(data.data)}, {root: true})
-          })
-          .catch((error) => {
-            console.log(error)
-          })
+      let artistSongIds = context.getters['artist'].songs.map((song) => song.id) //Songs the artist has
+      let storedSongIds = context.rootGetters['songs/songs'].map((song) => song.id) //Songs that are already stored
+      for(var id in artistSongIds){ //For each artist song
+        let songId = artistSongIds[id]
+        if(!storedSongIds.includes(songId)){ //If the song is still not fetched
+          api.fetchSongFromBlockchain(songId) //Fetches it from the Blockchain and stores it
+            .then((data) => {
+              context.dispatch('songs/ADD_SONG', {id: songId, serializedData: atob(data.data)}, {root: true})
+            })
+            .catch((error) => {
+              console.log(error)
+            })
+        }
       }
     },
 
-    SUBSCRIBE_TO_UPDATES: (context) => {
-      let ws = new WebSocket('ws:localhost:8008/subscriptions')
-      ws.onopen = () => {
-        ws.send(JSON.stringify({
-          'action': 'subscribe',
-          'address_prefixes': [Addresser.getArtistAddress(context.getters['artist'].signer.getPublicKey().asHex())]
-        }))
-      }
-      ws.onmessage = (response) => {
-        context.dispatch('FETCH_SONGS_DATA')
-      }
+    /**
+     * Action to subscribe to any change in the Blockchain related to the current artist
+     * @param context
+     * @param callback - Callback to call when any changed in the Blockchain happened related to the current artist
+     */
+    SUBSCRIBE_TO_UPDATES: (context, callback) => {
+      api.subscribeToAddresses([Addresser.getArtistAddress(context.getters['artist'].signer.getPublicKey().asHex())], callback)
     }
   }
 }
