@@ -4,7 +4,7 @@
        role="dialog"
        aria-labelledby="Sign In"
        aria-hidden="true"
-       @keyup.enter="signIn">
+       @keyup.enter.stop="signIn">
 
     <div class="modal-dialog modal-dialog-centered"
          role="document">
