@@ -2,11 +2,72 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+            crossorigin="anonymous"></script>
+
+    <!-- Font awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
     <title>Key Generator</title>
+
+    <style>
+        body{
+            background-color: whitesmoke;
+            padding: 24px;
+        }
+
+        .key-generator-info{
+            margin-top: 24px;
+        }
+
+    </style>
 </head>
+
+
 <body>
 
-<h1>This is the key generator</h1>
+    <h1>Key Generator</h1>
+
+    <p class="card-text key-generator-info">
+        Introduce your account's email and click on the <i>Generate Key</i> button.
+        This will generate a file containing your private key.
+        <br><br>
+        <b>IMPORTANT:</b> Keep this file secure and private, as anyone with this file can pretend to be you.
+    </p>
+
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title"
+            style="margin-bottom: 24px">
+                Generate a key to become an artist
+            </h4>
+
+            <form>
+                <!-- Account email input -->
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                <span class="input-group-text">
+                    <span class="fa fa-at"></span>
+                </span>
+                    </div>
+                    <input type="email"
+                           class="form-control"
+                           placeholder="Email">
+                </div>
+
+                <!-- Generate key button -->
+                <button type="submit"
+                        class="btn btn-primary btn-lg">
+                    Generate Key
+                </button>
+            </form>
+        </div>
+    </div>
 
 </body>
 </html>
