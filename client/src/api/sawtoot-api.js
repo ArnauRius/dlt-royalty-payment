@@ -5,7 +5,7 @@ import txn from '../managers/txn-manager'
 
 // Royalty Payment Transaction Family Import
 import Addresser from "../../../rp-txn-family/addresser"
-import { Payload, Song, Royalty } from "../../../rp-txn-family/models"
+import {Payload, Song, Royalty} from "../../../rp-txn-family/models"
 
 //TODO: Temporary for listen and download
 import {generateSigner} from "../managers/signers-manager";
@@ -82,7 +82,6 @@ const getSong = (songId) => {
  */
 const listenToSong = (songId) => {
   let songAddress = Addresser.getSongAddress(songId)
-  console.log(songAddress)
   let inputs = [songAddress]
   let outputs = inputs
   let txSigner = generateSigner()
@@ -102,7 +101,6 @@ const listenToSong = (songId) => {
  */
 const downloadSong = (songId) => {
   let songAddress = Addresser.getSongAddress(songId)
-  console.log(songAddress)
   let inputs = [songAddress]
   let outputs = inputs
   let txSigner = generateSigner()
@@ -116,28 +114,95 @@ const downloadSong = (songId) => {
 }
 
 /**
- * Subscribes to a Blockchain addresses in order to receive a notification when a change happens to one of them.
- * Executes a callback function when a change in one of the provided addresses occurs.
- * IMPORTANT: It will receive a notification every time a change in the blockchain occurs. However, the 'state_changes'
- * field will be an empty list for all the non-subscribed addresses, and a list containing the changes when those occur
- * on subscribed addresses. So we will just execute the provided callback when the 'state_changes' list is not empty.
- * @param addresses - List of addresses to subscribe
- * @param callback - Callback to execute when a change occurs on the subscribed addresses
+ * Subscribes to a certain Artist instance in the blockchain and executes a provided callback when
+ * a change occurs to it
+ * @param artistId - Public key of the artist that is wanted to subscribe to
+ * @param callback - Callback to execute when a change occurs to the subscribed artist
  */
-const subscribeToAddresses = (addresses, callback) => {
-  let ws = new WebSocket('ws:localhost:8008/subscriptions')
-  ws.onopen = () => {
-    ws.send(JSON.stringify({
-      'action': 'subscribe',
-      'address_prefixes': addresses
-    }))
+const subscribeToArtist = (artist, callback) => {
+  let artistAddress = Addresser.getArtistAddress(artist.signer.getPublicKey().asHex())
+  //Checks if the provided artist is not already in the subscription list to only add it once
+  if (!subscriptions.some(subscription => subscription.address === artistAddress)) {
+    subscriptions.push({address: artistAddress, value: null, callback: callback})
+    subscribeToAddresses(subscriptions, callback)
   }
+}
 
-  // It will be triggered everytime a change happens to the Blockchain. However, the "state_changes" field
-  // will not be an empty list just in the cases the changes affect to the addresses that we subscribed.
+/**
+ * Subscribes to a certain Song instance in the blockchain and executes a provided callback when
+ * a change occurs to it
+ * @param songId - Song id corresponding to the song that is wanted to subscribe to
+ * @param callback - Callback to execute when a change occurs to the subscribed song
+ */
+const subscribeToSong = (song, callback) => {
+  let songAddress = Addresser.getSongAddress(song.id)
+  //Checks if the provided song is not already in the subscription list to only add it once
+  if (!subscriptions.some(subscription => subscription.address === songAddress)) {
+    subscriptions.push({address: songAddress, value: btoa(song.serializedData), callback: callback})
+    subscribeToAddresses(subscriptions, callback)
+  }
+}
+
+/**
+ * Subscribing list used to keep track of all instances to be subscribed. Each subscription item
+ * is composed by three components:
+ *  - address: Instance's address in the blockchain to listen to it
+ *  - value: Current local value, to avoid calling the subscription callback when the fired "update" does not change the local value
+ *  - callback: Callback to call when a valid update is received
+ * @type {Array} - Array containing the subscriptions
+ */
+const subscriptions = []
+
+/**
+ * WebSocket instance to subscribe to Sawtooth Blockchain changes
+ * @type {WebSocket}
+ */
+let ws = new WebSocket('ws:localhost:8008/subscriptions')
+
+/**
+ * Subscribes to a list of Sawtooth Blockchain addresses to notify of its changes
+ */
+const subscribeToAddresses = () => {
+
+  ws.send(JSON.stringify({ //Unsubscribing from old subscriptions if any
+    'action': 'unsubscribe'
+  }))
+
+  console.log("Subscribing to: " + subscriptions.map((subscription) => subscription.address).toString())
+
+  ws.send(JSON.stringify({
+    'action': 'subscribe',
+    'address_prefixes': subscriptions.map((subscription) => subscription.address)
+  }))
+
   ws.onmessage = (response) => {
-    if(JSON.parse(response.data)['state_changes'].length !== 0) {
-      callback()
+    let state_changes = JSON.parse(response.data)['state_changes']
+
+    //// It will be triggered everytime a change happens to the Blockchain. However, the "state_changes" field
+    // will not be an empty list just in the cases the changes affect to the addresses that we subscribed to.
+    if (state_changes.length !== 0) {
+
+      //For each Blockchain change received
+      state_changes.map((state_change) => {
+        //Checks which to which of the subscribed addresses it corresponds to
+        let subscriptionIndex = subscriptions.findIndex(subscription => subscription.address === state_change.address)
+        if (subscriptionIndex !== -1) {
+
+          //When a subscription is asked, a "Blockchain change" is received, however, we will just want to
+          //execute the subscription callback when the changed data is different from the local storage one
+          switch (subscriptions[subscriptionIndex].value) {
+            case null: //The local value is 'null', so the 'change' corresponds to the one triggered the first time a subscription is done (not a real change)
+              subscriptions[subscriptionIndex].value = state_change.value
+              break;
+            case state_change.value: //The 'change' value is equal to the local storage one, so it is not a real change
+              break;
+            default: //A real change has been performed. Update the local 'change value' and execute the subscription callback
+              subscriptions[subscriptionIndex].value = state_change.value
+              subscriptions[subscriptionIndex].callback(state_change)
+              break;
+          }
+        }
+      })
     }
   }
 }
@@ -149,5 +214,6 @@ export default {
   getSong,
   listenToSong,
   downloadSong,
-  subscribeToAddresses
+  subscribeToArtist,
+  subscribeToSong
 }

@@ -233,8 +233,12 @@ const downloadSong = (songId) => {
   sawtooth.downloadSong(songId)
 }
 
-const subscribeToAddresses = (addresses, callback) => {
-  sawtooth.subscribeToAddresses(addresses, callback)
+const subscribeToArtist = (artist, callback) => {
+  sawtooth.subscribeToArtist(artist, callback)
+}
+
+const subscribeToSong = (song, callback) => {
+  sawtooth.subscribeToSong(song, callback)
 }
 
 export default {
@@ -248,5 +252,6 @@ export default {
   getAllSongsFromFirestore,
   listenToSong,
   downloadSong,
-  subscribeToAddresses
+  subscribeToArtist,
+  subscribeToSong
 }

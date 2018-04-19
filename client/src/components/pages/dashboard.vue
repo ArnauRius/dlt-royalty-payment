@@ -70,7 +70,8 @@
     },
 
     created(){
-      this.SUBSCRIBE_TO_UPDATES(this.FETCH_SONGS_DATA)
+      this.FETCH_SONGS_DATA()
+      this.SUBSCRIBE_TO_UPDATES({callback: (state_change) => {this.FETCH_SONGS_DATA()}})
     }
   }
 </script>

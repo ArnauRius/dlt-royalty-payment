@@ -1,7 +1,6 @@
 /* Stores the current artist information */
 
 import api from '../api/'
-import Addresser from '../../../rp-txn-family/addresser'
 
 export default {
 
@@ -123,18 +122,14 @@ export default {
      * @param context
      */
     FETCH_SONGS_DATA: (context) => {
+      console.log("Updating artist's songs")
       let artistSongIds = context.getters['artist'].songs.map((song) => song.id) //Songs the artist has
       let storedSongIds = context.rootGetters['songs/songs'].map((song) => song.id) //Songs that are already stored
       for(var id in artistSongIds){ //For each artist song
         let songId = artistSongIds[id]
         if(!storedSongIds.includes(songId)){ //If the song is still not fetched
-          api.fetchSongFromBlockchain(songId) //Fetches it from the Blockchain and stores it
-            .then((data) => {
-              context.dispatch('songs/ADD_SONG', {id: songId, serializedData: atob(data.data)}, {root: true})
-            })
-            .catch((error) => {
-              console.log(error)
-            })
+          //Fetches it from the Blockchain and stores it
+          context.dispatch('songs/FETCH_FROM_BLOCKCHAIN', songId, {root: true})
         }
       }
     },
@@ -144,8 +139,11 @@ export default {
      * @param context
      * @param callback - Callback to call when any changed in the Blockchain happened related to the current artist
      */
-    SUBSCRIBE_TO_UPDATES: (context, callback) => {
-      api.subscribeToAddresses([Addresser.getArtistAddress(context.getters['artist'].signer.getPublicKey().asHex())], callback)
+    SUBSCRIBE_TO_UPDATES: (context, subscriptionData) => {
+      api.subscribeToArtist(context.getters['artist'], (state_change) => {
+        console.log("Artist update received: "+state_change.value)
+        subscriptionData.callback(state_change)
+      })
     }
   }
 }
