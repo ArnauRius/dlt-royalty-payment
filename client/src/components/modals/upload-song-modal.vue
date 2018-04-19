@@ -165,7 +165,7 @@
       createSong() {
         this.isError = !(this.checkValidName() && this.checkSumAmount())
         if (!this.isError) {
-          this.CREATE_SONG(this.$refs.name.value)
+          this.CREATE_SONG(this.$refs.name.value) // send as an argument the song name
             .then(() => {
               this.$refs.closeButton.click()
             })
