@@ -15,59 +15,118 @@
 
     <title>Key Generator</title>
 
+    <!-- CSS -->
     <style>
-        body{
+        body {
             background-color: whitesmoke;
             padding: 24px;
         }
 
-        .key-generator-info{
+        .key-generator-info {
             margin-top: 24px;
         }
 
     </style>
+
+    <!-- JavaScript -->
+    <script type="text/javascript">
+
+        function generateKey() {
+
+            let email = document.getElementById('emailInput').value
+
+            if (!email) {
+                showErrorAlert("Error: Please, introduce your account email.")
+            } else if (!checkValidEmail(email)) {
+                showErrorAlert("Error: Invalid email. Please, introduce a valid email")
+            } else {
+                showSuccessAlert("Key Generated Successfully! :)")
+            }
+        }
+
+        const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+
+        function checkValidEmail(email) {
+            return emailRegex.test(String(email).toLowerCase())
+        }
+
+        function showErrorAlert(error) {
+            let successAlert = document.getElementById('successAlert')
+            successAlert.style.display = 'none'
+
+            let errorAlert = document.getElementById('errorAlert')
+            errorAlert.innerText = error
+            errorAlert.style.display = 'block'
+        }
+
+        function showSuccessAlert(message) {
+            let errorAlert = document.getElementById('errorAlert')
+            errorAlert.style.display = 'none'
+
+            let successAlert = document.getElementById('successAlert')
+            successAlert.innerText = message
+            successAlert.style.display = 'block'
+        }
+
+    </script>
 </head>
 
 
 <body>
 
-    <h1>Key Generator</h1>
+<h1>Key Generator</h1>
 
-    <p class="card-text key-generator-info">
-        Introduce your account's email and click on the <i>Generate Key</i> button.
-        This will generate a file containing your private key.
-        <br><br>
-        <b>IMPORTANT:</b> Keep this file secure and private, as anyone with this file can pretend to be you.
-    </p>
+<p class="card-text key-generator-info">
+    Introduce your account's email and click on the <i>Generate Key</i> button.
+    This will generate a file containing your private key.
+    <br><br>
+    <b>IMPORTANT:</b> Keep this file secure and private, as anyone with this file can pretend to be you.
+</p>
 
-    <div class="card">
-        <div class="card-body">
-            <h4 class="card-title"
+<div class="card">
+    <div class="card-body">
+        <h4 class="card-title"
             style="margin-bottom: 24px">
-                Generate a key to become an artist
-            </h4>
+            Generate a key to become an artist
+        </h4>
 
-            <form>
-                <!-- Account email input -->
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
+        <!-- Error alert -->
+        <div id="errorAlert"
+             class="alert alert-danger"
+             role="alert"
+             style="display: none">
+        </div>
+
+        <!-- Success alert -->
+        <div id="successAlert"
+             class="alert alert-success"
+             role="alert"
+             style="display: none">
+        </div>
+
+        <form>
+            <!-- Account email input -->
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
                 <span class="input-group-text">
                     <span class="fa fa-at"></span>
                 </span>
-                    </div>
-                    <input type="email"
-                           class="form-control"
-                           placeholder="Email">
                 </div>
+                <input id="emailInput"
+                       type="email"
+                       class="form-control"
+                       placeholder="Email">
+            </div>
 
-                <!-- Generate key button -->
-                <button type="submit"
-                        class="btn btn-primary btn-lg">
-                    Generate Key
-                </button>
-            </form>
-        </div>
+            <!-- Generate key button -->
+            <button type="button"
+                    class="btn btn-primary btn-lg"
+                    onclick="generateKey()">
+                Generate Key
+            </button>
+        </form>
     </div>
+</div>
 
 </body>
 </html>
