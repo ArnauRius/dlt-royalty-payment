@@ -104,7 +104,6 @@ export default {
      * @returns {Promise}
      */
     CREATE_SONG: (context, songName) => {
-      debugger
       return new Promise((resolve, reject) => {
         api.createSong(context.getters['artist'], context.rootGetters['user/user'].email, songName)
           .then((songRef) => {
