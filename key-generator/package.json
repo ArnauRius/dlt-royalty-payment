@@ -1,0 +1,14 @@
+{
+  "name": "key-generator",
+  "description": "",
+  "version": "1.0.0",
+  "author": "Arnau Rius <arnau.rius@gmail.com> && Adrià Sarquella <adrisarquella@gmail.com>",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "electron": "^1.8.4"
+  }
+}
