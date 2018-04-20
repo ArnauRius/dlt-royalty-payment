@@ -46,6 +46,7 @@
                          class="custom-file-input"
                          id="prvKeyInput"
                          ref="fileChooser"
+                         accept=".key"
                          @change="onFileSelected">
                   <label class="custom-file-label"
                          for="prvKeyInput">
