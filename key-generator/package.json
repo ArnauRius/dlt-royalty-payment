@@ -3,12 +3,20 @@
   "description": "An Electron project",
   "version": "1.0.0",
   "author": "Arnau Rius <arnau.rius@gmail.com> && Adrià Sarquella <adrisarquella@gmail.com>",
-  "main": "index.js",
+  "main": "main.js",
   "scripts": {
-    "start": "electron main.js"
+    "start": "electron .",
+    "dist": "build -m"
   },
   "dependencies": {
-    "electron": "^1.8.4",
     "sawtooth-sdk": "^1.0.2"
+  },
+  "devDependencies": {
+    "electron": "^1.8.4",
+    "electron-builder": "^20.9.2"
+  },
+  "build": {
+    "appId": "com.royaltypayment.keygenerator",
+    "productName": "RP Key Generator"
   }
 }

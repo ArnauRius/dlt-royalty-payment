@@ -30,92 +30,6 @@
         }
 
     </style>
-
-    <!-- JavaScript -->
-    <script type="text/javascript">
-
-        //Filesystem Import
-        const fs = require('fs')
-
-        // Electron Imports
-        const {dialog} = require('electron').remote
-
-        // Sawtooth Imports
-        const {createContext} = require('sawtooth-sdk/signing')
-
-        const ECSDA_Standard = 'secp256k1' //Standard used for valid key generation
-        const context = createContext(ECSDA_Standard)
-
-        function generateAndSaveKey() {
-
-            hideAlerts()
-
-            let email = document.getElementById('emailInput').value
-
-            if (!email) {
-                showErrorAlert("Error: Please, introduce your account email.")
-            } else if (!checkValidEmail(email)) {
-                showErrorAlert("Error: Invalid email. Please, introduce a valid email")
-            } else {
-                chooseKeyFileLocation((filePath) => {
-                    writeFile(filePath, generateKey(email))
-                })
-            }
-        }
-
-        const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-
-        function checkValidEmail(email) {
-            return emailRegex.test(String(email).toLowerCase())
-        }
-
-        function showErrorAlert(error) {
-            document.getElementById('successAlert').style.display = 'none'
-
-            let errorAlert = document.getElementById('errorAlert')
-            errorAlert.innerText = error
-            errorAlert.style.display = 'block'
-        }
-
-        function showSuccessAlert(message) {
-            document.getElementById('errorAlert').style.display = 'none'
-
-            let successAlert = document.getElementById('successAlert')
-            successAlert.innerText = message
-            successAlert.style.display = 'block'
-        }
-
-        function hideAlerts(){
-            document.getElementById('errorAlert').style.display = 'none'
-            document.getElementById('successAlert').style.display = 'none'
-        }
-
-        function chooseKeyFileLocation(callback){
-            dialog.showSaveDialog((filePath)=>{
-                if(filePath !== undefined){
-                    callback(filePath)
-                }
-            })
-        }
-
-        function generateKey(email){
-            let privateKey = context.newRandomPrivateKey().asHex()
-            let encryptedKey = CryptoJS.AES.encrypt(privateKey, email)
-            return encryptedKey.toString()
-        }
-
-        function writeFile(filePath, fileContent){
-            fs.writeFile(filePath+".KEY", fileContent, (error) => {
-                if(error) {
-                    showErrorAlert("Error: An error occurred while creating the key file. Please, try again.")
-                    console.log("Error: An error occurred while creating the key file: " + error.message)
-                    return
-                }
-                showSuccessAlert("Key Generated Successfully! :)")
-            })
-        }
-
-    </script>
 </head>
 
 
@@ -176,4 +90,136 @@
 </div>
 
 </body>
+
+<!-- JavaScript -->
+<script type="text/javascript">
+
+    //Filesystem Import
+    const fs = require('fs')
+
+    // Electron Imports
+    const {dialog} = require('electron').remote
+
+    // Sawtooth Imports
+    const {createContext} = require('sawtooth-sdk/signing')
+
+    // Constants needed for Sawtooth Key generation
+    const ECSDA_Standard = 'secp256k1' //Standard used for valid key generation
+    const context = createContext(ECSDA_Standard)
+
+    /**
+     * Generates a new Private Key and saves it in a local file
+     */
+    function generateAndSaveKey() {
+
+        hideAlerts() //Hides any visible alert message if any
+
+        let email = document.getElementById('emailInput').value //The account's email introduced by the user
+
+        if (!email) { //If the user has not introduced an email, shows an error alert
+            showErrorAlert("Error: Please, introduce your account email.")
+        } else if (!checkValidEmail(email)) { //If the user has introduced an invalid email, shows an error alert
+            showErrorAlert("Error: Invalid email. Please, introduce a valid email")
+        } else { //If the user has introduced a valid email, generate the key and save it to a file
+            chooseKeyFileLocation((filePath) => {
+                writeFile(filePath, generateKey(email))
+            })
+        }
+    }
+
+    //Regex corresponding to a valid email
+    const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+
+    /**
+     * Checks if a given string is a valid email or not
+     * @param email - String to check if is a valid email
+     * @returns {boolean} - True (Valid email) / False (Invalid email)
+     */
+    function checkValidEmail(email) {
+        return emailRegex.test(String(email).toLowerCase())
+    }
+
+    /**
+     * Shows a red error alert
+     * @param error - Error message to show in the alert
+     */
+    function showErrorAlert(error) {
+
+        //Hides the Success alert in case it is visible
+        document.getElementById('successAlert').style.display = 'none'
+
+        //Shows the Error alert with the provided error message
+        let errorAlert = document.getElementById('errorAlert')
+        errorAlert.innerText = error
+        errorAlert.style.display = 'block'
+    }
+
+    /**
+     * Shows a green success alert
+     * @param message - Message to show in the alert
+     */
+    function showSuccessAlert(message) {
+
+        //Hides the Error alert in case it is visible
+        document.getElementById('errorAlert').style.display = 'none'
+
+        //Shows the Success alert with the provided message
+        let successAlert = document.getElementById('successAlert')
+        successAlert.innerText = message
+        successAlert.style.display = 'block'
+    }
+
+    /**
+     * Hides all alerts
+     */
+    function hideAlerts() {
+        document.getElementById('errorAlert').style.display = 'none'
+        document.getElementById('successAlert').style.display = 'none'
+    }
+
+    /**
+     * Displays a native System modal in order to let the user choose a path and a name for a file to be
+     * created.
+     * @param callback - Callback to execute when the user has defined the path and the filename
+     */
+    function chooseKeyFileLocation(callback) {
+        dialog.showSaveDialog((filePath) => {
+            //If the filePath has been defined (!== undefined), execute the callback
+            if (filePath !== undefined) {
+                callback(filePath)
+            }
+            //Else, means the user has closed the dialog, not defining a filePath
+        })
+    }
+
+    /**
+     * Generates a new random private key and encrypts it with the provided email, making it
+     * just compatible with the account with that email
+     * @param email - Email to encrypt the private key
+     * @returns {string} - String containing the encrypted private key
+     */
+    function generateKey(email) {
+        let privateKey = context.newRandomPrivateKey().asHex()
+        let encryptedKey = CryptoJS.AES.encrypt(privateKey, email)
+        return encryptedKey.toString()
+    }
+
+    /**
+     * Writes a provided content to a provided file
+     * @param filePath - Path to the file to write to
+     * @param fileContent - Content to write to the file
+     */
+    function writeFile(filePath, fileContent) {
+        fs.writeFile(filePath + ".key", fileContent, (error) => {
+            if (error) {
+                showErrorAlert("Error: An error occurred while creating the key file. Please, try again.")
+                console.log("Error: An error occurred while creating the key file: " + error.message)
+                return
+            }
+            showSuccessAlert("Key Generated Successfully! :)")
+        })
+    }
+
+</script>
+
 </html>
