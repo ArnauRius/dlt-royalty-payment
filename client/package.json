@@ -10,6 +10,7 @@
     "build": "cross-env NODE_ENV=production webpack --progress --hide-modules"
   },
   "dependencies": {
+    "crypto-js": "^3.1.9-1",
     "firebase": "^4.11.0",
     "jquery": "^3.3.1",
     "sawtooth-sdk": "^1.0.1",

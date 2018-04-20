@@ -18,7 +18,7 @@
                     class="close"
                     data-dismiss="modal"
                     aria-label="Close"
-                    refs="closeButton">
+                    ref="closeButton">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
@@ -32,7 +32,7 @@
               {{ errorMessage }}
             </div>
 
-            <form class="modal-form">
+            <form class="modal-form key-input-form clearfix">
 
               <!-- Prv Key file input -->
               <div class="input-group mb-3">
@@ -62,6 +62,20 @@
                 Become an artist
               </button>
             </form>
+
+            <!-- Download Key Generator row -->
+            <div class="pull-right"
+                 style="text-align: left">
+              Do not have a key file?
+
+              <a href="generator.dmg" target="_blank">
+                <button type="submit"
+                        class="btn btn-outline-primary"
+                        style="margin-left: 16px">
+                  Download the Key Generator
+                </button>
+              </a>
+            </div>
           </div>
         </div>
       </div>
@@ -71,7 +85,11 @@
 <script>
 
   // Vuex imports
+  import {mapGetters} from 'vuex'
   import {mapActions} from 'vuex'
+
+  // Utils import
+  import utils from '../../utils'
 
   export default {
 
@@ -79,8 +97,18 @@
       return {
         isError: false,
         errorMessage: 'Some error occurred. Please, try again later.',
-        keyFilename: 'Choose a Private Key file'
+        keyFilename: 'Choose a Private Key file',
+        keyFile: undefined
       }
+    },
+
+    computed: {
+
+      // Vuex getters
+      ...mapGetters({
+        'user': 'user/user',
+      })
+
     },
 
     methods: {
@@ -104,15 +132,27 @@
        * Creates a new artist instance assigned to the current user
        */
       convertToArtist: function (){
-        this.CONVERT_TO_ARTIST(this.$refs.prvkey.value)
-          .then(() => {
-            this.SIGN_IN_ARTIST(this.$refs.prvkey.value)
-              .then(() => {
-                this.$router.push({name:'dashboard'})
-                this.$refs.closeButton.click()
+        utils.readFile(this.keyFile)
+          .then((keyFileContent) => {
+            utils.decryptKey(keyFileContent, this.user.email)
+              .then((privKey) => {
+                this.CONVERT_TO_ARTIST(privKey)
+                  .then(() => {
+                    this.SIGN_IN_ARTIST(privKey)
+                      .then(() => {
+                        this.$refs.closeButton.click()
+                        this.$router.push({name:'dashboard'})
+                      })
+                      .catch((error) => {
+                        this.showError(error+" (While singing in)")
+                      })
+                  })
+                  .catch((error) => {
+                    this.showError(error)
+                  })
               })
-              .catch(() => {
-                this.showError(error+" (While singing in)")
+              .catch((error) => {
+                this.showError(error)
               })
           })
           .catch((error) => {
@@ -124,12 +164,21 @@
        * When the user selects a file, shows its name to the file label
        */
       onFileSelected: function(){
-        this.keyFilename = this.$refs.fileChooser.files[0].name
+        this.isError = false
+        this.keyFile = this.$refs.fileChooser.files[0]
+        if(this.keyFile){
+          this.keyFilename = this.keyFile.name
+        }
       }
+
     }
   }
 </script>
 
 <style scoped>
+
+  .key-input-form{
+    margin-bottom: 32px;
+  }
 
 </style>
