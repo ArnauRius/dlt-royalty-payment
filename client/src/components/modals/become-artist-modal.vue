@@ -18,7 +18,7 @@
                     class="close"
                     data-dismiss="modal"
                     aria-label="Close"
-                    ref="closeButton">
+                    refs="closeButton">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
@@ -34,23 +34,30 @@
 
             <form class="modal-form">
 
-              <!-- Prv Key input -->
+              <!-- Prv Key file input -->
               <div class="input-group mb-3">
                 <div class="input-group-prepend">
                   <span class="input-group-text">
                       <span class="fa fa-key"></span>
                   </span>
                 </div>
-                <input type="password"
-                       class="form-control"
-                       placeholder="Private Key"
-                       ref="prvkey">
+                <div class="custom-file">
+                  <input type="file"
+                         class="custom-file-input"
+                         id="prvKeyInput"
+                         ref="fileChooser"
+                         @change="onFileSelected">
+                  <label class="custom-file-label"
+                         for="prvKeyInput">
+                    {{keyFilename}}
+                  </label>
+                </div>
               </div>
 
               <!--Become an artist button -->
               <button @click="convertToArtist"
                       type="button"
-                      class="btn btn-success pull-right">
+                      class="btn btn-primary pull-right">
                 Become an artist
               </button>
             </form>
@@ -70,7 +77,8 @@
     data() {
       return {
         isError: false,
-        errorMessage: 'Some error occurred. Please, try again later.'
+        errorMessage: 'Some error occurred. Please, try again later.',
+        keyFilename: 'Choose a Private Key file'
       }
     },
 
@@ -109,6 +117,13 @@
           .catch((error) => {
             this.showError(error)
           })
+      },
+
+      /**
+       * When the user selects a file, shows its name to the file label
+       */
+      onFileSelected: function(){
+        this.keyFilename = this.$refs.fileChooser.files[0].name
       }
     }
   }
