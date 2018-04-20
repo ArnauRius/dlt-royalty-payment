@@ -34,23 +34,31 @@
 
             <form class="modal-form">
 
-              <!-- Prv Key input -->
+              <!-- Prv Key file input -->
               <div class="input-group mb-3">
                 <div class="input-group-prepend">
                   <span class="input-group-text">
                       <span class="fa fa-key"></span>
                   </span>
                 </div>
-                <input type="password"
-                       class="form-control"
-                       placeholder="Private Key"
-                       ref="prvkey">
+                <div class="custom-file">
+                  <input type="file"
+                         class="custom-file-input"
+                         id="prvKeyInputSign"
+                         ref="fileChooser"
+                         accept=".key"
+                         @change="onFileSelected">
+                  <label class="custom-file-label"
+                         for="prvKeyInputSign">
+                    {{keyFilename}}
+                  </label>
+                </div>
               </div>
 
               <!--Become an artist button -->
               <button @click="signIn"
                       type="button"
-                      class="btn btn-success pull-right">
+                      class="btn btn-primary pull-right">
                 Go to dashboard
               </button>
             </form>
@@ -63,15 +71,30 @@
 <script>
 
   // Vuex imports
+  import {mapGetters} from 'vuex'
   import {mapActions} from 'vuex'
+
+  // Utils import
+  import utils from '../../utils'
 
   export default {
 
     data() {
       return {
         isError: false,
-        errorMessage: 'Some error occurred. Please, try again later.'
+        errorMessage: 'Some error occurred. Please, try again later.',
+        keyFilename: 'Choose a Private Key file',
+        keyFile: undefined
       }
+    },
+
+    computed: {
+
+      // Vuex getters
+      ...mapGetters({
+        'user': 'user/user',
+      })
+
     },
 
     methods: {
@@ -95,14 +118,37 @@
        * to its dashboard
        */
       signIn: function (){
-        this.SIGN_IN_ARTIST(this.$refs.prvkey.value)
-          .then(() => {
-            this.$router.push({name:'dashboard'})
-            this.$refs.closeButton.click()
+        utils.readFile(this.keyFile)
+          .then((keyFileContent) => {
+            utils.decryptKey(keyFileContent, this.user.email)
+              .then((privKey) => {
+                this.SIGN_IN_ARTIST(privKey)
+                  .then(() => {
+                    this.$router.push({name:'dashboard'})
+                    this.$refs.closeButton.click()
+                  })
+                  .catch((error) => {
+                    this.showError(error)
+                  })
+              })
+              .catch((error) => {
+                this.showError(error)
+              })
           })
           .catch((error) => {
             this.showError(error)
           })
+      },
+
+      /**
+       * When the user selects a file, shows its name to the file label
+       */
+      onFileSelected: function(){
+        this.isError = false
+        this.keyFile = this.$refs.fileChooser.files[0]
+        if(this.keyFile){
+          this.keyFilename = this.keyFile.name
+        }
       }
     }
   }

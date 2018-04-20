@@ -44,12 +44,12 @@
                 <div class="custom-file">
                   <input type="file"
                          class="custom-file-input"
-                         id="prvKeyInput"
+                         id="prvKeyInputBecome"
                          ref="fileChooser"
                          accept=".key"
                          @change="onFileSelected">
                   <label class="custom-file-label"
-                         for="prvKeyInput">
+                         for="prvKeyInputBecome">
                     {{keyFilename}}
                   </label>
                 </div>
