@@ -344,10 +344,9 @@
        */
       $(window).on('shown.bs.modal', function (e) {
         if (vueInstance.currentSong) {
+          console.log(vueInstance.currentSong)
           vueInstance.isEdit = true
           vueInstance.$refs.name.value = vueInstance.currentSong.data.name
-          console.log(vueInstance.currentSong.data.royalties)
-          console.log(vueInstance.royalties)
           vueInstance.royalties = vueInstance.currentSong.data.royalties.slice()
         } else {
           vueInstance.isEdit = false
