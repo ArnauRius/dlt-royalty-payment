@@ -1,0 +1,19 @@
+
+
+html {
+  font-family: "Avenir Next";
+  color: white;
+}
+a {
+  color: white;
+  text-decoration: none;
+}
+
+a:hover {
+  color: white !important;
+  outline: none;
+  text-decoration: none;
+}
+.flex{
+  display: flex;
+}
