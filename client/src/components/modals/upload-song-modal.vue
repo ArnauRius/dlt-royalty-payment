@@ -13,7 +13,8 @@
 
         <!-- Modal's header -->
         <div class="modal-header">
-          <h3>Upload Song</h3>
+          <h3 v-if="this.isEdit">Edit Song</h3>
+          <h3 v-else>Upload Song</h3>
           <button type="button"
                   class="close"
                   data-dismiss="modal"
@@ -96,24 +97,24 @@
 
                 <table class="table table-header-borderless">
                   <thead>
-                    <tr>
-                      <th>Paypal email</th>
-                      <th>%</th>
-                      <th></th>
-                    </tr>
+                  <tr>
+                    <th>Paypal email</th>
+                    <th>%</th>
+                    <th></th>
+                  </tr>
                   </thead>
                   <tbody>
-                    <tr v-for="(royalty, index) in royalties">
-                      <td>{{ royalty.email }}</td>
-                      <td>{{ royalty.percentage }}</td>
-                      <td>
-                        <button class="btn btn-outline-danger"
-                                type="button"
-                                @click="removeRoyalty(index)">
-                          <i class="fa fa-trash-o" aria-hidden="true"></i>
-                        </button>
-                      </td>
-                    </tr>
+                  <tr v-for="(royalty, index) in royalties">
+                    <td>{{ royalty.email }}</td>
+                    <td>{{ royalty.percentage }}</td>
+                    <td>
+                      <button class="btn btn-outline-danger"
+                              type="button"
+                              @click="removeRoyalty(index)">
+                        <i class="fa fa-trash-o" aria-hidden="true"></i>
+                      </button>
+                    </td>
+                  </tr>
                   </tbody>
                 </table>
               </div>
@@ -125,7 +126,7 @@
         <!-- Modal's footer -->
         <div class="modal-footer">
           <!-- Save song button -->
-          <button @click="createSong()"
+          <button @click="saveSong()"
                   type="button"
                   class="btn btn-success pull-right">
             Save
@@ -139,6 +140,7 @@
 <script>
 
   // Vuex imports
+  import {mapGetters} from 'vuex'
   import {mapActions} from 'vuex'
 
   // Utils Import
@@ -148,14 +150,22 @@
 
     data() {
       return {
+        isEdit: false,
         isError: false,
         errorMessage: 'Some error occurred. Please, try again later.',
-        royalties: [
-          {email: 'arnau@monkignme.com', percentage: 45},
-          {email: 'arnau@monkignme.com', percentage: 55}
-        ], // TODO: Fetch from blockchain
+        royalties: [],
 
       }
+    },
+
+    props: ["currentSong"],
+
+    computed: {
+
+      // Vuex getters
+      ...mapGetters({
+        'user': 'user/user',
+      }),
     },
 
     methods: {
@@ -163,23 +173,40 @@
       // Vuex actions
       ...mapActions({
         'CREATE_SONG': 'artist/CREATE_SONG',
-        'FETCH_SONGS_DATA': 'artist/FETCH_SONGS_DATA'
       }),
 
       /**
-       * Creates a new song assigned to the current artist
+       * Saves the song data by creating a new one or updating an existing one
        */
-      createSong() {
-        this.isError = !(this.checkValidName() && this.checkSumAmount())
+      saveSong() {
+        this.isError = !(this.checkValidName() && this.checkPercentageSum())
         if (!this.isError) {
-          this.CREATE_SONG(this.$refs.name.value) // send as an argument the song name
-            .then(() => {
-              this.$refs.closeButton.click()
-            })
-            .catch((error) => {
-              this.showError(error)
-            })
+          if(this.isEdit){
+            this.updateSong()
+          }else{
+            this.createSong()
+          }
         }
+      },
+
+      /**
+       * Creates a new song
+       */
+      createSong(){
+        this.CREATE_SONG(this.$refs.name.value, this.royalties) // send as an argument the song name
+          .then(() => {
+            this.$refs.closeButton.click()
+          })
+          .catch((error) => {
+            this.showError(error)
+          })
+      },
+
+      /**
+       * Updates the song with the new data
+       */
+      updateSong(){
+
       },
 
       /**
@@ -194,11 +221,34 @@
       },
 
       /**
+       *  Clears the inpot for the song name
+       */
+      clearNameInput() {
+        this.$refs.name.value = ''
+      },
+
+      /**
        * Clears the royalty instance input to be able to introduce new royalties
        */
       clearRoyaltyInput() {
         this.$refs.paypal.value = ''
         this.$refs.percentage.value = ''
+      },
+
+      /**
+       * Clears the whole royalties list
+       */
+      clearRoyaltyList(){
+        this.royalties = []
+      },
+
+      /**
+       * Clears all the modal's data to return it to its default state
+       */
+      clearModal(){
+        this.clearNameInput()
+        this.clearRoyaltyInput()
+        this.clearRoyaltyList()
       },
 
       /**
@@ -251,8 +301,8 @@
       /**
        * Checks if the sum of all the royalties percentages is 100% or not.
        */
-      checkPercentageSum(){
-        const sum = this.royalties.reduce((acc, currentItem, currentIndex) => acc + currentItem.percentage, 0);
+      checkPercentageSum() {
+        const sum = this.royalties.reduce((acc, currentItem, currentIndex) => acc + parseInt(currentItem.percentage), 0);
         if (sum === 100) {
           return true
         }
@@ -260,24 +310,8 @@
         return false
       },
 
-
-      //TODO: EDIT FROM HEEERE
-
       /**
-       * Checks if the user has entered a valid name. Shows an error otherwise.
-       * Returns a boolean to define is the name is valid or not
-       * @return bool
-       */
-      checkSumAmount() {
-        const sum = this.royalties.reduce((acc, currentItem, currentIndex) => acc + currentItem.percentage, 0);
-        if (sum === 100) {
-          return true
-        }
-        this.errorMessage = 'The sum of amounts is not 100.'
-        return false
-      },
-      /**
-       * Checks if the user has entered a valid name. Shows an error otherwise.
+       * Checks if the user has entered a valid song name. Shows an error otherwise.
        * Returns a boolean to define is the name is valid or not
        * @return bool
        */
@@ -289,7 +323,6 @@
         return true
       },
 
-
       /**
        * Shows an error in a red alert
        * @param error
@@ -298,8 +331,33 @@
         this.errorMessage = error
         this.isError = true
       }
+    },
+
+    mounted() {
+
+      let vueInstance = this
+
+      /**
+       * Handles when modal appears
+       */
+      $(window).on('shown.bs.modal', function (e) {
+        if (vueInstance.currentSong) {
+          vueInstance.isEdit = true
+        } else {
+          vueInstance.isEdit = false
+          vueInstance.royalties.push({email: vueInstance.user.email, percentage: 100})
+        }
+      })
+
+      /**
+       * Handles when modal disappears
+       */
+      $(window).on('hidden.bs.modal', function (e) {
+        vueInstance.clearModal()
+      })
     }
   }
+
 </script>
 
 <style scoped>
