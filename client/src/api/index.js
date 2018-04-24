@@ -23,9 +23,9 @@ import {generateSignerFromKey, generatePrivateKeyFromHex} from '../managers/sign
  * @returns {Promise} - Callbacks to manage sign in's success or failure
  */
 const signIn = (credentials) => {
-  return new Promise( (resolve, reject) => {
+  return new Promise((resolve, reject) => {
     return firestore.getDoc('users', credentials.email)
-      .then( (userDoc) => {
+      .then((userDoc) => {
 
         if (!userDoc || !userDoc.exists || utils.hash(credentials.password) !== userDoc.data().password) {
           reject("Incorrect email or password.")
@@ -138,8 +138,8 @@ const createArtist = (key) => {
  * @returns {Promise} - Callbacks to manage artist sign in's success or failure
  */
 const signArtist = (credentials) => {
-  return new Promise( (resolve, reject) => {
-    if(utils.checkValidKey(credentials.key)) {
+  return new Promise((resolve, reject) => {
+    if (utils.checkValidKey(credentials.key)) {
       return firestore.getDoc('artists', credentials.email)
         .then((artistDoc) => {
           const signer = generateSignerFromKey(generatePrivateKeyFromHex(credentials.key))
@@ -155,7 +155,7 @@ const signArtist = (credentials) => {
         .catch(function (error) {
           reject(error)
         })
-    }else{
+    } else {
       reject('Please, introduce a valid key (32 bytes in hex format)')
     }
   })
@@ -188,22 +188,22 @@ const createSong = (artist, artistEmail, songName) => {
               transaction.update(artistRef, {songs: artistSongs})
             })
         })
-        .then(() => {
-          console.log('Song reference assigned to uploader')
+          .then(() => {
+            console.log('Song reference assigned to uploader')
 
-          // 3. Creates a new song to Sawtooth's Blockchain
-          return sawtooth.createSong(artist.signer, songRef.id, songName, '')
-            .then((data) => {
-              console.log('Song created in Sawtooth')
-              resolve(songRef)
-            })
-            .catch((error) => {
-              reject(error)
-            })
-        })
-        .catch((error) => {
-          reject(error)
-        })
+            // 3. Creates a new song to Sawtooth's Blockchain
+            return sawtooth.createSong(artist.signer, songRef.id, songName, '')
+              .then((data) => {
+                console.log('Song created in Sawtooth')
+                resolve(songRef)
+              })
+              .catch((error) => {
+                reject(error)
+              })
+          })
+          .catch((error) => {
+            reject(error)
+          })
       })
       .catch((error) => {
         reject(error)
@@ -211,32 +211,66 @@ const createSong = (artist, artistEmail, songName) => {
   })
 }
 
-//TODO: Comment all these below
-
-const fetchArtistFromBlockchain = (artistPubKey) => {
-  return sawtooth.getArtist(artistPubKey)
-}
-
-const fetchSongFromBlockchain = (songId) => {
-  return sawtooth.getSong(songId)
-}
-
+/**
+ * Gets a list of all the song instances stored in the Firebase Firestore database
+ * @returns {Promise<firebase.firestore.QuerySnapshot>}
+ */
 const getAllSongsFromFirestore = () => {
   return firestore.db.collection('songs').get()
 }
 
+/**
+ * Fetches the data stored for an artist in the Sawtooth Blockchain
+ * @param artistPubKey - The public key identifying the artist that is wanted to fetch the data
+ * @returns {*}
+ */
+const fetchArtistFromBlockchain = (artistPubKey) => {
+  return sawtooth.getArtist(artistPubKey)
+}
+
+/**
+ * Fetches the data stored for a song in the Sawtooth Blockchain
+ * @param songId - The song identifyier for the song that is wanted to fetch the data
+ * @returns {*}
+ */
+const fetchSongFromBlockchain = (songId) => {
+  return sawtooth.getSong(songId)
+}
+
+/**
+ * Notifies the Sawtooth blockchain that an specific song has been listened in order to update its generated
+ * amount
+ * @param songId - The song id for the listened song
+ */
 const listenToSong = (songId) => {
   sawtooth.listenToSong(songId)
 }
 
+/**
+ * Notifies the Sawtooth blockchain that an specific song has been downloaded in order to update its generated
+ * amount
+ * @param songId - The song id for the listened song
+ */
 const downloadSong = (songId) => {
   sawtooth.downloadSong(songId)
 }
 
+/**
+ * Subscribes to any change that happens to an specific artist instance in the blockchain in order to perform
+ * any desired action when a change on it happens
+ * @param artist - The artist instance corresponding to the one that is wanted to subscribe to
+ * @param callback - Callback to execute when a certain change happens to the artist instance in the blockchain
+ */
 const subscribeToArtist = (artist, callback) => {
   sawtooth.subscribeToArtist(artist, callback)
 }
 
+/**
+ * Subscribes to any change that happens to an specific song instance in the blockchain in order to perform
+ * any desired action when a change on it happens
+ * @param song - The song instance corresponding to the one that is wanted to subscribe to
+ * @param callback - Callback to execute when a certain change happens to the song instance in the blockchain
+ */
 const subscribeToSong = (song, callback) => {
   sawtooth.subscribeToSong(song, callback)
 }
