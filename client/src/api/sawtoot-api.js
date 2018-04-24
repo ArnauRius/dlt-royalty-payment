@@ -42,7 +42,7 @@ const createSong = (artistSigner, songId, songName, royalties) => {
   let songAddress = Addresser.getSongAddress(songId)
   let songInputs = [songAddress]
   let songOutputs = songInputs
-  let song = new Song(songName, 0, '', [new Royalty('a', 9.2)]) // The public key will be setted by the Transaction Proc.
+  let song = new Song(songName, 0, '', royalties) // The public key will be setted by the Transaction Proc.
   let songPayload = new Payload('createSong', {id: songId, song: song.serialize()})
   let createSongTransaction = txn.buildTransaction(songInputs, songOutputs, txSigner, batchSigner, songPayload)
 

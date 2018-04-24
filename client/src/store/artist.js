@@ -103,9 +103,9 @@ export default {
      * @param songName - The song's name
      * @returns {Promise}
      */
-    CREATE_SONG: (context, songName) => {
+    CREATE_SONG: (context, songData) => {
       return new Promise((resolve, reject) => {
-        api.createSong(context.getters['artist'], context.rootGetters['user/user'].email, songName)
+        api.createSong(context.getters['artist'], context.rootGetters['user/user'].email, songData.name, songData.royalties)
           .then((songRef) => {
             context.commit('ADD_SONG', songRef)
             resolve()

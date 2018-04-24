@@ -105,7 +105,7 @@
                   </thead>
                   <tbody>
                   <tr v-for="(royalty, index) in royalties">
-                    <td>{{ royalty.email }}</td>
+                    <td>{{ royalty.account }}</td>
                     <td>{{ royalty.percentage }}</td>
                     <td>
                       <button class="btn btn-outline-danger"
@@ -138,6 +138,8 @@
 </template>
 
 <script>
+
+  import {Royalty} from "../../../../rp-txn-family/models"
 
   // Vuex imports
   import {mapGetters} from 'vuex'
@@ -193,7 +195,7 @@
        * Creates a new song
        */
       createSong(){
-        this.CREATE_SONG(this.$refs.name.value, this.royalties) // send as an argument the song name
+        this.CREATE_SONG({name: this.$refs.name.value, royalties: this.royalties}) // send as an argument the song name
           .then(() => {
             this.$refs.closeButton.click()
           })
@@ -206,7 +208,7 @@
        * Updates the song with the new data
        */
       updateSong(){
-
+        console.log("SAVING EDITED SONG")
       },
 
       /**
@@ -215,7 +217,7 @@
       addRoyalty() {
         this.isError = !(this.checkValidEmail() && this.checkValidPercentage() && this.checkEmailUnique())
         if (!this.isError) {
-          this.royalties.push({email: this.$refs.paypal.value, percentage: this.$refs.percentage.value})
+          this.royalties.push(new Royalty(this.$refs.paypal.value, parseInt(this.$refs.percentage.value)))
           this.clearRoyaltyInput()
         }
       },
@@ -283,7 +285,7 @@
        * @return bool
        */
       checkEmailUnique() {
-        if (this.royalties.some(((account, index, array) => account.email === this.$refs.paypal.value), this)) {
+        if (this.royalties.some(((royalty, index, array) => royalty.account === this.$refs.paypal.value), this)) {
           this.errorMessage = 'This account has already a percentage assigned. Please, introduce another account.'
           return false
         }
@@ -302,7 +304,7 @@
        * Checks if the sum of all the royalties percentages is 100% or not.
        */
       checkPercentageSum() {
-        const sum = this.royalties.reduce((acc, currentItem, currentIndex) => acc + parseInt(currentItem.percentage), 0);
+        const sum = this.royalties.reduce((acc, currentItem, currentIndex) => acc + currentItem.percentage, 0);
         if (sum === 100) {
           return true
         }
@@ -343,9 +345,11 @@
       $(window).on('shown.bs.modal', function (e) {
         if (vueInstance.currentSong) {
           vueInstance.isEdit = true
+          vueInstance.$refs.name.value = vueInstance.currentSong.data.name
+          vueInstance.royalties = vueInstance.currentSong.data.royalties
         } else {
           vueInstance.isEdit = false
-          vueInstance.royalties.push({email: vueInstance.user.email, percentage: 100})
+          vueInstance.royalties.push(new Royalty(vueInstance.user.email, 100))
         }
       })
 

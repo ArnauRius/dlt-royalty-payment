@@ -170,7 +170,7 @@ const signArtist = (credentials) => {
  * @param songName - The name of the new created song
  * @returns {Promise} - Callbacks to handle song's creation success or failure
  */
-const createSong = (artist, artistEmail, songName) => {
+const createSong = (artist, artistEmail, songName, songRoyalties) => {
 
   return new Promise((resolve, reject) => {
     // 1. Creates a new song to Firestore db
@@ -192,7 +192,7 @@ const createSong = (artist, artistEmail, songName) => {
             console.log('Song reference assigned to uploader')
 
             // 3. Creates a new song to Sawtooth's Blockchain
-            return sawtooth.createSong(artist.signer, songRef.id, songName, '')
+            return sawtooth.createSong(artist.signer, songRef.id, songName, songRoyalties)
               .then((data) => {
                 console.log('Song created in Sawtooth')
                 resolve(songRef)
