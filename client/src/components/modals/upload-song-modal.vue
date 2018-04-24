@@ -13,7 +13,7 @@
 
         <!-- Modal's header -->
         <div class="modal-header">
-          <h3>Upload a Song</h3>
+          <h3>Upload Song</h3>
           <button type="button"
                   class="close"
                   data-dismiss="modal"
@@ -34,89 +34,95 @@
 
           <form class="modal-form">
 
+            <!-- Song Information -->
+            <h5>Song</h5>
             <!-- song name input -->
-            <div class="input-group mb-3">
-              <div class="input-group-prepend">
-                  <span class="input-group-text">
-                      Name
-                  </span>
+            <div>
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">
+                        Name
+                    </span>
+                </div>
+                <input type="text"
+                       class="form-control"
+                       placeholder="Enter the song name here..."
+                       ref="name">
               </div>
-              <input type="text"
-                     class="form-control"
-                     placeholder="Enter the song name here..."
-                     ref="name">
             </div>
 
-
-            <table class="table">
-              <tr>
-                <th>Paypal email</th>
-                <th>Percentage</th>
-                <th></th>
-              </tr>
-              <tr v-for="account in accounts">
-                <th>{{ account.email }}</th>
-                <th>{{ account.percentage }}</th>
-                <th >
-                  <button class="btn btn-outline-warning mt-1"
-                    @click="editAccount(account.email, account.percentage)"
-                    >Edit
-                  </button>
-                </th>
-              </tr>
-            </table>
             <hr>
-            <p>Add a new receiver</p>
-            <!-- new receiver -->
-            <div class="input-group mb-3">
-              <div class="input-group-prepend">
-                  <span class="input-group-text">
-                      <span class="fa fa-paypal"></span>
-                  </span>
+
+            <!-- Royalties Information -->
+            <h5>Royalties</h5>
+            <!-- royalty account -->
+            <div class="clearfix">
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">
+                        <span class="fa fa-paypal"></span>
+                    </span>
+                </div>
+                <input type="text"
+                       class="form-control"
+                       placeholder="Enter the paypal account here..."
+                       ref="paypal">
               </div>
-              <input type="text"
-                     class="form-control"
-                     placeholder="Enter the paypal account here..."
-                     ref="paypal">
-            </div>
-            <div class="input-group mb-3">
-              <div class="input-group-prepend">
-                  <span class="input-group-text">
-                     <span class="fa fa-percent"></span>
-                  </span>
+              <!-- royalty percentage -->
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">
+                       <span class="fa fa-percent"></span>
+                    </span>
+                </div>
+                <input type="text"
+                       class="form-control"
+                       placeholder="Enter the percentage here..."
+                       ref="percentage">
               </div>
-              <input type="text"
-                     class="form-control"
-                     placeholder="Enter the percentage here..."
-                     ref="percentage">
-            </div>
-            <!-- Edit Percentage -->
-            <div v-if="isEdit">
-              <button
-                      @click="editAccount"
+              <!-- Add royalty button -->
+              <button @click="addAccount"
                       type="button"
-                      class="btn btn-info pull-right">
-                Save
-              </button>
-              <button
-                @click="undoEditAccount"
-                type="button"
-                class="btn btn-danger pull-right mr-2">
-                Cancel
+                      class="btn btn-primary pull-right">
+                Add
               </button>
             </div>
-            <!-- Add Percentage -->
-            <button v-else
-                    @click="addAccount"
-                    type="button"
-                    class="btn btn-primary pull-right">
-              Add
-            </button>
+
+            <hr>
+
+            <!-- Royalties list -->
+            <div class="card border-secondary mb-3">
+              <div class="card-body">
+
+                <table class="table table-header-borderless">
+                  <thead>
+                    <tr>
+                      <th>Paypal email</th>
+                      <th>%</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="account in accounts">
+                      <td>{{ account.email }}</td>
+                      <td>{{ account.percentage }}</td>
+                      <td>
+                        <button class="btn btn-outline-danger">
+                          <i class="fa fa-trash-o" aria-hidden="true"></i>
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
           </form>
         </div>
+
+
         <!-- Modal's footer -->
         <div class="modal-footer">
-          <!--Become an artist button -->
+          <!-- Save song button -->
           <button @click="createSong()"
                   type="button"
                   class="btn btn-success pull-right">
@@ -209,8 +215,8 @@
        * @return bool
        */
       checkSumAmount() {
-        const sum = this.accounts.reduce( (acc, currentItem, currentIndex) => acc + currentItem.percentage, 0);
-        if(sum === 100) {
+        const sum = this.accounts.reduce((acc, currentItem, currentIndex) => acc + currentItem.percentage, 0);
+        if (sum === 100) {
           return true
         }
         this.errorMessage = 'The sum of amounts is not 100.'
@@ -247,7 +253,7 @@
        * @return bool
        */
       checkEmailUnique() {
-        if(this.accounts.some( ((account, index, array) => account.email === this.$refs.paypal.value ), this)){
+        if (this.accounts.some(((account, index, array) => account.email === this.$refs.paypal.value), this)) {
           this.errorMessage = 'Please, introduce a valid email.'
           return false
         }
@@ -279,5 +285,9 @@
 </script>
 
 <style scoped>
+
+  .table-header-borderless th {
+    border: 0;
+  }
 
 </style>
