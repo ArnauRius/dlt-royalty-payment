@@ -346,7 +346,9 @@
         if (vueInstance.currentSong) {
           vueInstance.isEdit = true
           vueInstance.$refs.name.value = vueInstance.currentSong.data.name
-          vueInstance.royalties = vueInstance.currentSong.data.royalties
+          console.log(vueInstance.currentSong.data.royalties)
+          console.log(vueInstance.royalties)
+          vueInstance.royalties = vueInstance.currentSong.data.royalties.slice()
         } else {
           vueInstance.isEdit = false
           vueInstance.royalties.push(new Royalty(vueInstance.user.email, 100))
