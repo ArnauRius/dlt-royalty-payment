@@ -81,7 +81,7 @@
                        ref="percentage">
               </div>
               <!-- Add royalty button -->
-              <button @click="addAccount"
+              <button @click="addRoyalty"
                       type="button"
                       class="btn btn-primary pull-right">
                 Add
@@ -103,11 +103,13 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr v-for="account in accounts">
-                      <td>{{ account.email }}</td>
-                      <td>{{ account.percentage }}</td>
+                    <tr v-for="(royalty, index) in royalties">
+                      <td>{{ royalty.email }}</td>
+                      <td>{{ royalty.percentage }}</td>
                       <td>
-                        <button class="btn btn-outline-danger">
+                        <button class="btn btn-outline-danger"
+                                type="button"
+                                @click="removeRoyalty(index)">
                           <i class="fa fa-trash-o" aria-hidden="true"></i>
                         </button>
                       </td>
@@ -147,9 +149,8 @@
     data() {
       return {
         isError: false,
-        isEdit: false,
         errorMessage: 'Some error occurred. Please, try again later.',
-        accounts: [
+        royalties: [
           {email: 'arnau@monkignme.com', percentage: 45},
           {email: 'arnau@monkignme.com', percentage: 55}
         ], // TODO: Fetch from blockchain
@@ -181,33 +182,86 @@
         }
       },
 
-      //TODO: CHECK FROM HERE
-      clearAddAccount() {
+      /**
+       * Adds a new Royalty instance to the song's royalties list
+       */
+      addRoyalty() {
+        this.isError = !(this.checkValidEmail() && this.checkValidPercentage() && this.checkEmailUnique())
+        if (!this.isError) {
+          this.royalties.push({email: this.$refs.paypal.value, percentage: this.$refs.percentage.value})
+          this.clearRoyaltyInput()
+        }
+      },
+
+      /**
+       * Clears the royalty instance input to be able to introduce new royalties
+       */
+      clearRoyaltyInput() {
         this.$refs.paypal.value = ''
         this.$refs.percentage.value = ''
       },
-      addAccount() {
-        this.isError = !(this.checkValidEmail() && this.checkValidAmount() && this.checkEmailUnique())
-        if (!this.isError) {
-          this.accounts.push({email: this.$refs.paypal.value, percentage: this.$refs.percentage.value})
-          this.clearAddAccount()
+
+      /**
+       * Checks if the user has entered a valid email. Shows an error otherwise.
+       * Returns a boolean to define if the email is valid or not
+       * @return bool
+       */
+      checkValidEmail() {
+        if (!utils.checkValidEmail(this.$refs.paypal.value)) {
+          this.errorMessage = 'Please, introduce a valid email.'
+          return false
         }
-      },
-      editAccount(email, percentage) {
-        this.$refs.paypal.value = email
-        this.$refs.percentage.value = percentage
-        this.isEdit = true
-
-      },
-      undoEditAccount() {
-        this.clearAddAccount()
-        this.isEdit = false
-      },
-      saveEditAccount() {
-        // TODO: Save on server
-        this.isEdit = false
+        return true
       },
 
+      /**
+       * Checks if the user has entered a valid percentage. Shows an error otherwise.
+       * Returns a boolean to define if the percentage is valid or not
+       * @return bool
+       */
+      checkValidPercentage() {
+        if (this.$refs.percentage.value > 0 && this.$refs.percentage.value <= 100) {
+          return true
+        }
+        this.errorMessage = 'Please, introduce a valid amount (> 0 && <= 100).'
+        return false
+      },
+
+      /**
+       * Checks if the Royalty's instance email is unique. It is, to check if there is not any other
+       * Royalty instance with the same email.
+       * @return bool
+       */
+      checkEmailUnique() {
+        if (this.royalties.some(((account, index, array) => account.email === this.$refs.paypal.value), this)) {
+          this.errorMessage = 'This account has already a percentage assigned. Please, introduce another account.'
+          return false
+        }
+        return true
+      },
+
+      /**
+       * Removes a royalty instance from the list
+       * @param index - Index of the royalty to remove
+       */
+      removeRoyalty(index) {
+        this.royalties.splice(index, 1)
+      },
+
+      /**
+       * Checks if the sum of all the royalties percentages is 100% or not.
+       */
+      checkPercentageSum(){
+        const sum = this.royalties.reduce((acc, currentItem, currentIndex) => acc + currentItem.percentage, 0);
+        if (sum === 100) {
+          return true
+        }
+        this.errorMessage = 'The sum of royalties percentages is not 100.'
+        return false
+      },
+
+
+      //TODO: EDIT FROM HEEERE
 
       /**
        * Checks if the user has entered a valid name. Shows an error otherwise.
@@ -215,7 +269,7 @@
        * @return bool
        */
       checkSumAmount() {
-        const sum = this.accounts.reduce((acc, currentItem, currentIndex) => acc + currentItem.percentage, 0);
+        const sum = this.royalties.reduce((acc, currentItem, currentIndex) => acc + currentItem.percentage, 0);
         if (sum === 100) {
           return true
         }
@@ -234,43 +288,7 @@
         }
         return true
       },
-      /**
-       * Checks if the user has entered a valid email. Shows an error otherwise.
-       * Returns a boolean to define if the email is valid or not
-       * @return bool
-       */
-      checkValidEmail() {
-        if (!utils.checkValidEmail(this.$refs.paypal.value)) {
-          this.errorMessage = 'Please, introduce a valid email.'
-          return false
-        }
-        return true
-      },
 
-      /**
-       * Checks if the Royalty's instance email is unique. It is, to check if there is not any other
-       * Royalty instance with the same email.
-       * @return bool
-       */
-      checkEmailUnique() {
-        if (this.accounts.some(((account, index, array) => account.email === this.$refs.paypal.value), this)) {
-          this.errorMessage = 'Please, introduce a valid email.'
-          return false
-        }
-        return true
-      },
-      /**
-       * Checks if the user has entered a valid amount. Shows an error otherwise.
-       * Returns a boolean to define if the email is valid or not
-       * @return bool
-       */
-      checkValidAmount() {
-        if (this.$refs.percentage.value > 0 && this.$refs.percentage.value <= 100) {
-          return true
-        }
-        this.errorMessage = 'Please, introduce a valid amount (< 0 && >= 100).'
-        return false
-      },
 
       /**
        * Shows an error in a red alert
