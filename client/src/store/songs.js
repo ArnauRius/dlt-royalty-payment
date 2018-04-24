@@ -122,6 +122,17 @@ export default {
         .catch((error) => {
           console.log(error)
         })
+    },
+
+    /**
+     * Updates the song's dynamic information (the one that can change), such as its name or royalties list
+     * @param context
+     * @param songData - {songId, {newName, newRoyalties}}
+     * @constructor
+     */
+    UPDATE_SONG_INFO: (context, songData) => {
+      console.log("Updating song " + songData.id + " dynamic information")
+      return api.updateSongInfo(context.rootGetters['artist/artist'], songData.id, songData.updated.name, songData.updated.royalties)
     }
   }
 }

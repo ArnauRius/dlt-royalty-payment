@@ -175,6 +175,7 @@
       // Vuex actions
       ...mapActions({
         'CREATE_SONG': 'artist/CREATE_SONG',
+        'UPDATE_SONG_INFO': 'songs/UPDATE_SONG_INFO'
       }),
 
       /**
@@ -208,7 +209,13 @@
        * Updates the song with the new data
        */
       updateSong(){
-        console.log("SAVING EDITED SONG")
+        this.UPDATE_SONG_INFO({id: this.currentSong.id, updated: {name: this.$refs.name.value, royalties: this.royalties}})
+          .then(() => {
+            this.$refs.closeButton.click()
+          })
+          .catch((error) => {
+            this.showError(error)
+          })
       },
 
       /**
@@ -337,14 +344,13 @@
 
     mounted() {
 
-      let vueInstance = this
+      const vueInstance = this
 
       /**
        * Handles when modal appears
        */
       $(window).on('shown.bs.modal', function (e) {
         if (vueInstance.currentSong) {
-          console.log(vueInstance.currentSong)
           vueInstance.isEdit = true
           vueInstance.$refs.name.value = vueInstance.currentSong.data.name
           vueInstance.royalties = vueInstance.currentSong.data.royalties.slice()

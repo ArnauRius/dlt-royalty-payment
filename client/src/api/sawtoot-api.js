@@ -58,6 +58,29 @@ const createSong = (artistSigner, songId, songName, royalties) => {
 }
 
 /**
+ * Updates the song information that can be modifyied, such as its name or its royalty list
+ * @param artistSigner - The public key of the artist that will update the song
+ * @param songId -  The song id corresponding to the song to update
+ * @param newName - The new name for the song
+ * @param newRoyalties - The new royalty list for the song
+ */
+const updateSongInfo  = (artistSigner, songId, newName, newRoyalties) => {
+  let txSigner = artistSigner
+  let batchSigner = txSigner
+
+  let songAddress = Addresser.getSongAddress(songId)
+  let songInputs = [songAddress]
+  let songOutputs = songInputs
+  let song = new Song(newName, 0, '', newRoyalties) // The public key and amount will not be updated.
+  let songPayload = new Payload('updateSong', {id: songId, song: song.serialize()})
+  let updateSongTransaction = txn.buildTransaction(songInputs, songOutputs, txSigner, batchSigner, songPayload)
+
+  let batch = txn.buildBatch(batchSigner, [updateSongTransaction])
+  let batchList = txn.buildBatchList([batch])
+  return txn.post(batchList)
+}
+
+/**
  * Asks the Sawtooth Blockchain to return a certain artist's information
  * @param artistPubKey - The public key identifying the artist to receive
  */
@@ -210,10 +233,11 @@ const subscribeToAddresses = () => {
 export default {
   createArtist,
   createSong,
+  updateSongInfo,
   getArtist,
   getSong,
   listenToSong,
   downloadSong,
   subscribeToArtist,
-  subscribeToSong
+  subscribeToSong,
 }
