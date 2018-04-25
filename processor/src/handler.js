@@ -61,6 +61,17 @@ class RPHandler extends TransactionHandler {
                     })
                 break;
 
+            case 'updateSong':
+                console.log('Trying to update song \''+ payload.data.id + '\'')
+                return state.updateSong(payload.data, signer)
+                    .then(() => {
+                        console.log('Song \'' + payload.data.id + '\' updated')
+                    })
+                    .catch((error) => {
+                        console.log(error)
+                    })
+                break;
+
             case 'assignSong':
                 console.log('Trying to assign song \''+ payload.data +'\' to artist \'' + signer + '\'')
                 return state.assignSong(signer, payload.data)

@@ -44,7 +44,7 @@ class State {
     /**
      * Creates a new song instance and saves it to the blockchain.
      * Throws an error if there is an already created song with the provided id.
-     * @param {songId, songData} - Object mapping then song Id and its serialized information
+     * @param {id, song} - Object mapping then song Id and its serialized information
      * @param artistPubKey - Public key corresponding to the song owner
      */
     createSong(data, artistPubKey) {
@@ -61,6 +61,34 @@ class State {
             })
             .catch((error) => {
                 throw new InvalidTransaction(error)
+            })
+    }
+
+    /**
+     * Updates the editable song information of an already existing song instance. That is, updates the
+     * song name and its royalty list
+     * @param {id, song} - Object mapping then song Id and its serialized updated information
+     * @param artistPubKey - Public key corresponding to the one that wants to update the song info (if it is not
+     * the song owner, an error will be thrown and no update will be performed)
+     */
+    updateSong(data, artistPubKey) {
+        let address = Addresser.getSongAddress(data.id)
+        return this.getValueFromAddress(address)
+            .then(value => {
+                if (!value) {
+                    throw new InvalidTransaction('Song \'' + data.id + '\' does not exist and can not be updated.')
+                } else {
+                    let currentSong = Song.deserialize(value)
+                    if(currentSong.pub_key !== artistPubKey){
+                        throw new InvalidTransaction('\'' + artistPubKey + '\' can not update the song \'' + data.id +
+                        '\' as the owner is \'' + song.pub_key + '\'')
+                    }else{
+                        let updatedSong = Song.deserialize(data.song)
+                        currentSong.name = updatedSong.name
+                        currentSong.royalties = updatedSong.royalties
+                        return this.setValueToAddress(address, currentSong.serialize())
+                    }
+                }
             })
     }
 

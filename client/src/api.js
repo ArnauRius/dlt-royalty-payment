@@ -166,11 +166,13 @@ const signArtist = (credentials) => {
  * It first creates the song instance to the Firestore db.
  * Then assigns the saved song's reference to the artist's list of songs also in the Firestore db.
  * Finally, creates a new song instance to the Sawtooth's blockchain
+ * @param artist - Artist instance corresponding to the one creating the song
  * @param artistEmail - Email identifying the artist that creates the song
  * @param songName - The name of the new created song
+ * @param songRoyalties - List of royalty instances assigned to the song
  * @returns {Promise} - Callbacks to handle song's creation success or failure
  */
-const createSong = (artist, artistEmail, songName) => {
+const createSong = (artist, artistEmail, songName, songRoyalties) => {
 
   return new Promise((resolve, reject) => {
     // 1. Creates a new song to Firestore db
@@ -192,7 +194,7 @@ const createSong = (artist, artistEmail, songName) => {
             console.log('Song reference assigned to uploader')
 
             // 3. Creates a new song to Sawtooth's Blockchain
-            return sawtooth.createSong(artist.signer, songRef.id, songName, '')
+            return sawtooth.createSong(artist.signer, songRef.id, songName, songRoyalties)
               .then((data) => {
                 console.log('Song created in Sawtooth')
                 resolve(songRef)
@@ -211,7 +213,18 @@ const createSong = (artist, artistEmail, songName) => {
   })
 }
 
-/**getAllSongsFromFirestore
+/**
+ * Updates the song information that can be modifyied, such as its name or its royalty list
+ * @param artist - Artist instance that corresponding to the one updating the song
+ * @param songId - Song id corresponding to the song to update
+ * @param newName - The new name for the song
+ * @param newRoyalties - The new royalty list for the song
+ */
+const updateSongInfo  = (artist, songId, newName, newRoyalties) => {
+  return sawtooth.updateSongInfo(artist.signer, songId, newName, newRoyalties)
+}
+
+/**
  * Gets a list of all the song instances stored in the Firebase Firestore database
  * @returns {Promise<firebase.firestore.QuerySnapshot>}
  */
@@ -281,11 +294,12 @@ export default {
   createArtist,
   signArtist,
   createSong,
+  updateSongInfo,
   fetchArtistFromBlockchain,
   fetchSongFromBlockchain,
   getAllSongsFromFirestore,
   listenToSong,
   downloadSong,
   subscribeToArtist,
-  subscribeToSong
+  subscribeToSong,
 }

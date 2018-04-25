@@ -103,9 +103,9 @@ export default {
      * @param songName - The song's name
      * @returns {Promise}
      */
-    CREATE_SONG: (context, songName) => {
+    CREATE_SONG: (context, songData) => {
       return new Promise((resolve, reject) => {
-        api.createSong(context.getters['artist'], context.rootGetters['user/user'].email, songName)
+        api.createSong(context.getters['artist'], context.rootGetters['user/user'].email, songData.name, songData.royalties)
           .then((songRef) => {
             context.commit('ADD_SONG', songRef)
             resolve()
@@ -125,9 +125,9 @@ export default {
       console.log("Updating artist's songs")
       let artistSongIds = context.getters['artist'].songs.map((song) => song.id) //Songs the artist has
       let storedSongIds = context.rootGetters['songs/songs'].map((song) => song.id) //Songs that are already stored
-      for(var id in artistSongIds){ //For each artist song
+      for (var id in artistSongIds) { //For each artist song
         let songId = artistSongIds[id]
-        if(!storedSongIds.includes(songId)){ //If the song is still not fetched
+        if (!storedSongIds.includes(songId)) { //If the song is still not fetched
           //Fetches it from the Blockchain and stores it
           context.dispatch('songs/FETCH_FROM_BLOCKCHAIN', songId, {root: true})
         }
@@ -141,7 +141,7 @@ export default {
      */
     SUBSCRIBE_TO_UPDATES: (context, subscriptionData) => {
       api.subscribeToArtist(context.getters['artist'], (state_change) => {
-        console.log("Artist update received: "+state_change.value)
+        console.log("Artist update received: " + state_change.value)
         subscriptionData.callback(state_change)
       })
     }

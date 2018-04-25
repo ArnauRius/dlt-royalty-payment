@@ -18,14 +18,14 @@ version: "2.1"
 services:
 
   settings-tp:
-    image: hyperledger/sawtooth-settings-tp:1.0.1
+    image: hyperledger/sawtooth-settings-tp:1.0
     container_name: sawtooth-settings-tp-default
     depends_on:
       - validator
     entrypoint: settings-tp -vv -C tcp://validator:4004
 
   validator:
-    image: hyperledger/sawtooth-validator:1.0.1
+    image: hyperledger/sawtooth-validator:1.0
     container_name: sawtooth-validator-default
     expose:
       - 4004
@@ -44,16 +44,16 @@ services:
         \""
 
   rest-api:
-    image: hyperledger/sawtooth-rest-api-offchain:1.0.1
-    container_name: sawtooth-rest-api-offchain-default
+    image: hyperledger/sawtooth-rest-api:1.0
+    container_name: sawtooth-rest-api-default
     ports:
       - "8008:8008"
     depends_on:
       - validator
-    entrypoint: sawtooth-rest-api-offchain -C tcp://validator:4004 --bind rest-api-offchain:8008
+    entrypoint: sawtooth-rest-api -C tcp://validator:4004 --bind rest-api:8008
 
   shell:
-    image: hyperledger/sawtooth-all:1.0.1
+    image: hyperledger/sawtooth-all:1.0
     container_name: sawtooth-shell-default
     depends_on:
       - rest-api
