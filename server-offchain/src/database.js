@@ -7,3 +7,5 @@ db.addCollection('artists')
 db.addCollection('songs')
 
 db.saveDatabase()
+
+module.exports = db

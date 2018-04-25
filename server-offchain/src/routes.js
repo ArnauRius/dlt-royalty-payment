@@ -1,5 +1,5 @@
-const core = require('./controllers/core')
+const api = require('./api')
 
 module.exports = function(app){
-    app.get('/', core.test)
+    app.get('/', api.test)
 }
