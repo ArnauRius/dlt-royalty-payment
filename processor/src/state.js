@@ -142,21 +142,21 @@ class State {
      * Given an artist, takes all his songs and updates their generated amount to 0
      * @param artistPubKey - Public key corresponding to the artist to pay
      */
-    payArtist(artistPubKey) {
+    resetArtistAmount(artistPubKey) {
         let artistAddress = Addresser.getArtistAddress(artistPubKey)
         return this.getValueFromAddress(artistAddress)
             .then(artistValue => {
                 if (!artistValue) {
-                    throw new InvalidTransaction('Can not pay a non-existing artist \'' + artistPubKey + '\'.')
+                    throw new InvalidTransaction('Can not reset the amount for a non-existing artist \'' + artistPubKey + '\'.')
                 } else {
                     let artist = Artist.deserialize(artistValue)
-                    let promises = []
+                    let songsUpdates = []
                     artist.songs.forEach((songId) => {
                         let songAddress = Addresser.getSongAddress(songId)
-                        promises.push(this.getValueFromAddress(songAddress)
+                        songsUpdates.push(this.getValueFromAddress(songAddress)
                             .then(songValue => {
                                 if (!songValue) {
-                                    throw new InvalidTransaction('Can not pay the artist \'' + artistPubKey + '\' for non-existing song \'' + songId + '\'.')
+                                    throw new InvalidTransaction('Can not reset the amount of the artist \'' + artistPubKey + '\' for non-existing song \'' + songId + '\'.')
                                 } else {
                                     let song = Song.deserialize(songValue)
                                     song.amount = 0
@@ -169,7 +169,7 @@ class State {
                         )
 
                     })
-                    return Promise.all(promises)
+                    return Promise.all(songsUpdates)
                 }
             })
             .catch((error) => {

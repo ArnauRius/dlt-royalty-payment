@@ -27,8 +27,8 @@ const getSongFromBlockchain = (songId) => {
   return sawtooth.getSong(songId)
 }
 
-const payArtist = (artistPubKey, songIds) => {
-  return sawtooth.payArtist(artistPubKey, songIds)
+const resetArtistAmount = (artistPubKey, songIds) => {
+  return sawtooth.resetArtistAmount(artistPubKey, songIds)
 }
 
 export default {
@@ -36,5 +36,5 @@ export default {
   getUserFromFirestore,
   getAllSongsFromFirestore,
   getSongFromBlockchain,
-  payArtist
+  resetArtistAmount
 }

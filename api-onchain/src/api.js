@@ -136,8 +136,13 @@ const downloadSong = (songId) => {
     return txn.post(batchList)
 }
 
-//TODO: Comment
-const payArtist = (artistPubKey, songIds) => {
+/**
+ * Resets the artist's songs earned amount to 0, as it has been already paid
+ * @param artistPubKey - The artist which songs' amount needs to be reseted to 0
+ * @param songIds - The songs that whose amount is going to be reseted to 0
+ * @returns {Promise<any>}
+ */
+const resetArtistAmount = (artistPubKey, songIds) => {
     let artistAddress = Addresser.getArtistAddress(artistPubKey)
     let inputs = [artistAddress]
     songIds.forEach((songId) => {
@@ -146,7 +151,7 @@ const payArtist = (artistPubKey, songIds) => {
     let outputs = inputs
     let txSigner = generateSigner()
     let batchSigner = txSigner
-    let payload = new Payload('payArtist', {artistPubKey: artistPubKey})
+    let payload = new Payload('resetArtistAmount', {artistPubKey: artistPubKey})
 
     let transaction = txn.buildTransaction(inputs, outputs, txSigner, batchSigner, payload)
     let batch = txn.buildBatch(batchSigner, [transaction])
@@ -256,7 +261,7 @@ export default {
     getSong,
     listenToSong,
     downloadSong,
-    payArtist,
+    resetArtistAmount,
     subscribeToArtist,
     subscribeToSong,
 }

@@ -24,7 +24,7 @@
       <tbody>
         <tr v-for="(song, index) in songs" :key="song.id">
           <td colspan="4">
-            <table class="table no-border" style="table-layout: fixed; word-break: break-word;">
+            <table class="table no-border">
               <thead>
                 <tr>
                   <td width="25%">{{song.data.name}}</td>
@@ -145,7 +145,17 @@
 
 <style scoped>
 
+  .table{
+    table-layout: fixed;
+  }
+
   .table.no-border tr td, .table.no-border tr th {
     border-width: 0;
+  }
+
+  .table td {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 </style>

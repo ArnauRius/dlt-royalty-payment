@@ -18,13 +18,23 @@
         <td>
           <button class="btn btn-outline-warning mt-1"
                   type="button"
-                  @click="payArtist(artist.key)">
+                  @click="currentArtistKey = artist.key"
+                  data-toggle="modal"
+                  data-target="#payArtistModal">
             Pay
           </button>
         </td>
       </tr>
       </tbody>
     </table>
+
+    <!-- Pay Artist modal -->
+    <pay-artist-modal id="payArtistModal"
+                      v-bind:currentArtistKey="currentArtistKey"
+                      v-bind:artistSongs="songs[currentArtistKey]"
+                      v-bind:artistEarnings="earnings[currentArtistKey]">
+    </pay-artist-modal>
+
   </div>
 </template>
 
@@ -32,16 +42,24 @@
   // Api import
   import api from '../../api'
 
+  // Components imports
+  import PayArtistModal from '../modals/pay-artist-modal'
+
   //RP Transaction Family import
   import {Song} from '../../../../rp-txn-family/models'
 
   export default {
 
+    components: {
+      PayArtistModal
+    },
+
     data() {
       return {
         artists: [],
         songs: {},
-        earnings: {}
+        earnings: {},
+        currentArtistKey: undefined
       }
     },
 
@@ -99,20 +117,6 @@
         })
         this.earnings[artistKey] = amount
         return amount
-      },
-
-      /**
-       * Pays an artist giving splitted by the defined royalties
-       * @param artistKey
-       */
-      payArtist: function(artistKey){
-        api.payArtist(artistKey, this.songs[artistKey].map(song => song.id))
-          .then(()=>{
-            console.log("artist was paid")
-          })
-          .catch((error) => {
-            console.log(error)
-          })
       }
     },
 

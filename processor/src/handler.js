@@ -93,11 +93,11 @@ class RPHandler extends TransactionHandler {
                         console.log(error)
                     })
                 break;
-            case 'payArtist':
-                console.log('Trying to pay the artist \'' + payload.data.artistPubKey + '\'')
-                return state.payArtist(payload.data.artistPubKey)
+            case 'resetArtistAmount':
+                console.log('Trying to reset the amount for artist \'' + payload.data.artistPubKey + '\'')
+                return state.resetArtistAmount(payload.data.artistPubKey)
                     .then(() => {
-                        console.log('Artist \'' + payload.data.artistPubKey + '\' was paid')
+                        console.log('Amount for artist \'' + payload.data.artistPubKey + '\' was reseted')
                     })
                     .catch((error) => {
                         console.log(error)
