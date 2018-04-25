@@ -12,3 +12,5 @@ yarn-error.log
 *.njsproj
 *.sln
 *.DS_Store
+
+*/db.json

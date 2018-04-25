@@ -1,5 +1,5 @@
+const core = require('./controllers/core')
+
 module.exports = function(app){
-    app.get('/', function(req, res){
-        res.send('The get requests are working')
-    })
+    app.get('/', core.test)
 }
