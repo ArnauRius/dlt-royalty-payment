@@ -150,9 +150,10 @@ class State {
                     throw new InvalidTransaction('Can not pay a non-existing artist \'' + artistPubKey + '\'.')
                 } else {
                     let artist = Artist.deserialize(artistValue)
+                    let promises = []
                     artist.songs.forEach((songId) => {
                         let songAddress = Addresser.getSongAddress(songId)
-                        return this.getValueFromAddress(songAddress)
+                        promises.push(this.getValueFromAddress(songAddress)
                             .then(songValue => {
                                 if (!songValue) {
                                     throw new InvalidTransaction('Can not pay the artist \'' + artistPubKey + '\' for non-existing song \'' + songId + '\'.')
@@ -165,8 +166,10 @@ class State {
                             .catch((error) => {
                                 throw new InvalidTransaction(error)
                             })
+                        )
 
                     })
+                    return Promise.all(promises)
                 }
             })
             .catch((error) => {
