@@ -211,7 +211,7 @@ const createSong = (artist, artistEmail, songName) => {
   })
 }
 
-/**
+/**getAllSongsFromFirestore
  * Gets a list of all the song instances stored in the Firebase Firestore database
  * @returns {Promise<firebase.firestore.QuerySnapshot>}
  */
