@@ -68,7 +68,7 @@
                  style="text-align: left">
               Do not have a key file?
 
-              <a href="generator.dmg" target="_blank">
+              <a download="RP Key Generator-1.0.0.dmg" href="./res/key-generator/mac/RP Key Generator-1.0.0.dmg" title="Key Generator">
                 <button type="submit"
                         class="btn btn-outline-primary"
                         style="margin-left: 16px">
