@@ -42,21 +42,27 @@
         songs: []
       }
     },
-    components: {
+
+    methods: {
+
+      fetchArtists: function(){
+        api.getAllArtistsFromFirestore()
+          .then((artists) => {
+            artists.forEach((artistDoc) => {
+              api.getUserFromFirestore(artistDoc.id)
+                .then(userDoc => {
+                  this.artists.push({email: artistDoc.id,
+                    name: userDoc.data().name,
+                    key: artistDoc.data().key,
+                    songs: artistDoc.data().songs})
+                })
+            });
+          })
+      }
     },
+
     created(){
-      api.getAllArtistsFromFirestore()
-        .then((artists) => {
-          artists.forEach((artistDoc) => {
-            api.getUserFromFirestore(artistDoc.id)
-              .then(userDoc => {
-                this.artists.push({email: artistDoc.id,
-                  name: userDoc.data().name,
-                  key: artistDoc.data().key,
-                  songs: artistDoc.data().songs})
-              })
-          });
-        })
+      this.fetchArtists()
     }
   }
 </script>

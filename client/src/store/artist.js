@@ -1,6 +1,6 @@
 /* Stores the current artist information */
 
-import api from '../api/'
+import api from '../api'
 
 export default {
 

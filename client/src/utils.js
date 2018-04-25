@@ -1,4 +1,4 @@
-/* This is script is used to be able to reuse some functions used frequently in the application */
+/* This script is used to be able to reuse some functions used frequently in the application */
 
 import { createHash } from 'crypto'
 

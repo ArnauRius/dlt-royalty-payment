@@ -6,15 +6,15 @@
 */
 
 // APIs imports
-import firestore from './firestore-api'
-import sawtooth from './sawtoot-api'
+import firestore from '../../api-offchain/'
+import sawtooth from '../../api-onchain/'
 
 // Store import
-import store from '../store/store'
+import store from './store/store'
 
 // Tools and utilities imports
-import utils from '../utils'
-import {generateSignerFromKey, generatePrivateKeyFromHex} from '../managers/signers-manager'
+import utils from './utils'
+import {generateSignerFromKey, generatePrivateKeyFromHex} from './managers/signers-manager'
 
 /**
  * Signs in the provided user. This is done by checking if the introduced email and password

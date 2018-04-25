@@ -1,7 +1,7 @@
 /* In this module are defined the necessary functions to be able to connect with the Firebase Firestore database */
 
 // Firebase import
-import {firestore} from '../managers/firebase-manager'
+import {firestore} from './firebase-manager'
 
 /**
  * Firebase Firestore instance used as off-chain database

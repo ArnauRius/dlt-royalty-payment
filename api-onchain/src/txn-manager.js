@@ -8,11 +8,11 @@
 import protobuf from "sawtooth-sdk/protobuf";
 
 // RP Transaction Family imports
-import { FAMILY_NAME, FAMILY_VERSION } from "../../../rp-txn-family"
+import { FAMILY_NAME, FAMILY_VERSION } from "../../rp-txn-family/index"
 
 // Other utilities imports
 import $ from 'jquery'
-import utils from '../utils'
+import utils from './utils'
 
 
 const SAWTOOTH_API_URL = '/sawtooth-api'
@@ -24,20 +24,20 @@ const SAWTOOTH_API_URL = '/sawtooth-api'
  * @returns {Promise<any>} - Callbacks to manage post's success or failure
  */
 const post = (batchList) => {
-  return new Promise((resolve, reject) => {
-    $.post({
-      url: `${SAWTOOTH_API_URL}/batches?wait`,
-      data: batchList,
-      headers: {'Content-Type': 'application/octet-stream'},
-      processData: false,
-      success: (data) => {
-        resolve(data)
-      },
-      error: (error) => {
-        reject(error)
-      }
+    return new Promise((resolve, reject) => {
+        $.post({
+            url: `${SAWTOOTH_API_URL}/batches?wait`,
+            data: batchList,
+            headers: {'Content-Type': 'application/octet-stream'},
+            processData: false,
+            success: (data) => {
+                resolve(data)
+            },
+            error: (error) => {
+                reject(error)
+            }
+        })
     })
-  })
 }
 
 /**
@@ -46,17 +46,17 @@ const post = (batchList) => {
  * @returns {Promise<any>} - Callbacks to manage get's success or failure
  */
 const get = (address) => {
-  return new Promise((resolve, reject) => {
-    $.get({
-      url: `${SAWTOOTH_API_URL}/state/${address}`,
-      success: (data) => {
-        resolve(data)
-      },
-      error: (error) =>{
-        reject(error)
-      }
+    return new Promise((resolve, reject) => {
+        $.get({
+            url: `${SAWTOOTH_API_URL}/state/${address}`,
+            success: (data) => {
+                resolve(data)
+            },
+            error: (error) =>{
+                reject(error)
+            }
+        })
     })
-  })
 }
 
 /**
@@ -69,15 +69,15 @@ const get = (address) => {
  * @returns {TransactionHeader} - Transaction Header instance
  */
 const createTransactionHeader = (inputs, outputs, txSigner, batchSigner, payload) => {
-  return protobuf.TransactionHeader.encode({
-    familyName: FAMILY_NAME,
-    familyVersion: FAMILY_VERSION,
-    inputs: inputs,
-    outputs: outputs,
-    signerPublicKey: txSigner.getPublicKey().asHex(),
-    batcherPublicKey: batchSigner.getPublicKey().asHex(),
-    payloadSha512:utils.hash(payload)
-  }).finish()
+    return protobuf.TransactionHeader.encode({
+        familyName: FAMILY_NAME,
+        familyVersion: FAMILY_VERSION,
+        inputs: inputs,
+        outputs: outputs,
+        signerPublicKey: txSigner.getPublicKey().asHex(),
+        batcherPublicKey: batchSigner.getPublicKey().asHex(),
+        payloadSha512:utils.hash(payload)
+    }).finish()
 }
 
 /**
@@ -88,11 +88,11 @@ const createTransactionHeader = (inputs, outputs, txSigner, batchSigner, payload
  * @returns {Transaction} - Transaction instance
  */
 const createTransaction = (transactionHeader, signer, payload) => {
-  return protobuf.Transaction.create({
-    header: transactionHeader,
-    headerSignature: signer.sign(transactionHeader),
-    payload: payload
-  })
+    return protobuf.Transaction.create({
+        header: transactionHeader,
+        headerSignature: signer.sign(transactionHeader),
+        payload: payload
+    })
 }
 
 /**
@@ -106,9 +106,9 @@ const createTransaction = (transactionHeader, signer, payload) => {
  * @returns {Transaction} - Transaction instance
  */
 const buildTransaction = (inputs, outputs, txSigner, batchSigner, payload) => {
-  let payloadInBytes = payload.serialize()
-  let transactionHeader = createTransactionHeader(inputs, outputs, txSigner, batchSigner, payloadInBytes)
-  return createTransaction(transactionHeader, txSigner, payloadInBytes)
+    let payloadInBytes = payload.serialize()
+    let transactionHeader = createTransactionHeader(inputs, outputs, txSigner, batchSigner, payloadInBytes)
+    return createTransaction(transactionHeader, txSigner, payloadInBytes)
 }
 
 /**
@@ -118,10 +118,10 @@ const buildTransaction = (inputs, outputs, txSigner, batchSigner, payload) => {
  * @returns {BatchHeader} - Batch Header instance
  */
 const createBatchHeader = (signer, transactions) => {
-  return protobuf.BatchHeader.encode({
-    signerPublicKey: signer.getPublicKey().asHex(),
-    transactionIds: transactions.map((transaction) => transaction.headerSignature)
-  }).finish()
+    return protobuf.BatchHeader.encode({
+        signerPublicKey: signer.getPublicKey().asHex(),
+        transactionIds: transactions.map((transaction) => transaction.headerSignature)
+    }).finish()
 }
 
 /**
@@ -132,11 +132,11 @@ const createBatchHeader = (signer, transactions) => {
  * @returns {Batch} - Batch instance
  */
 const createBatch = (batchHeader, signer, transactions) => {
-  return protobuf.Batch.create({
-    header: batchHeader,
-    headerSignature: signer.sign(batchHeader),
-    transactions: transactions
-  })
+    return protobuf.Batch.create({
+        header: batchHeader,
+        headerSignature: signer.sign(batchHeader),
+        transactions: transactions
+    })
 }
 
 /**
@@ -147,8 +147,8 @@ const createBatch = (batchHeader, signer, transactions) => {
  * @returns {Batch} - Batch instance
  */
 const buildBatch = (signer, transactions) => {
-  let batchHeader = createBatchHeader(signer, transactions)
-  return createBatch(batchHeader, signer, transactions)
+    let batchHeader = createBatchHeader(signer, transactions)
+    return createBatch(batchHeader, signer, transactions)
 }
 
 /**
@@ -157,15 +157,15 @@ const buildBatch = (signer, transactions) => {
  * @returns {BatchList} - Batch List instance
  */
 const buildBatchList = (batchList) => {
-  return protobuf.BatchList.encode({
-    batches: batchList
-  }).finish()
+    return protobuf.BatchList.encode({
+        batches: batchList
+    }).finish()
 }
 
 export default {
-  post,
-  get,
-  buildTransaction,
-  buildBatch,
-  buildBatchList
+    post,
+    get,
+    buildTransaction,
+    buildBatch,
+    buildBatchList
 }

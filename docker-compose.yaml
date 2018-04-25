@@ -44,13 +44,13 @@ services:
         \""
 
   rest-api:
-    image: hyperledger/sawtooth-rest-api:1.0.1
-    container_name: sawtooth-rest-api-default
+    image: hyperledger/sawtooth-rest-api-offchain:1.0.1
+    container_name: sawtooth-rest-api-offchain-default
     ports:
       - "8008:8008"
     depends_on:
       - validator
-    entrypoint: sawtooth-rest-api -C tcp://validator:4004 --bind rest-api:8008
+    entrypoint: sawtooth-rest-api-offchain -C tcp://validator:4004 --bind rest-api-offchain:8008
 
   shell:
     image: hyperledger/sawtooth-all:1.0.1
