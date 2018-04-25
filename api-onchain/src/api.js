@@ -136,6 +136,24 @@ const downloadSong = (songId) => {
     return txn.post(batchList)
 }
 
+//TODO: Comment
+const payArtist = (artistPubKey, songIds) => {
+    let artistAddress = Addresser.getArtistAddress(artistPubKey)
+    let inputs = [artistAddress]
+    songIds.forEach((songId) => {
+        inputs.push(Addresser.getSongAddress(songId))
+    })
+    let outputs = inputs
+    let txSigner = generateSigner()
+    let batchSigner = txSigner
+    let payload = new Payload('payArtist', {artistPubKey: artistPubKey})
+
+    let transaction = txn.buildTransaction(inputs, outputs, txSigner, batchSigner, payload)
+    let batch = txn.buildBatch(batchSigner, [transaction])
+    let batchList = txn.buildBatchList([batch])
+    return txn.post(batchList)
+}
+
 /**
  * Subscribes to a certain Artist instance in the blockchain and executes a provided callback when
  * a change occurs to it
@@ -238,6 +256,7 @@ export default {
     getSong,
     listenToSong,
     downloadSong,
+    payArtist,
     subscribeToArtist,
     subscribeToSong,
 }

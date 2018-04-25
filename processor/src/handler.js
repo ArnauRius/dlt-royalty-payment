@@ -93,6 +93,15 @@ class RPHandler extends TransactionHandler {
                         console.log(error)
                     })
                 break;
+            case 'payArtist':
+                console.log('Trying to pay the artist \'' + payload.data.artistPubKey + '\'')
+                return state.payArtist(payload.data.artistPubKey)
+                    .then(() => {
+                        console.log('Artist \'' + payload.data.artistPubKey + '\' was paid')
+                    })
+                    .catch((error) => {
+                        console.log(error)
+                    })
             default:
                 throw new InvalidTransaction('Action not handled by this Transaction Handler: ' + payload.action)
         }

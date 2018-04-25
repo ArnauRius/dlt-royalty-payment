@@ -18,7 +18,7 @@
         <td>
           <button class="btn btn-outline-warning mt-1"
                   type="button"
-                  @click="">
+                  @click="payArtist(artist.key)">
             Pay
           </button>
         </td>
@@ -40,7 +40,8 @@
     data() {
       return {
         artists: [],
-        songs: {}
+        songs: {},
+        earnings: {}
       }
     },
 
@@ -77,13 +78,12 @@
                 .then((encodedSong) => {
                   let song = Song.deserialize(atob(encodedSong.data))
                   if(this.songs[song.pub_key]){
-                    this.songs[song.pub_key].push(song)
+                    this.songs[song.pub_key].push({id: songDoc.id, data: song})
                   }else{
-                    this.songs[song.pub_key] = [song]
+                    this.songs[song.pub_key] = [{id: songDoc.id, data: song}]
                   }
                 })
             })
-            console.log(this.songs)
           })
       },
 
@@ -94,10 +94,25 @@
        */
       computeAmount: function(artistKey) {
         let amount = 0
-        for(let song in this.songs[artistKey]){
-          amount += this.songs[artistKey][song].amount
-        }
+        this.songs[artistKey].forEach((song) => {
+          amount += song.data.amount
+        })
+        this.earnings[artistKey] = amount
         return amount
+      },
+
+      /**
+       * Pays an artist giving splitted by the defined royalties
+       * @param artistKey
+       */
+      payArtist: function(artistKey){
+        api.payArtist(artistKey, this.songs[artistKey].map(song => song.id))
+          .then(()=>{
+            console.log("artist was paid")
+          })
+          .catch((error) => {
+            console.log(error)
+          })
       }
     },
 
