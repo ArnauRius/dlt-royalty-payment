@@ -5,13 +5,18 @@ import firestore from './firestore-api'
 import store from '../store/store'
 
 /**
- * Gets a list of all the song instances stored in the Firebase Firestore database
+ * Gets a list of all the artist instances stored in the Firebase Firestore database
  * @returns {Promise<firebase.firestore.QuerySnapshot>}
  */
-const getAllSongsFromFirestore = () => {
-  return firestore.db.collection('songs').get()
+const getAllArtistsFromFirestore = () => {
+  return firestore.db.collection('artists').get()
+}
+
+const getUserFromFirestore = (email) => {
+  return firestore.getDoc('users', email)
 }
 
 export default {
-  getAllSongsFromFirestore
+  getAllArtistsFromFirestore,
+  getUserFromFirestore,
 }

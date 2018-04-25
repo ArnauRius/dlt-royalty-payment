@@ -4,14 +4,16 @@
     <table class="table table-hover">
       <thead>
       <tr>
-        <th>Song</th>
-        <th>Amount</th>
+        <th>Artist</th>
+        <th>Email</th>
+        <th>Earnings</th>
         <th></th>
       </tr>
       </thead>
       <tbody>
-      <tr v-for="song in songs">
-        <td>{{song.name}}</td>
+      <tr v-for="artist in artists">
+        <td>{{artist.name}}</td>
+        <td>{{artist.email}}</td>
         <td>
             9.99
         </td>
@@ -36,17 +38,23 @@
 
     data() {
       return {
+        artists: [],
         songs: []
       }
     },
     components: {
     },
     created(){
-      debugger;
-      api.getAllSongsFromFirestore()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.songs.push({id: doc.id, name: doc.data().name})
+      api.getAllArtistsFromFirestore()
+        .then((artists) => {
+          artists.forEach((artistDoc) => {
+            api.getUserFromFirestore(artistDoc.id)
+              .then(userDoc => {
+                this.artists.push({email: artistDoc.id,
+                  name: userDoc.data().name,
+                  key: artistDoc.data().key,
+                  songs: artistDoc.data().songs})
+              })
           });
         })
     }
