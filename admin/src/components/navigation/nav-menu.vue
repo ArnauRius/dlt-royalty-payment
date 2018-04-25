@@ -12,23 +12,7 @@
 
 <script>
 
-  export default {
-    components: {
-    },
-
-    data() {
-      return {
-      }
-    },
-
-    computed: {
-
-    },
-
-    methods: {
-
-    }
-  }
+  export default {}
 </script>
 
 <style scoped>
