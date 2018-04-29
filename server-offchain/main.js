@@ -1,4 +1,8 @@
 const app = require('./src/server')
+var bodyParser = require('body-parser')
+
+app.use( bodyParser.json() ); 
+app.use(express.json());
 
 app.use(function(req, res, next) {
   // Website you wish to allow to connect
