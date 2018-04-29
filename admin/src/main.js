@@ -7,7 +7,7 @@ import VueAxios from 'vue-axios'
 
 // Sets Vue's plugins
 Vue.use(VueRouter)
-Vue.use(VueAxios, axios)
+Vue.use(VueAxios, axios)w
 
 const router = new VueRouter({
   routes: Routes,

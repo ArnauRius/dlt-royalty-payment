@@ -1,6 +1,25 @@
 const db = require('./database')
 
-exports.test = function(req, res){
-    
-    res.json(db.getCollection('artists'))
+exports.artistsAll = function(req, res){
+    res.json(db.getCollection('artists').data)
+}
+
+exports.usersAll = function(req, res){
+    res.json(db.getCollection('users').data)
+}
+
+exports.songsAll = function(req, res){
+    res.json(db.getCollection('songs').data)
+}
+
+exports.artist = function(req, res){
+    res.json(db.getCollection('artists').findOne({ id: req.params.id}));
+}
+
+exports.user = function(req, res){
+    res.json(db.getCollection('users').findOne({ id: req.params.id}));
+}
+
+exports.song = function(req, res){
+    res.json(db.getCollection('songs').findOne({ id: req.params.id}));
 }
