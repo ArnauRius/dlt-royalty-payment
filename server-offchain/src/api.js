@@ -23,14 +23,18 @@ exports.user = function(req, res){
 exports.song = function(req, res){
     res.json(db.getCollection('songs').findOne({ id: req.params.id}));
 }
+
 exports.addArtist = function(req, res){
-    res.json(db.getCollection('artists').insert({ id: req.params.id}));
+	db.getCollection('artists').insert(req.body);
+	res.json({status: 'ok'})
 }
 
 exports.addUser = function(req, res){
-    res.json(req.body);
+	db.getCollection('users').insert(req.body);
+	res.json({status: 'ok'})
 }
 
 exports.addSong = function(req, res){
-    res.json(db.getCollection('songs').findOne({ id: req.params.id}));
+	db.getCollection('songs').insert(req.body);
+	res.json({status: 'ok'})
 }
