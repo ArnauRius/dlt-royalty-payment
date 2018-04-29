@@ -1,13 +1,19 @@
 // APIs imports
 import firestore from '../../api-offchain'
 import sawtooth from '../../api-onchain'
-
+import axios from 'axios'
 /**
  * Gets a list of all the artist instances stored in the Firebase Firestore database
  * @returns {Promise<firebase.firestore.QuerySnapshot>}
  */
 const getAllArtistsFromFirestore = () => {
-  return firestore.db.collection('artists').get()
+  return new Promise((resolve, reject) => {
+    axios.get('http://localhost:8080/').then((response) => {
+      debugger;
+      console.log(response.data);
+      resolve(response);
+    })
+  })
 }
 
 //TODO: Comment all this
