@@ -7,6 +7,8 @@ module.exports = function(app){
     app.get('/api/artist/:id/', api.artist) // get one artist by id
     app.get('/api/user/:id/', api.user) // get one user by id
     app.get('/api/song/:id/', api.song) // get one song by id
-    app.post('/api/add/user/', api.addUser)
+    app.post('/api/artist/', api.addArtist) // add artist
+    app.post('/api/user/', api.addUser) // add user
+    app.post('/api/song/', api.addSong) // add song
 }
 
