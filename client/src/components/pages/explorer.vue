@@ -1,26 +1,19 @@
 <template>
   <div>
-    <h1>EXPLORE</h1>
+    <h1 class="section">SONGS</h1>
     <table class="table table-hover">
-      <thead>
-      <tr>
-        <th>Song</th>
-        <th></th>
-        <th></th>
-      </tr>
-      </thead>
       <tbody>
       <tr v-for="song in songs">
         <td>{{song.name}}</td>
         <td>
-          <button class="btn btn-outline-warning mt-1"
+          <button class="btn btn-primary mt-1"
                   type="button"
                   @click="listen(song.id)">
             Listen
           </button>
         </td>
         <td>
-          <button class="btn btn-outline-warning mt-1"
+          <button class="btn btn-dark mt-1"
                   type="button"
                   @click="download(song.id)">
             Download
@@ -69,5 +62,11 @@
 </script>
 
 <style>
-
+.section{
+  display: flex;
+  font-weight: 800;
+  justify-content: left;
+  margin-bottom: 50px;
+  text-decoration: underline;
+}
 </style>

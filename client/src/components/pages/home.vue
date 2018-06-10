@@ -1,5 +1,5 @@
 <template>
-    <h1>THIS IS THE LANDING PAGE</h1>
+    <h1>Welcome to the Royalty Payment Demo. <br>Based on Blockchain and Hyperledger Sawtooth</h1>
 </template>
 
 <script>
@@ -8,6 +8,9 @@
 
 </script>
 
-<style>
-
+<style scoped>
+h1{
+	display: flex;
+	justify-content: center;
+}
 </style>

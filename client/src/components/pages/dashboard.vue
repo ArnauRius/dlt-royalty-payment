@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="row">
-      <div class="col-sm-6"><h4>Dashboard</h4></div>
+      <div class="col-sm-6"><h1 class="section">Dashboard</h1></div>
       <div class="col-sm-6 text-right">
         <button class="btn btn-primary"
                 type="button"
@@ -30,14 +30,14 @@
                   <td width="25%">{{song.data.name}}</td>
                   <td width="25%">{{song.data.amount}}</td>
                   <td width="25%">
-                    <button class="btn btn-outline-secondary"
+                    <button class="btn btn-info"
                             type="button"
                             @click="showRoyalties(index)">
                       Royalties
                     </button>
                   </td>
                   <td width="25%">
-                    <button class="btn btn-outline-warning mt-1"
+                    <button class="btn btn-warning mt-1"
                             type="button"
                             @click="currentSong = song"
                             data-toggle="modal"
@@ -157,5 +157,12 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+  .section{
+    display: flex;
+    font-weight: 800;
+    justify-content: left;
+    margin-bottom: 50px;
+    text-decoration: underline;
   }
 </style>
